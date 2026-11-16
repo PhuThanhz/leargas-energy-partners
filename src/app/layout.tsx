@@ -39,9 +39,11 @@ export const metadata: Metadata = {
     url: siteConfig.url,
     images: [
       {
-        url: "/opengraph-image",
+        url: `${siteConfig.url}/og-image.png`,
+        secureUrl: `${siteConfig.url}/og-image.png`,
         width: 1200,
         height: 630,
+        type: "image/png",
         alt: siteConfig.title,
       },
     ],
@@ -50,7 +52,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: siteConfig.title,
     description: siteConfig.description,
-    images: ["/opengraph-image"],
+    images: [`${siteConfig.url}/og-image.png`],
   },
 }
 
