@@ -1,0 +1,7 @@
+export { About } from "./about"
+export { Contact } from "./contact"
+export { Cta } from "./cta"
+export { Hero } from "./hero"
+export { Projects } from "./projects"
+export { Services } from "./services"
+export { Stats } from "./stats"
