@@ -6,13 +6,7 @@ import { z } from "zod"
  */
 const defaultSiteUrl = () => {
   if (process.env.NEXT_PUBLIC_SITE_URL) return process.env.NEXT_PUBLIC_SITE_URL
-  if (process.env.VERCEL_PROJECT_PRODUCTION_URL) {
-    return `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
-  }
-  if (process.env.VERCEL_URL) {
-    return `https://${process.env.VERCEL_URL}`
-  }
-  return "https://leargas-energy-partners.vercel.app"
+  return "https://leargasenergy.com"
 }
 
 const schema = z.object({
