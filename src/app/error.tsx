@@ -2,7 +2,7 @@
 
 import { useEffect } from "react"
 
-import { Button } from "@/components/ui/button"
+import { arrowButton } from "@/components/shared/arrow-button"
 
 export default function Error({ error, retry }: { error: unknown; retry: () => void }) {
   useEffect(() => {
@@ -11,9 +11,16 @@ export default function Error({ error, retry }: { error: unknown; retry: () => v
   }, [error])
 
   return (
-    <main className="flex flex-1 flex-col items-center justify-center gap-4 py-24 text-center">
-      <h1 className="font-heading text-2xl font-bold">Something went wrong</h1>
-      <Button onClick={() => retry()}>Try again</Button>
-    </main>
+    <div className="flex flex-1 flex-col items-center justify-center gap-5 px-6 py-24 text-center">
+      <p className="eyebrow">Something went wrong</p>
+      <h1 className="section-title">We couldn&apos;t load this page.</h1>
+      <button
+        type="button"
+        onClick={() => retry()}
+        className={arrowButton({ variant: "green", size: "md" })}
+      >
+        <span>Try again</span>
+      </button>
+    </div>
   )
 }

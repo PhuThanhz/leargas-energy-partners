@@ -1,11 +1,15 @@
-import { Container } from "@/components/layout/container"
 import { cn } from "@/lib/utils"
 
-/** Standard vertical rhythm + anchor id for landing page sections. */
-export function Section({ className, children, ...props }: React.ComponentProps<"section">) {
+/** Standard section rhythm; children are placed inside the brand `wrap`. */
+export function Section({
+  className,
+  innerClassName,
+  children,
+  ...props
+}: React.ComponentProps<"section"> & { innerClassName?: string }) {
   return (
-    <section className={cn("scroll-mt-20 py-20 sm:py-28", className)} {...props}>
-      <Container>{children}</Container>
+    <section className={cn("py-[70px] md:py-[100px]", className)} {...props}>
+      <div className={cn("wrap", innerClassName)}>{children}</div>
     </section>
   )
 }

@@ -1,27 +1,42 @@
-import type { LucideIcon } from "lucide-react"
-
 export type NavItem = {
   title: string
   href: string
-  external?: boolean
 }
 
 export type Service = {
   title: string
   description: string
-  icon: LucideIcon
+  points: string[]
 }
 
-export type Project = {
+export type Market = {
+  name: string
+  note: string
+}
+
+export type ApproachStep = {
+  label: string
   title: string
-  location: string
-  capacity: string
   description: string
 }
 
-export type Stat = {
-  value: string
-  label: string
+export type LensItem = {
+  title: string
+  description: string
+}
+
+export type BrandValue = {
+  colour: string
+  swatch: string
+  name: string
+  description: string
+}
+
+export type Milestone = {
+  stage: string
+  title: string
+  description: string
+  current?: boolean
 }
 
 export * from "./blog"

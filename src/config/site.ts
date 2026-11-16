@@ -1,21 +1,25 @@
 import { env } from "@/lib/env"
 
 export const siteConfig = {
-  name: "LEARGAS Energy Partners",
-  shortName: "LEARGAS",
+  name: "LÉARGAS Energy Partners",
+  title: "LÉARGAS Energy Partners | Strategic & Investment Advisory · Vietnam & APAC",
   description:
-    "LEARGAS Energy Partners develops, finances and operates clean energy projects that power a sustainable future.",
+    "A boutique strategic and investment advisory firm connecting international capital with energy opportunities in Vietnam and Asia-Pacific – from market entry and M&A to project delivery.",
   url: env.NEXT_PUBLIC_SITE_URL,
-  ogImage: "/opengraph-image",
-  keywords: ["renewable energy", "solar", "wind", "energy partners", "LEARGAS"],
-  contact: {
-    email: "info@leargas.com",
-    phone: "+00 000 000 000",
-    address: "Your office address",
-  },
+  keywords: [
+    "investment advisory Vietnam",
+    "energy M&A Vietnam",
+    "renewable energy investment APAC",
+    "market entry Vietnam",
+    "project development advisory",
+    "government relations Vietnam",
+    "boutique advisory firm",
+  ],
   links: {
-    linkedin: "https://www.linkedin.com/",
+    // TODO: replace with the firm's real LinkedIn company page URL.
+    linkedin: "https://www.linkedin.com/company/leargas-energy-partners",
   },
+  footerNote: "Global perspective. Local insight. Lasting value.",
 } as const
 
 export type SiteConfig = typeof siteConfig

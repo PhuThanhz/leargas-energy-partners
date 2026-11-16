@@ -1,15 +1,25 @@
-import { About, Contact, Cta, Hero, Projects, Services, Stats } from "@/components/sections"
+import {
+  ContactCta,
+  CorridorsSection,
+  ExpertiseSection,
+  FirmIdentity,
+  Hero,
+  Insights,
+  Marquee,
+  WindGallery,
+} from "@/components/sections"
 
 export default function HomePage() {
   return (
     <>
       <Hero />
-      <Stats />
-      <About />
-      <Services />
-      <Projects />
-      <Cta />
-      <Contact />
+      <Marquee />
+      <FirmIdentity />
+      <ExpertiseSection />
+      <WindGallery />
+      <CorridorsSection />
+      <Insights />
+      <ContactCta />
     </>
   )
 }

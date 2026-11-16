@@ -3,25 +3,21 @@
  * Keep these in sync with the backend `PostDto` / Spring Data `Page<T>`.
  */
 
-export type Author = {
-  id: number
-  name: string
-  avatarUrl?: string | null
-}
-
 export type PostSummary = {
   id: number
   slug: string
   title: string
   excerpt: string
+  category: string
+  author: string
+  readingTimeMinutes: number
   coverImageUrl?: string | null
-  publishedAt: string // ISO-8601 (java.time.Instant / OffsetDateTime)
-  author?: Author | null
-  tags?: string[]
+  publishedAt: string // ISO-8601 (java.time.LocalDate / Instant)
 }
 
 export type Post = PostSummary & {
-  content: string // HTML or Markdown from the backend
+  /** HTML body. `<h2 id="…">` headings are used to build the table of contents. */
+  content: string
   updatedAt?: string | null
 }
 

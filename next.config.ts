@@ -13,7 +13,8 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   images: {
     // Phase 2: add the Spring Boot / CDN host serving blog images.
-    remotePatterns: [],
+    remotePatterns: [{ protocol: "https", hostname: "images.unsplash.com" }],
+    formats: ["image/avif", "image/webp"],
   },
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }]

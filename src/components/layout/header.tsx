@@ -1,32 +1,22 @@
-import Link from "next/link"
-
-import { Container } from "@/components/layout/container"
+import { HeaderShell } from "@/components/layout/header-shell"
 import { MobileNav } from "@/components/layout/mobile-nav"
+import { NavLinks } from "@/components/layout/nav-links"
 import { Logo } from "@/components/shared/logo"
-import { buttonVariants } from "@/components/ui/button"
 import { mainNav } from "@/config/navigation"
 
 export function Header() {
   return (
-    <header className="sticky top-0 z-40 border-b bg-background/80 backdrop-blur">
-      <Container className="flex h-16 items-center justify-between">
+    <HeaderShell>
+      <div className="wrap flex h-[68px] items-center justify-between gap-6 transition-[height] duration-500 md:h-[76px] md:group-data-[solid=true]:h-[68px]">
         <Logo />
-        <nav aria-label="Main" className="hidden items-center gap-8 md:flex">
-          {mainNav.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-            >
-              {item.title}
-            </Link>
-          ))}
-          <Link href="/#contact" className={buttonVariants({ size: "sm" })}>
-            Get in touch
-          </Link>
+        <nav
+          aria-label="Main navigation"
+          className="hidden items-center gap-9 text-[13.5px] xl:flex"
+        >
+          <NavLinks items={mainNav} />
         </nav>
         <MobileNav />
-      </Container>
-    </header>
+      </div>
+    </HeaderShell>
   )
 }
