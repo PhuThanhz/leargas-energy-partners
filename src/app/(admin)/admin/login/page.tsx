@@ -2,7 +2,6 @@
 
 import * as React from "react"
 import { useRouter } from "next/navigation"
-import Link from "next/link"
 import { User, Lock, Eye, EyeOff, ArrowRight } from "lucide-react"
 import { toast } from "sonner"
 
@@ -72,10 +71,10 @@ export default function AdminLoginPage() {
         <div className="rounded-3xl border border-[#e2e8e3] bg-white p-8 shadow-[0_20px_50px_-15px_rgba(15,43,32,0.08),0_0_0_1px_rgba(15,43,32,0.03)] sm:p-11">
           {/* Khu vực Logo ấn tượng */}
           <div className="mb-8 flex flex-col items-center text-center">
-            <div className="relative flex w-full items-center justify-center rounded-2xl border border-[#e8efe9] bg-gradient-to-b from-[#fbfdfb] to-[#f4f7f4] px-4 py-6 shadow-[inset_0_1px_2px_rgba(255,255,255,0.8)]">
-              <Link href="/" className="inline-block transition-transform hover:scale-[1.02]">
+            <div className="relative flex w-full cursor-default items-center justify-center rounded-2xl border border-[#e8efe9] bg-gradient-to-b from-[#fbfdfb] to-[#f4f7f4] px-4 py-6 shadow-[inset_0_1px_2px_rgba(255,255,255,0.8)] select-none">
+              <div className="pointer-events-none inline-block select-none">
                 <LogoImage tone="light" className="w-[230px] sm:w-[260px]" priority />
-              </Link>
+              </div>
             </div>
 
             <p className="mt-3.5 text-xs font-medium tracking-wide text-[#6c7f74]">
