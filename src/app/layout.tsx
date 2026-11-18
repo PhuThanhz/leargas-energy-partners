@@ -99,7 +99,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       </head>
       <body className="grain flex min-h-full flex-col">
         <MotionProvider>{children}</MotionProvider>
-        <Toaster position="top-center" />
+        <Toaster position="top-right" />
       </body>
     </html>
   )

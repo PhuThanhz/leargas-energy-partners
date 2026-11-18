@@ -34,11 +34,13 @@ export function getStoredAuth(): AuthState {
 export function saveAuth(token: string, user: AdminUser): void {
   if (typeof window === "undefined") return
   localStorage.setItem(STORAGE_KEY, JSON.stringify({ token, user }))
+  document.cookie = `leargas_admin_token=${token}; path=/; max-age=86400; SameSite=Lax`
 }
 
 export function clearAuth(): void {
   if (typeof window === "undefined") return
   localStorage.removeItem(STORAGE_KEY)
+  document.cookie = "leargas_admin_token=; path=/; max-age=0; SameSite=Lax"
 }
 
 export function isAuthenticated(): boolean {

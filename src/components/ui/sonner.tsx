@@ -2,60 +2,55 @@
 
 import { useTheme } from "next-themes"
 import { Toaster as Sonner, type ToasterProps } from "sonner"
-import { CircleCheckIcon, InfoIcon, TriangleAlertIcon, OctagonXIcon, Loader2Icon } from "lucide-react"
+import { CircleCheck, Info, AlertTriangle, CircleX, Loader2 } from "lucide-react"
 
-const Toaster = ({ ...props }: ToasterProps) => {
+const Toaster = ({ position = "top-right", ...props }: ToasterProps) => {
   const { theme = "system" } = useTheme()
 
   return (
     <Sonner
       theme={theme as ToasterProps["theme"]}
       className="toaster group"
-      richColors
+      position={position}
       icons={{
         success: (
-          <CircleCheckIcon className="size-5 text-emerald-600 shrink-0" />
+          <CircleCheck className="size-5 text-[#52c41a] shrink-0" />
         ),
         info: (
-          <InfoIcon className="size-5 text-blue-600 shrink-0" />
+          <Info className="size-5 text-[#1677ff] shrink-0" />
         ),
         warning: (
-          <TriangleAlertIcon className="size-5 text-amber-600 shrink-0" />
+          <AlertTriangle className="size-5 text-[#faad14] shrink-0" />
         ),
         error: (
-          <OctagonXIcon className="size-5 text-red-600 shrink-0" />
+          <CircleX className="size-5 text-[#ff4d4f] shrink-0" />
         ),
         loading: (
-          <Loader2Icon className="size-5 animate-spin text-[#0f2b20] shrink-0" />
+          <Loader2 className="size-5 animate-spin text-[#0f2b20] shrink-0" />
         ),
       }}
       style={
         {
           "--normal-bg": "#ffffff",
-          "--normal-text": "#111827",
-          "--normal-border": "#e5e7eb",
-          "--border-radius": "14px",
-          "--error-bg": "#fef2f2",
-          "--error-border": "#fecaca",
-          "--error-text": "#991b1b",
-          "--success-bg": "#f0fdf4",
-          "--success-border": "#bbf7d0",
-          "--success-text": "#166534",
-          "--warning-bg": "#fffbeb",
-          "--warning-border": "#fde68a",
-          "--warning-text": "#92400e",
-          "--info-bg": "#eff6ff",
-          "--info-border": "#bfdbfe",
-          "--info-text": "#1e40af",
+          "--normal-text": "#1f1f1f",
+          "--normal-border": "#f0f0f0",
+          "--border-radius": "12px",
         } as React.CSSProperties
       }
       toastOptions={{
         classNames: {
-          toast: "cn-toast font-sans shadow-xl border text-sm backdrop-blur-md",
-          error: "!bg-[#fef2f2] !border-[#fecaca] !text-[#991b1b] [&_[data-title]]:!text-[#991b1b] [&_[data-title]]:!font-semibold [&_[data-description]]:!text-[#b91c1c] [&_[data-icon]]:!text-[#dc2626]",
-          success: "!bg-[#f0fdf4] !border-[#bbf7d0] !text-[#166534] [&_[data-title]]:!text-[#166534] [&_[data-title]]:!font-semibold [&_[data-description]]:!text-[#15803d] [&_[data-icon]]:!text-[#16a34a]",
-          warning: "!bg-[#fffbeb] !border-[#fde68a] !text-[#92400e] [&_[data-title]]:!text-[#92400e] [&_[data-title]]:!font-semibold [&_[data-description]]:!text-[#b45309] [&_[data-icon]]:!text-[#d97706]",
-          info: "!bg-[#eff6ff] !border-[#bfdbfe] !text-[#1e40af] [&_[data-title]]:!text-[#1e40af] [&_[data-title]]:!font-semibold [&_[data-description]]:!text-[#1d4ed8] [&_[data-icon]]:!text-[#2563eb]",
+          toast:
+            "cn-toast font-sans !bg-white !text-[#1f1f1f] shadow-[0_6px_16px_0_rgba(0,0,0,0.08),0_3px_6px_-4px_rgba(0,0,0,0.12)] border border-[#f0f0f0] rounded-xl p-4 gap-3",
+          title: "!text-[#1f1f1f] !font-semibold !text-sm",
+          description: "!text-[#595959] !text-xs !mt-0.5",
+          error:
+            "!bg-white !border-l-4 !border-l-[#ff4d4f] !border-[#ffccc7] [&_[data-title]]:!text-[#cf1322] [&_[data-icon]]:!text-[#ff4d4f] [&_[data-description]]:!text-[#595959]",
+          success:
+            "!bg-white !border-l-4 !border-l-[#52c41a] !border-[#b7eb8f] [&_[data-title]]:!text-[#237804] [&_[data-icon]]:!text-[#52c41a] [&_[data-description]]:!text-[#595959]",
+          warning:
+            "!bg-white !border-l-4 !border-l-[#faad14] !border-[#ffe58f] [&_[data-title]]:!text-[#d48806] [&_[data-icon]]:!text-[#faad14] [&_[data-description]]:!text-[#595959]",
+          info:
+            "!bg-white !border-l-4 !border-l-[#1677ff] !border-[#91caff] [&_[data-title]]:!text-[#0958d9] [&_[data-icon]]:!text-[#1677ff] [&_[data-description]]:!text-[#595959]",
         },
       }}
       {...props}

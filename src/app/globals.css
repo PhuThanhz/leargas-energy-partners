@@ -299,59 +299,86 @@
   }
 }
 
-/* Custom Sonner Toast Styles (Enterprise & Ant Design inspired) */
-[data-sonner-toast][data-type="error"] {
-  background: #fef2f2 !important;
-  border-color: #fecaca !important;
-  color: #991b1b !important;
+/* Ant Design Pro inspired White & Accent Toast Notifications (Thẻ trắng, điểm nhấn góc phải) */
+[data-sonner-toast] {
+  background: #ffffff !important;
+  border-radius: 12px !important;
   box-shadow:
-    0 10px 25px -5px rgba(239, 68, 68, 0.15),
-    0 8px 10px -6px rgba(239, 68, 68, 0.1) !important;
+    0 6px 16px 0 rgba(0, 0, 0, 0.08),
+    0 3px 6px -4px rgba(0, 0, 0, 0.12),
+    0 0 0 1px rgba(0, 0, 0, 0.04) !important;
+  padding: 14px 18px !important;
+}
+
+[data-sonner-toast] [data-content] {
+  gap: 2px !important;
+}
+
+/* Error: Thẻ trắng viền đỏ Ant Design (#ff4d4f / #cf1322) */
+[data-sonner-toast][data-type="error"] {
+  background: #ffffff !important;
+  border: 1px solid #ffccc7 !important;
+  border-left: 4px solid #ff4d4f !important;
+  color: #1f1f1f !important;
 }
 
 [data-sonner-toast][data-type="error"] [data-title] {
-  color: #991b1b !important;
+  color: #cf1322 !important;
   font-weight: 600 !important;
+  font-size: 14px !important;
 }
 
 [data-sonner-toast][data-type="error"] [data-description] {
-  color: #b91c1c !important;
+  color: #595959 !important;
+  font-size: 13px !important;
 }
 
 [data-sonner-toast][data-type="error"] [data-icon] svg {
-  color: #dc2626 !important;
+  color: #ff4d4f !important;
 }
 
+/* Success: Thẻ trắng viền xanh lá Ant Design (#52c41a / #237804) */
 [data-sonner-toast][data-type="success"] {
-  background: #f0fdf4 !important;
-  border-color: #bbf7d0 !important;
-  color: #166534 !important;
-  box-shadow:
-    0 10px 25px -5px rgba(34, 197, 94, 0.15),
-    0 8px 10px -6px rgba(34, 197, 94, 0.1) !important;
+  background: #ffffff !important;
+  border: 1px solid #b7eb8f !important;
+  border-left: 4px solid #52c41a !important;
+  color: #1f1f1f !important;
 }
 
 [data-sonner-toast][data-type="success"] [data-title] {
-  color: #166534 !important;
+  color: #237804 !important;
   font-weight: 600 !important;
+  font-size: 14px !important;
 }
 
 [data-sonner-toast][data-type="success"] [data-description] {
-  color: #15803d !important;
+  color: #595959 !important;
+  font-size: 13px !important;
 }
 
 [data-sonner-toast][data-type="success"] [data-icon] svg {
-  color: #16a34a !important;
+  color: #52c41a !important;
 }
 
+/* Warning & Info */
 [data-sonner-toast][data-type="warning"] {
-  background: #fffbeb !important;
-  border-color: #fde68a !important;
-  color: #92400e !important;
+  background: #ffffff !important;
+  border: 1px solid #ffe58f !important;
+  border-left: 4px solid #faad14 !important;
+}
+
+[data-sonner-toast][data-type="warning"] [data-title] {
+  color: #d48806 !important;
+  font-weight: 600 !important;
 }
 
 [data-sonner-toast][data-type="info"] {
-  background: #eff6ff !important;
-  border-color: #bfdbfe !important;
-  color: #1e40af !important;
+  background: #ffffff !important;
+  border: 1px solid #91caff !important;
+  border-left: 4px solid #1677ff !important;
+}
+
+[data-sonner-toast][data-type="info"] [data-title] {
+  color: #0958d9 !important;
+  font-weight: 600 !important;
 }
