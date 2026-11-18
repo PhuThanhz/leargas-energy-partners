@@ -50,3 +50,8 @@ next-env.d.ts
 *.zip
 leargas-deploy*.zip
 
+# uploads
+backend/uploads/*
+!backend/uploads/.gitkeep
+
+

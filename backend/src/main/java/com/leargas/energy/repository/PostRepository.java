@@ -25,4 +25,6 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     boolean existsBySlug(String slug);
 
     long countByStatus(String status);
+
+    long countByCategory(String category);
 }

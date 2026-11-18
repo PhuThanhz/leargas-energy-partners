@@ -69,6 +69,8 @@ public class SecurityConfig {
                 // Public content endpoints
                 .requestMatchers(HttpMethod.GET, "/api/posts/**").permitAll()
                 .requestMatchers(HttpMethod.HEAD, "/api/posts/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/categories/**").permitAll()
+                .requestMatchers(HttpMethod.HEAD, "/api/categories/**").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/enquiries").permitAll()
                 // Static assets & Swagger docs
                 .requestMatchers("/uploads/**", "/swagger-ui/**", "/v3/api-docs/**", "/api-docs/**", "/swagger-ui.html").permitAll()

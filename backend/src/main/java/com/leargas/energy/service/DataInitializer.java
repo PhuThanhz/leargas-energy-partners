@@ -22,13 +22,59 @@ public class DataInitializer implements CommandLineRunner {
     private final UserRepository userRepository;
     private final PostRepository postRepository;
     private final EnquiryRepository enquiryRepository;
+    private final com.leargas.energy.repository.CategoryRepository categoryRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Override
     public void run(String... args) {
         seedAdminUser();
+        seedCategories();
         seedPosts();
         seedEnquiries();
+    }
+
+    private void seedCategories() {
+        if (categoryRepository.count() == 0) {
+            java.util.List<com.leargas.energy.entity.Category> defaults = java.util.List.of(
+                    com.leargas.energy.entity.Category.builder()
+                            .name("Góc nhìn Đầu tư")
+                            .slug("investment-insights")
+                            .description("Phân tích vĩ mô, chiến lược thoái vốn và sinh lời dự án năng lượng tái tạo")
+                            .color("#1677ff")
+                            .displayOrder(1)
+                            .build(),
+                    com.leargas.energy.entity.Category.builder()
+                            .name("M&A & Hợp tác Chiến lược")
+                            .slug("ma-strategic-partnership")
+                            .description("Thẩm định kỹ thuật, cơ cấu giao dịch M&A và kết nối dòng vốn quốc tế")
+                            .color("#52c41a")
+                            .displayOrder(2)
+                            .build(),
+                    com.leargas.energy.entity.Category.builder()
+                            .name("Pháp lý & Quy hoạch PDP8")
+                            .slug("legal-pdp8")
+                            .description("Cập nhật quy chế đầu tư, phê duyệt lưới điện và chính sách giá mua điện FIT/DPPA")
+                            .color("#722ed1")
+                            .displayOrder(3)
+                            .build(),
+                    com.leargas.energy.entity.Category.builder()
+                            .name("Thi công & Triển khai")
+                            .slug("construction-delivery")
+                            .description("Quản trị rủi ro tổng thầu EPC, tiến độ COD và vận hành thương mại")
+                            .color("#fa8c16")
+                            .displayOrder(4)
+                            .build(),
+                    com.leargas.energy.entity.Category.builder()
+                            .name("Tài chính Xanh & ESG")
+                            .slug("green-finance-esg")
+                            .description("Trái phiếu xanh, tín chỉ carbon và bộ tiêu chuẩn tài chính bền vững quốc tế")
+                            .color("#13c2c2")
+                            .displayOrder(5)
+                            .build()
+            );
+            categoryRepository.saveAll(defaults);
+            log.info("Default categories seeded ({} items)", defaults.size());
+        }
     }
 
     private void seedAdminUser() {

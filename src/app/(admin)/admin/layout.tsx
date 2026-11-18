@@ -7,6 +7,8 @@ import { Layout, Menu, Button, Tooltip, ConfigProvider } from "antd"
 import {
   DashboardOutlined,
   FileTextOutlined,
+  FolderOutlined,
+  PictureOutlined,
   CustomerServiceOutlined,
   SettingOutlined,
   MenuFoldOutlined,
@@ -107,6 +109,16 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       label: "Quản lý Bài viết",
     },
     {
+      key: "/admin/categories",
+      icon: <FolderOutlined className="text-sm" />,
+      label: "Chuyên mục (Taxonomy)",
+    },
+    {
+      key: "/admin/media",
+      icon: <PictureOutlined className="text-sm" />,
+      label: "Thư viện Ảnh & File",
+    },
+    {
       key: "/admin/enquiries",
       icon: <CustomerServiceOutlined className="text-sm" />,
       label: "Yêu cầu Tư vấn (Leads)",
@@ -130,6 +142,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     if (pathname.includes("/admin/posts") && pathname.includes("/edit"))
       return ["Quản lý Bài viết", "Chỉnh sửa bài viết"]
     if (pathname.includes("/admin/posts")) return ["Quản lý Bài viết", "Danh sách"]
+    if (pathname.includes("/admin/categories")) return ["Nội dung CMS", "Quản lý Chuyên mục"]
+    if (pathname.includes("/admin/media")) return ["Nội dung CMS", "Thư viện Hình ảnh"]
     if (pathname.includes("/admin/enquiries")) return ["Khách hàng & Tư vấn", "Danh sách Leads"]
     if (pathname.includes("/admin/settings")) return ["Hệ thống", "Cài đặt chung"]
     return ["Trang chủ", "Bảng điều khiển"]
@@ -142,8 +156,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       theme={{
         token: {
           colorPrimary: "#1677ff",
-          borderRadius: 6,
-          fontFamily: "system-ui, -apple-system, sans-serif",
+          borderRadius: 8,
+          fontFamily:
+            "var(--font-sans), -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
+          fontSize: 13,
         },
         components: {
           Menu: {
