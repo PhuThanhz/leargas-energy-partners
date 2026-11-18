@@ -20,19 +20,14 @@ const stats = [
 
 const pillars = [
   {
-    code: "EU",
-    title: "European discipline",
-    desc: "Institutional governance and rigorous modelling.",
+    code: "GLOBAL",
+    title: "International Network",
+    desc: "Institutional governance, cross-border capital syndication, and direct access to global funds and DFIs.",
   },
   {
-    code: "VN",
-    title: "Vietnam ground truth",
-    desc: "Relationships with provinces, developers and the grid.",
-  },
-  {
-    code: "APAC",
-    title: "Cross-border capital",
-    desc: "Direct access to funds, DFIs and lenders.",
+    code: "LOCAL",
+    title: "Local Insights",
+    desc: "Decades of relationships with provincial authorities, local developers, and energy regulators.",
   },
 ]
 
@@ -55,7 +50,7 @@ export function FirmIdentity() {
           />
           <div className="absolute inset-0 bg-gradient-to-t from-green-deep/70 via-transparent to-transparent" />
           <p className="absolute bottom-5 left-5 font-heading text-sm text-white/90 italic">
-            Highland wind, central Vietnam
+            Clean energy infrastructure, Vietnam
           </p>
         </ImageReveal>
 
@@ -96,7 +91,7 @@ export function FirmIdentity() {
           </div>
 
           {/* Pillars */}
-          <Stagger className="mt-[clamp(20px,4vh,40px)] grid gap-6 sm:grid-cols-3" delay={0.3}>
+          <Stagger className="mt-[clamp(20px,4vh,40px)] grid gap-6 sm:grid-cols-2" delay={0.3}>
             {pillars.map((p) => (
               <StaggerItem key={p.code} className="group">
                 <div className="font-heading text-sm font-semibold text-gold-deep">{p.code}</div>

@@ -1,6 +1,5 @@
 import {
   ContactCta,
-  CorridorsSection,
   ExpertiseSection,
   FirmIdentity,
   Hero,
@@ -17,7 +16,6 @@ export default function HomePage() {
       <FirmIdentity />
       <ExpertiseSection />
       <WindGallery />
-      <CorridorsSection />
       <Insights />
       <ContactCta />
     </>

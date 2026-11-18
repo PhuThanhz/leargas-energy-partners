@@ -9,7 +9,7 @@ import { mainNav } from "@/config/navigation"
 import { siteConfig } from "@/config/site"
 import { photos } from "@/content/media"
 
-const presence = ["Hanoi", "Ho Chi Minh City", "Singapore"]
+const presence = ["Hanoi", "Ho Chi Minh City"]
 
 export function Footer() {
   return (

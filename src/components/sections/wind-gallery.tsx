@@ -104,7 +104,7 @@ export function WindGallery() {
         <h2 className="shrink-0 font-heading text-[clamp(26px,min(2.8vw,4.6vh),40px)] leading-[1.1] font-bold tracking-[-0.02em]">
           <RevealLines
             lines={[
-              "From highland ridges",
+              "From utility-scale onshore",
               <span key="1" className="inline-block pb-1 text-gold-deep italic">
                 to open ocean waters.
               </span>,
@@ -113,7 +113,7 @@ export function WindGallery() {
         </h2>
         <Reveal delay={0.1} className="lg:max-w-[400px] xl:max-w-[440px]">
           <p className="text-[13.5px] leading-[1.65] text-muted-foreground">
-            Six wind segments, each with its own risk and return.
+            Core wind segments, each with its own risk and return.
           </p>
         </Reveal>
 

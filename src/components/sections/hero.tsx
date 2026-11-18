@@ -14,16 +14,13 @@ const ease = [0.22, 1, 0.36, 1] as const
 
 export function Hero() {
   const [index, setIndex] = useState(0)
-  const [paused, setPaused] = useState(false)
 
   const slide = heroSlides[index]!
 
-  // Auto-advance quietly; hovering the scene list holds the current scene.
   useEffect(() => {
-    if (paused) return
     const id = window.setTimeout(() => setIndex((i) => (i + 1) % heroSlides.length), SLIDE_MS)
     return () => window.clearTimeout(id)
-  }, [index, paused])
+  }, [index])
 
   return (
     <section
@@ -97,63 +94,33 @@ export function Hero() {
           </motion.div>
         </div>
 
-        {/* Slide index: each scene with a progress rule that drives the carousel */}
+        {/* Slide indicators: 4 clean dashes showing the 4 background scenes */}
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9, ease, delay: 1 }}
-          className="grid grid-cols-2 gap-x-6 gap-y-4 md:grid-cols-4"
+          className="flex items-center gap-2.5"
           role="tablist"
-          onMouseEnter={() => setPaused(true)}
-          onMouseLeave={() => setPaused(false)}
-          aria-label="Hero scenes"
+          aria-label="Hero slide indicators"
         >
-          {heroSlides.map((s, i) => {
-            const active = i === index
-            return (
-              <button
-                key={s.caption}
-                type="button"
-                role="tab"
-                aria-selected={active}
-                onClick={() => setIndex(i)}
-                className="group cursor-pointer text-left"
-              >
-                <span
-                  className={cn(
-                    "block h-px transition-colors duration-700",
-                    active ? "bg-white/70" : "bg-white/20 group-hover:bg-white/40"
-                  )}
-                />
-                <span className="mt-4 flex items-baseline gap-3">
-                  <span
-                    className={cn(
-                      "text-xs tabular-nums transition-colors duration-500",
-                      active ? "text-gold-pale" : "text-white/40"
-                    )}
-                  >
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                  <span
-                    className={cn(
-                      "font-heading text-[15px] transition-colors duration-500 md:text-base",
-                      active ? "text-white" : "text-white/50 group-hover:text-white/80"
-                    )}
-                  >
-                    {s.caption}
-                  </span>
-                </span>
-                <span
-                  className={cn(
-                    "mt-1 block pl-[30px] text-xs transition-all duration-500",
-                    active ? "text-white/60 opacity-100" : "text-white/40 opacity-0 md:opacity-100"
-                  )}
-                >
-                  {s.location}
-                </span>
-              </button>
-            )
-          })}
+          {heroSlides.map((_, i) => (
+            <button
+              key={i}
+              type="button"
+              role="tab"
+              aria-selected={i === index}
+              aria-label={`Slide ${i + 1}`}
+              onClick={() => setIndex(i)}
+              className="group cursor-pointer py-2"
+            >
+              <span
+                className={cn(
+                  "block h-[2px] rounded-full transition-all duration-700",
+                  i === index ? "w-10 bg-gold-pale" : "w-3 bg-white/25 group-hover:bg-white/50"
+                )}
+              />
+            </button>
+          ))}
         </motion.div>
       </div>
     </section>

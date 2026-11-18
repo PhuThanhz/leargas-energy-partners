@@ -54,10 +54,10 @@ export const photos = {
 } satisfies Record<string, Photo>
 
 export const heroSlides = [
-  { ...photos.sunsetField, caption: "Onshore wind", location: "Local insight" },
-  { ...photos.silhouette, caption: "Highland projects", location: "Long-term vision" },
-  { ...photos.coastline, caption: "Nearshore", location: "Vietnam's coastal belt" },
-  { ...photos.offshoreDay, caption: "Offshore", location: "The regional frontier" },
+  photos.sunsetField,
+  photos.silhouette,
+  photos.coastline,
+  photos.offshoreDay,
 ]
 
 export interface GallerySlide extends Photo {
@@ -78,24 +78,6 @@ export const gallerySlides: GallerySlide[] = [
     capacity: "50MW – 250MW",
     keyFocus: "Land acquisition & 110/220kV Grid Access",
     status: "Active Deployment",
-  },
-  {
-    ...photos.mistyMountain,
-    kicker: "Highlands",
-    title: "Complex terrain, strong resource",
-    text: "Elevated sites with high capacity factors and complex logistics that reward early diligence.",
-    capacity: "100MW – 350MW",
-    keyFocus: "Steep-slope transport & Wind resource yield",
-    status: "High Capacity Yield",
-  },
-  {
-    ...photos.coastline,
-    kicker: "Nearshore",
-    title: "Where land meets sea",
-    text: "Coastal and intertidal projects – a defining and rapidly advancing segment of Vietnam's pipeline.",
-    capacity: "80MW – 400MW",
-    keyFocus: "Intertidal foundations & Marine logistics",
-    status: "Core Vietnam Asset",
   },
   {
     ...photos.offshoreBlue,

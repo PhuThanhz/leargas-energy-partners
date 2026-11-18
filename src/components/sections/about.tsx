@@ -5,12 +5,15 @@ import { photos } from "@/content/media"
 
 const facts = [
   {
-    value: "EU",
-    title: "European Standards",
-    label: "Educated & institutionally trained in Europe",
+    value: "Global",
+    title: "International Network",
+    label: "Cross-border capital syndication reach and institutional governance",
   },
-  { value: "VN", title: "Vietnam Execution", label: "Decades of relationships & ground truth" },
-  { value: "APAC", title: "Regional Scale", label: "Cross-border capital syndication reach" },
+  {
+    value: "Local",
+    title: "Local Insights",
+    label: "Decades of relationships, provincial access & Vietnam ground truth",
+  },
 ]
 
 export function About() {
