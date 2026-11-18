@@ -16,8 +16,7 @@ export const siteConfig = {
     "boutique advisory firm",
   ],
   links: {
-    // TODO: replace with the firm's real LinkedIn company page URL.
-    linkedin: "https://www.linkedin.com/company/leargas-energy-partners",
+    linkedin: "https://www.linkedin.com/company/leargasenergy",
   },
   footerNote: "Global perspective. Local insight. Lasting value.",
 } as const

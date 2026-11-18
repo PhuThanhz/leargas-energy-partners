@@ -21,7 +21,7 @@ interface StatItem {
 }
 
 const stats: StatItem[] = [
-  { value: 3260, decimals: 0, unit: "km", label: "Coastline" },
+  { displayValue: "26–38", unit: "GW", label: "Onshore wind target" },
   { displayValue: "10–15%", unit: "/ year", label: "Electricity demand growth" },
   { displayValue: "10%", unit: "/ year", label: "GDP growth target" },
 ]
