@@ -17,6 +17,11 @@
 /.next/
 /out/
 
+# maven
+target/
+backend/target/
+*.class
+
 # production
 /build
 
