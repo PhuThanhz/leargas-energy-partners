@@ -100,42 +100,108 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   const menuItems = [
     {
-      key: "/admin/dashboard",
-      icon: <DashboardOutlined className="text-sm" />,
-      label: "Tổng quan",
+      type: "group" as const,
+      label: collapsed ? null : (
+        <span className="text-[10px] font-bold tracking-wider text-white/35 uppercase">
+          Tổng quan & Phân tích
+        </span>
+      ),
+      children: [
+        {
+          key: "/admin/dashboard",
+          icon: <DashboardOutlined className="text-sm" />,
+          label: "Bảng điều khiển",
+        },
+      ],
     },
     {
-      key: "/admin/posts",
-      icon: <FileTextOutlined className="text-sm" />,
-      label: "Quản lý Bài viết",
+      type: "group" as const,
+      label: collapsed ? null : (
+        <span className="text-[10px] font-bold tracking-wider text-white/35 uppercase">
+          Quản trị Nội dung
+        </span>
+      ),
+      children: [
+        {
+          key: "/admin/posts",
+          icon: <FileTextOutlined className="text-sm" />,
+          label: (
+            <div className="flex items-center justify-between">
+              <span>Quản lý Bài viết</span>
+              {!collapsed && (
+                <span className="py-0.2 rounded-full bg-white/10 px-1.5 text-[10px] font-medium text-white/60">
+                  4
+                </span>
+              )}
+            </div>
+          ),
+        },
+        {
+          key: "/admin/categories",
+          icon: <FolderOutlined className="text-sm" />,
+          label: "Chuyên mục (Taxonomy)",
+        },
+        {
+          key: "/admin/media",
+          icon: <PictureOutlined className="text-sm" />,
+          label: "Thư viện Ảnh & File",
+        },
+      ],
     },
     {
-      key: "/admin/categories",
-      icon: <FolderOutlined className="text-sm" />,
-      label: "Chuyên mục (Taxonomy)",
+      type: "group" as const,
+      label: collapsed ? null : (
+        <span className="text-[10px] font-bold tracking-wider text-white/35 uppercase">
+          Khách hàng & Hệ thống
+        </span>
+      ),
+      children: [
+        {
+          key: "/admin/enquiries",
+          icon: <CustomerServiceOutlined className="text-sm" />,
+          label: (
+            <div className="flex items-center justify-between">
+              <span>Yêu cầu Tư vấn</span>
+              {!collapsed && (
+                <span className="py-0.2 rounded-full bg-[#ff4d4f] px-1.5 text-[10px] font-bold text-white shadow-xs">
+                  Mới
+                </span>
+              )}
+            </div>
+          ),
+        },
+        {
+          key: "/admin/settings",
+          icon: <SettingOutlined className="text-sm" />,
+          label: "Cài đặt Hệ thống",
+        },
+      ],
     },
-    {
-      key: "/admin/media",
-      icon: <PictureOutlined className="text-sm" />,
-      label: "Thư viện Ảnh & File",
-    },
-    {
-      key: "/admin/enquiries",
-      icon: <CustomerServiceOutlined className="text-sm" />,
-      label: "Yêu cầu Tư vấn (Leads)",
-    },
-    {
-      key: "/admin/settings",
-      icon: <SettingOutlined className="text-sm" />,
-      label: "Cài đặt Hệ thống",
-    },
+  ]
+
+  const flatKeys = [
+    "/admin/dashboard",
+    "/admin/posts",
+    "/admin/categories",
+    "/admin/media",
+    "/admin/enquiries",
+    "/admin/settings",
   ]
 
   // Xác định active menu item
   const selectedKey =
-    menuItems.find((item) =>
-      item.key === "/admin/dashboard" ? pathname === item.key : pathname.startsWith(item.key)
-    )?.key || "/admin/dashboard"
+    flatKeys.find((key) =>
+      key === "/admin/dashboard" ? pathname === key : pathname.startsWith(key)
+    ) || "/admin/dashboard"
+
+  const mobileMenuItems = [
+    { key: "/admin/dashboard", icon: <DashboardOutlined />, label: "Bảng điều khiển" },
+    { key: "/admin/posts", icon: <FileTextOutlined />, label: "Quản lý Bài viết" },
+    { key: "/admin/categories", icon: <FolderOutlined />, label: "Chuyên mục (Taxonomy)" },
+    { key: "/admin/media", icon: <PictureOutlined />, label: "Thư viện Ảnh & File" },
+    { key: "/admin/enquiries", icon: <CustomerServiceOutlined />, label: "Yêu cầu Tư vấn (Leads)" },
+    { key: "/admin/settings", icon: <SettingOutlined />, label: "Cài đặt Hệ thống" },
+  ]
 
   // Breadcrumb label helper
   const getBreadcrumb = () => {
@@ -164,14 +230,19 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         },
         components: {
           Menu: {
-            darkItemBg: "#001529",
-            darkItemSelectedBg: "#1677ff",
-            darkItemColor: "#ffffffa6",
+            darkItemBg: "transparent",
+            darkItemSelectedBg: "rgba(22, 119, 255, 0.15)",
+            darkItemColor: "rgba(255, 255, 255, 0.70)",
             darkItemSelectedColor: "#ffffff",
-            darkItemHoverBg: "rgba(255, 255, 255, 0.08)",
+            darkItemHoverBg: "rgba(255, 255, 255, 0.06)",
+            darkItemHoverColor: "#ffffff",
+            itemBorderRadius: 8,
+            itemMarginInline: 10,
+            itemMarginBlock: 4,
+            itemHeight: 40,
           },
           Layout: {
-            siderBg: "#001529",
+            siderBg: "#09121d",
             headerBg: "#ffffff",
             bodyBg: "#f0f2f5",
           },
@@ -179,16 +250,16 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       }}
     >
       <Layout className="min-h-screen bg-[#f0f2f5]">
-        {/* Ant Design Sider (Màu xanh Navy kinh điển #001529, hỗ trợ thu/phóng) */}
+        {/* Ant Design Sider (Màu Dark Obsidian Navy sang trọng #09121d, hỗ trợ thu/phóng) */}
         <Sider
           collapsible
           collapsed={collapsed}
           onCollapse={(val) => setCollapsed(val)}
           trigger={null}
-          width={240}
+          width={248}
           collapsedWidth={80}
           theme="dark"
-          className="hidden !bg-[#001529] shadow-[2px_0_8px_0_rgba(29,35,41,0.05)] lg:block"
+          className="hidden border-r border-white/[0.08] !bg-[#09121d] shadow-[4px_0_24px_rgba(0,0,0,0.12)] lg:block"
           style={{
             overflow: "auto",
             height: "100vh",
@@ -201,20 +272,20 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <div>
               {/* Brand Header với Logo Doanh nghiệp & Tag Admin */}
               <div
-                className={`flex h-14 items-center border-b border-[#002140] transition-all duration-200 select-none ${
+                className={`flex h-16 items-center border-b border-white/[0.08] transition-all duration-200 select-none ${
                   collapsed ? "justify-center px-2" : "justify-between px-4"
                 }`}
               >
                 {collapsed ? (
-                  <div className="flex h-8 w-8 items-center justify-center rounded-lg border border-[#1677ff]/30 bg-[#1677ff]/20 font-serif text-sm font-bold text-[#1677ff]">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-blue-500/30 bg-blue-500/10 font-serif text-base font-bold text-[#40a9ff] shadow-inner">
                     L
                   </div>
                 ) : (
-                  <div className="flex items-center gap-2">
-                    <div className="pointer-events-none w-[125px]">
-                      <LogoImage tone="dark" className="h-auto w-[125px]" priority />
+                  <div className="flex items-center gap-2.5">
+                    <div className="pointer-events-none w-[130px]">
+                      <LogoImage tone="dark" className="h-auto w-[130px]" priority />
                     </div>
-                    <span className="rounded bg-[#1677ff] px-1.5 py-0.5 font-sans text-[10px] font-semibold text-white shadow-xs">
+                    <span className="rounded-full border border-blue-400/30 bg-blue-500/15 px-2 py-0.5 font-sans text-[10px] font-bold tracking-wider text-[#40a9ff] uppercase shadow-2xs">
                       Admin
                     </span>
                   </div>
@@ -227,17 +298,17 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                   <Tooltip title="Thêm bài viết mới" placement="right">
                     <Button
                       type="primary"
-                      icon={<PlusOutlined />}
+                      icon={<PlusOutlined className="text-base text-white" />}
                       onClick={() => router.push("/admin/posts/new")}
-                      className="!flex !h-10 !w-full !items-center !justify-center !rounded-lg !bg-[#1677ff] shadow-sm hover:!bg-[#4096ff]"
+                      className="!flex !h-10 !w-full !items-center !justify-center !rounded-xl !border !border-blue-400/30 !bg-gradient-to-r !from-[#1677ff] !to-[#0958d9] !shadow-[0_4px_12px_rgba(22,119,255,0.25)] transition-all hover:!from-[#4096ff] hover:!to-[#1677ff] hover:!shadow-[0_6px_16px_rgba(22,119,255,0.35)]"
                     />
                   </Tooltip>
                 ) : (
                   <Button
                     type="primary"
-                    icon={<PlusOutlined />}
+                    icon={<PlusOutlined className="text-sm text-white" />}
                     onClick={() => router.push("/admin/posts/new")}
-                    className="!flex !h-9 !w-full !items-center !justify-center !gap-1.5 !rounded-lg !bg-[#1677ff] !text-xs !font-medium shadow-sm hover:!bg-[#4096ff]"
+                    className="!flex !h-10 !w-full !items-center !justify-center !gap-2 !rounded-xl !border !border-blue-400/30 !bg-gradient-to-r !from-[#1677ff] !to-[#0958d9] !text-xs !font-semibold !text-white !shadow-[0_4px_12px_rgba(22,119,255,0.25)] transition-all hover:!from-[#4096ff] hover:!to-[#1677ff] hover:!shadow-[0_6px_16px_rgba(22,119,255,0.35)] active:scale-[0.98]"
                   >
                     Thêm bài viết mới
                   </Button>
@@ -251,19 +322,36 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 selectedKeys={[selectedKey]}
                 items={menuItems}
                 onClick={({ key }) => router.push(key)}
-                className="border-none !bg-[#001529] font-medium"
+                className="border-none !bg-transparent font-medium"
               />
             </div>
 
-            {/* Phần dưới Sider: Xem website & Nút thu gọn Ant Design */}
-            <div>
-              <div className="border-t border-[#002140] p-3 text-xs text-[#ffffff73]">
+            {/* Phần dưới Sider: Thẻ trạng thái, Xem website & Nút thu gọn */}
+            <div className="border-t border-white/[0.08] pt-2">
+              {/* Thẻ trạng thái hoạt động */}
+              {!collapsed && (
+                <div className="mx-3 mb-2 rounded-xl border border-white/[0.06] bg-white/[0.03] p-2.5">
+                  <div className="flex items-center justify-between text-[11px]">
+                    <div className="flex items-center gap-1.5 font-medium text-white/80">
+                      <span className="relative flex h-2 w-2">
+                        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+                        <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
+                      </span>
+                      <span>Hệ thống hoạt động</span>
+                    </div>
+                    <span className="font-mono text-[10px] text-white/40">v2.4</span>
+                  </div>
+                </div>
+              )}
+
+              {/* Nút Xem website khách */}
+              <div className="px-3 pb-2 text-xs text-[#ffffff73]">
                 {collapsed ? (
                   <Tooltip title="Xem website khách ↗" placement="right">
                     <Link
                       href="/"
                       target="_blank"
-                      className="flex h-9 w-full items-center justify-center rounded-md text-[#ffffffa6] transition-colors hover:bg-white/5 hover:text-white"
+                      className="flex h-9 w-full items-center justify-center rounded-lg text-[#ffffffa6] transition-colors hover:bg-white/5 hover:text-white"
                     >
                       <GlobalOutlined className="text-base" />
                     </Link>
@@ -272,13 +360,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                   <Link
                     href="/"
                     target="_blank"
-                    className="flex items-center justify-between rounded-md px-2 py-1.5 text-[#ffffffa6] transition-colors hover:bg-white/5 hover:text-white"
+                    className="flex items-center justify-between rounded-lg px-2.5 py-1.5 text-white/70 transition-colors hover:bg-white/5 hover:text-white"
                   >
                     <span className="flex items-center gap-2">
                       <GlobalOutlined />
-                      Xem website khách
+                      <span>Xem website khách</span>
                     </span>
-                    <span>↗</span>
+                    <span className="text-white/40">↗</span>
                   </Link>
                 )}
               </div>
@@ -286,7 +374,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               {/* Nút thu/mở Sider ở chân trang theo phong cách Ant Design */}
               <div
                 onClick={handleToggleCollapse}
-                className="flex h-11 cursor-pointer items-center justify-center border-t border-[#002140] text-[#ffffffa6] transition-colors hover:bg-white/10 hover:text-white"
+                className="flex h-11 cursor-pointer items-center justify-center border-t border-white/[0.08] text-white/60 transition-colors hover:bg-white/5 hover:text-white"
                 title={collapsed ? "Mở rộng thanh menu" : "Thu gọn thanh menu"}
               >
                 {collapsed ? (
@@ -368,7 +456,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           {mobileOpen && (
             <div className="border-b border-[#f0f0f0] bg-white p-3 lg:hidden">
               <nav className="space-y-1">
-                {menuItems.map((item) => (
+                {mobileMenuItems.map((item) => (
                   <Link
                     key={item.key}
                     href={item.key}
