@@ -148,7 +148,7 @@ export default function AdminEnquiriesPage() {
       case "NEW":
         return { label: "Mới tiếp nhận", className: "bg-[#fffbe6] text-[#faad14] border-[#ffe58f]" }
       case "CONTACTED":
-        return { label: "Đã liên hệ", className: "bg-[#e6f4ff] text-[#1677ff] border-[#91caff]" }
+        return { label: "Đã liên hệ", className: "bg-[#ecfdf5] text-[#059669] border-[#a7f3d0]" }
       case "QUALIFIED":
         return {
           label: "Đạt tiêu chuẩn",
@@ -193,7 +193,7 @@ export default function AdminEnquiriesPage() {
                 onClick={() => setActiveTab(tab.id)}
                 className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium transition-all ${
                   active
-                    ? "bg-[#1677ff] text-white shadow-sm"
+                    ? "bg-[#059669] text-white shadow-sm"
                     : "bg-[#f5f5f5] text-[#595959] hover:bg-[#e8e8e8]"
                 }`}
               >
@@ -218,7 +218,7 @@ export default function AdminEnquiriesPage() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Tìm theo tên, đối tác, email..."
-            className="w-full rounded-md border border-[#d9d9d9] bg-white py-1.5 pr-3 pl-8 text-xs text-[#000000e0] placeholder-[#bfbfbf] hover:border-[#4096ff] focus:border-[#1677ff] focus:outline-none"
+            className="w-full rounded-md border border-[#d9d9d9] bg-white py-1.5 pr-3 pl-8 text-xs text-[#000000e0] placeholder-[#bfbfbf] hover:border-[#059669] focus:border-[#059669] focus:outline-none"
           />
         </div>
       </div>
@@ -251,7 +251,7 @@ export default function AdminEnquiriesPage() {
                       <Building className="h-3 w-3 text-[#bfbfbf]" />
                       {enquiry.company || "Cá nhân"} {enquiry.role ? `· ${enquiry.role}` : ""}
                     </div>
-                    <div className="mt-0.5 text-[11px] text-[#1677ff]">{enquiry.email}</div>
+                    <div className="mt-0.5 text-[11px] text-[#059669]">{enquiry.email}</div>
                   </td>
                   <td className="px-5 py-3.5">
                     <div className="font-medium text-[#262626]">{enquiry.topic}</div>
@@ -261,7 +261,7 @@ export default function AdminEnquiriesPage() {
                   </td>
                   <td className="px-5 py-3.5 text-[11px] text-[#595959]">
                     <div>{enquiry.projectStage || "—"}</div>
-                    <div className="mt-0.5 text-[11px] font-medium text-[#1677ff]">
+                    <div className="mt-0.5 text-[11px] font-medium text-[#059669]">
                       {enquiry.indicativeCapacity || "—"}
                     </div>
                   </td>
@@ -269,7 +269,7 @@ export default function AdminEnquiriesPage() {
                     <select
                       value={enquiry.status}
                       onChange={(e) => handleStatusChange(enquiry.id, e.target.value)}
-                      className="cursor-pointer rounded-full border border-[#d9d9d9] bg-white px-2.5 py-1 text-[11px] font-medium text-[#262626] hover:border-[#1677ff] focus:outline-none"
+                      className="cursor-pointer rounded-full border border-[#d9d9d9] bg-white px-2.5 py-1 text-[11px] font-medium text-[#262626] hover:border-[#059669] focus:outline-none"
                     >
                       <option value="NEW">Mới tiếp nhận</option>
                       <option value="CONTACTED">Đã liên hệ</option>
@@ -284,7 +284,7 @@ export default function AdminEnquiriesPage() {
                           setSelectedEnquiry(enquiry)
                           setEditingNotes(enquiry.notes || "")
                         }}
-                        className="text-[#1677ff] hover:text-[#4096ff]"
+                        className="text-[#059669] hover:text-[#047857]"
                       >
                         Chi tiết
                       </button>
@@ -342,7 +342,7 @@ export default function AdminEnquiriesPage() {
                   <span className="block text-[10px] text-[#8c8c8c] uppercase">Email liên hệ</span>
                   <a
                     href={`mailto:${selectedEnquiry.email}`}
-                    className="font-mono text-[11px] text-[#1677ff] hover:underline"
+                    className="font-mono text-[11px] text-[#059669] hover:underline"
                   >
                     {selectedEnquiry.email} ↗
                   </a>
@@ -389,7 +389,7 @@ export default function AdminEnquiriesPage() {
                   </span>
                   <button
                     onClick={handleSaveNotes}
-                    className="text-[11px] font-medium text-[#1677ff] hover:underline"
+                    className="text-[11px] font-medium text-[#059669] hover:underline"
                   >
                     Lưu ghi chú
                   </button>
@@ -399,7 +399,7 @@ export default function AdminEnquiriesPage() {
                   value={editingNotes}
                   onChange={(e) => setEditingNotes(e.target.value)}
                   placeholder="Thêm ghi chú đánh giá thương vụ, ngày họp tiếp theo, đầu mối phụ trách..."
-                  className="w-full rounded-md border border-[#d9d9d9] bg-white p-2.5 text-xs text-[#000000e0] hover:border-[#4096ff] focus:border-[#1677ff] focus:outline-none"
+                  className="w-full rounded-md border border-[#d9d9d9] bg-white p-2.5 text-xs text-[#000000e0] hover:border-[#059669] focus:border-[#059669] focus:outline-none"
                 />
               </div>
             </div>
@@ -408,7 +408,7 @@ export default function AdminEnquiriesPage() {
             <div className="mt-5 flex items-center justify-between border-t border-[#f0f0f0] pt-4">
               <a
                 href={`mailto:${selectedEnquiry.email}?subject=LÉARGAS Energy Partners — Phản hồi yêu cầu tư vấn`}
-                className="flex items-center gap-1.5 rounded-md bg-[#1677ff] px-3.5 py-1.5 text-xs font-medium text-white shadow-sm hover:bg-[#4096ff]"
+                className="flex items-center gap-1.5 rounded-md bg-[#059669] px-3.5 py-1.5 text-xs font-medium text-white shadow-sm hover:bg-[#047857]"
               >
                 <Send className="h-3.5 w-3.5" />
                 Gửi email phản hồi

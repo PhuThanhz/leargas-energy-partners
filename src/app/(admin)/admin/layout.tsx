@@ -81,7 +81,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   if (!mounted) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-[#f0f2f5] text-[#595959]">
-        <div className="h-6 w-6 animate-spin rounded-full border-2 border-[#1677ff] border-t-transparent" />
+        <div className="h-6 w-6 animate-spin rounded-full border-2 border-[#059669] border-t-transparent" />
       </div>
     )
   }
@@ -125,16 +125,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         {
           key: "/admin/posts",
           icon: <FileTextOutlined className="text-sm" />,
-          label: (
-            <div className="flex items-center justify-between">
-              <span>Quản lý Bài viết</span>
-              {!collapsed && (
-                <span className="py-0.2 rounded-full bg-white/10 px-1.5 text-[10px] font-medium text-white/60">
-                  4
-                </span>
-              )}
-            </div>
-          ),
+          label: "Quản lý Bài viết",
         },
         {
           key: "/admin/categories",
@@ -159,16 +150,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         {
           key: "/admin/enquiries",
           icon: <CustomerServiceOutlined className="text-sm" />,
-          label: (
-            <div className="flex items-center justify-between">
-              <span>Yêu cầu Tư vấn</span>
-              {!collapsed && (
-                <span className="py-0.2 rounded-full bg-[#ff4d4f] px-1.5 text-[10px] font-bold text-white shadow-xs">
-                  Mới
-                </span>
-              )}
-            </div>
-          ),
+          label: "Yêu cầu Tư vấn (Leads)",
         },
         {
           key: "/admin/settings",
@@ -222,7 +204,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     <ConfigProvider
       theme={{
         token: {
-          colorPrimary: "#1677ff",
+          colorPrimary: "#059669",
+          colorPrimaryHover: "#047857",
+          colorPrimaryActive: "#065f46",
           borderRadius: 8,
           fontFamily:
             "var(--font-sans), -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
@@ -231,15 +215,21 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         components: {
           Menu: {
             darkItemBg: "transparent",
-            darkItemSelectedBg: "rgba(22, 119, 255, 0.15)",
+            darkItemSelectedBg: "rgba(5, 150, 105, 0.18)",
             darkItemColor: "rgba(255, 255, 255, 0.70)",
-            darkItemSelectedColor: "#ffffff",
+            darkItemSelectedColor: "#34d399",
             darkItemHoverBg: "rgba(255, 255, 255, 0.06)",
             darkItemHoverColor: "#ffffff",
             itemBorderRadius: 8,
             itemMarginInline: 10,
             itemMarginBlock: 4,
             itemHeight: 40,
+          },
+          Button: {
+            colorPrimary: "#059669",
+            colorPrimaryHover: "#047857",
+            colorPrimaryActive: "#065f46",
+            borderRadius: 8,
           },
           Layout: {
             siderBg: "#09121d",
@@ -270,14 +260,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         >
           <div className="flex h-full flex-col justify-between">
             <div>
-              {/* Brand Header với Logo Doanh nghiệp & Tag Admin */}
+              {/* Brand Header với Logo Doanh nghiệp & Tag Admin xanh ngọc mềm mại */}
               <div
                 className={`flex h-16 items-center border-b border-white/[0.08] transition-all duration-200 select-none ${
                   collapsed ? "justify-center px-2" : "justify-between px-4"
                 }`}
               >
                 {collapsed ? (
-                  <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-blue-500/30 bg-blue-500/10 font-serif text-base font-bold text-[#40a9ff] shadow-inner">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-emerald-500/30 bg-emerald-500/10 font-serif text-base font-bold text-[#34d399] shadow-inner">
                     L
                   </div>
                 ) : (
@@ -285,14 +275,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                     <div className="pointer-events-none w-[130px]">
                       <LogoImage tone="dark" className="h-auto w-[130px]" priority />
                     </div>
-                    <span className="rounded-full border border-blue-400/30 bg-blue-500/15 px-2 py-0.5 font-sans text-[10px] font-bold tracking-wider text-[#40a9ff] uppercase shadow-2xs">
+                    <span className="rounded-full border border-emerald-500/30 bg-emerald-500/15 px-2.5 py-0.5 font-sans text-[10px] font-semibold tracking-wider text-[#34d399] uppercase shadow-2xs">
                       Admin
                     </span>
                   </div>
                 )}
               </div>
 
-              {/* Nút Thêm bài viết mới (Co giãn thông minh khi thu/mở) */}
+              {/* Nút Thêm bài viết mới (Màu xanh ngọc mềm mại theo nhận diện Léargas) */}
               <div className="p-3">
                 {collapsed ? (
                   <Tooltip title="Thêm bài viết mới" placement="right">
@@ -300,7 +290,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                       type="primary"
                       icon={<PlusOutlined className="text-base text-white" />}
                       onClick={() => router.push("/admin/posts/new")}
-                      className="!flex !h-10 !w-full !items-center !justify-center !rounded-xl !border !border-blue-400/30 !bg-gradient-to-r !from-[#1677ff] !to-[#0958d9] !shadow-[0_4px_12px_rgba(22,119,255,0.25)] transition-all hover:!from-[#4096ff] hover:!to-[#1677ff] hover:!shadow-[0_6px_16px_rgba(22,119,255,0.35)]"
+                      className="!flex !h-10 !w-full !items-center !justify-center !rounded-xl !border !border-emerald-400/30 !bg-gradient-to-r !from-[#059669] !to-[#047857] !shadow-[0_4px_12px_rgba(5,150,105,0.25)] transition-all hover:!from-[#10b981] hover:!to-[#059669] hover:!shadow-[0_6px_16px_rgba(5,150,105,0.35)]"
                     />
                   </Tooltip>
                 ) : (
@@ -308,7 +298,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                     type="primary"
                     icon={<PlusOutlined className="text-sm text-white" />}
                     onClick={() => router.push("/admin/posts/new")}
-                    className="!flex !h-10 !w-full !items-center !justify-center !gap-2 !rounded-xl !border !border-blue-400/30 !bg-gradient-to-r !from-[#1677ff] !to-[#0958d9] !text-xs !font-semibold !text-white !shadow-[0_4px_12px_rgba(22,119,255,0.25)] transition-all hover:!from-[#4096ff] hover:!to-[#1677ff] hover:!shadow-[0_6px_16px_rgba(22,119,255,0.35)] active:scale-[0.98]"
+                    className="!flex !h-10 !w-full !items-center !justify-center !gap-2 !rounded-xl !border !border-emerald-400/30 !bg-gradient-to-r !from-[#059669] !to-[#047857] !text-xs !font-semibold !text-white !shadow-[0_4px_12px_rgba(5,150,105,0.25)] transition-all hover:!from-[#10b981] hover:!to-[#059669] hover:!shadow-[0_6px_16px_rgba(5,150,105,0.35)] active:scale-[0.98]"
                   >
                     Thêm bài viết mới
                   </Button>
@@ -326,24 +316,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               />
             </div>
 
-            {/* Phần dưới Sider: Thẻ trạng thái, Xem website & Nút thu gọn */}
+            {/* Phần dưới Sider: Xem website & Nút thu gọn (Đã bỏ thẻ trạng thái theo yêu cầu) */}
             <div className="border-t border-white/[0.08] pt-2">
-              {/* Thẻ trạng thái hoạt động */}
-              {!collapsed && (
-                <div className="mx-3 mb-2 rounded-xl border border-white/[0.06] bg-white/[0.03] p-2.5">
-                  <div className="flex items-center justify-between text-[11px]">
-                    <div className="flex items-center gap-1.5 font-medium text-white/80">
-                      <span className="relative flex h-2 w-2">
-                        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-                        <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
-                      </span>
-                      <span>Hệ thống hoạt động</span>
-                    </div>
-                    <span className="font-mono text-[10px] text-white/40">v2.4</span>
-                  </div>
-                </div>
-              )}
-
               {/* Nút Xem website khách */}
               <div className="px-3 pb-2 text-xs text-[#ffffff73]">
                 {collapsed ? (
@@ -416,7 +390,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               <Link
                 href="/"
                 target="_blank"
-                className="hidden items-center gap-1.5 text-xs text-[#595959] transition-colors hover:text-[#1677ff] sm:flex"
+                className="hidden items-center gap-1.5 text-xs text-[#595959] transition-colors hover:text-[#059669] sm:flex"
               >
                 <GlobalOutlined />
                 Trang chủ
@@ -425,7 +399,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               <div className="hidden h-4 w-px bg-[#f0f0f0] sm:block" />
 
               <div className="flex items-center gap-2">
-                <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[#1677ff]/10 text-xs font-semibold text-[#1677ff]">
+                <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[#059669]/10 text-xs font-semibold text-[#059669]">
                   <UserOutlined />
                 </div>
                 <span className="text-xs font-medium text-[#262626]">
@@ -461,7 +435,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                     key={item.key}
                     href={item.key}
                     onClick={() => setMobileOpen(false)}
-                    className="flex items-center gap-2.5 rounded-md px-3 py-2 text-xs font-medium text-[#595959] hover:bg-[#f5f5f5] hover:text-[#1677ff]"
+                    className="flex items-center gap-2.5 rounded-md px-3 py-2 text-xs font-medium text-[#595959] hover:bg-[#f5f5f5] hover:text-[#059669]"
                   >
                     {item.icon}
                     {item.label}

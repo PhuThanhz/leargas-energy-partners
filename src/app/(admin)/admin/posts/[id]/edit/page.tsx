@@ -97,7 +97,7 @@ export default function EditPostPage() {
       .catch(() => {
         if (!ignore) {
           setCategories([
-            { id: 1, name: "Góc nhìn Đầu tư", slug: "investment-insights", color: "#1677ff" },
+            { id: 1, name: "Góc nhìn Đầu tư", slug: "investment-insights", color: "#059669" },
             {
               id: 2,
               name: "M&A & Hợp tác Chiến lược",
@@ -267,7 +267,7 @@ export default function EditPostPage() {
       <div className="flex flex-col justify-between gap-4 rounded-xl border border-[#f0f0f0] bg-white p-4 shadow-[0_1px_2px_0_rgba(0,0,0,0.03)] sm:flex-row sm:items-center">
         <Link
           href="/admin/posts"
-          className="flex items-center gap-2 text-xs font-medium text-[#595959] transition-colors hover:text-[#1677ff]"
+          className="flex items-center gap-2 text-xs font-medium text-[#595959] transition-colors hover:text-[#059669]"
         >
           <ArrowLeftOutlined />
           Quay lại danh sách bài viết
@@ -300,7 +300,7 @@ export default function EditPostPage() {
             icon={<SaveOutlined />}
             onClick={handleSubmit}
             loading={loading}
-            className="!rounded-lg !bg-[#1677ff] font-medium shadow-sm hover:!bg-[#4096ff]"
+            className="!rounded-lg !bg-[#059669] font-medium shadow-sm hover:!bg-[#047857]"
           >
             Lưu thay đổi
           </Button>
@@ -418,8 +418,8 @@ export default function EditPostPage() {
                         <Button
                           type="text"
                           size="small"
-                          icon={<PictureOutlined className="text-[#1677ff]" />}
-                          className="text-[#1677ff]"
+                          icon={<PictureOutlined className="text-[#059669]" />}
+                          className="text-[#059669]"
                           title="Tải ảnh lên và chèn vào bài viết"
                         >
                           Chèn ảnh
@@ -453,7 +453,7 @@ export default function EditPostPage() {
 
                     <div className="mb-3 flex flex-wrap items-center gap-2">
                       <Tag
-                        color="#1677ff"
+                        color="#059669"
                         className="rounded-full px-2.5 py-0.5 text-xs font-semibold"
                       >
                         {category}
@@ -467,7 +467,7 @@ export default function EditPostPage() {
                     </h1>
 
                     {excerpt && (
-                      <div className="mb-5 rounded-lg border-l-4 border-[#1677ff] bg-[#f0f5ff] p-3 text-xs text-[#262626] italic">
+                      <div className="mb-5 rounded-lg border-l-4 border-[#059669] bg-[#ecfdf5] p-3 text-xs text-[#262626] italic">
                         {excerpt}
                       </div>
                     )}
@@ -510,7 +510,7 @@ export default function EditPostPage() {
                 icon={<SaveOutlined />}
                 onClick={handleSubmit}
                 loading={loading}
-                className="!h-9 !w-full !rounded-lg !bg-[#1677ff] text-xs font-semibold shadow-sm hover:!bg-[#4096ff]"
+                className="!h-9 !w-full !rounded-lg !bg-[#059669] text-xs font-semibold shadow-sm hover:!bg-[#047857]"
               >
                 Lưu thay đổi bài viết
               </Button>
@@ -530,7 +530,7 @@ export default function EditPostPage() {
                     categoryForm.resetFields()
                     setCategoryModalVisible(true)
                   }}
-                  className="p-0 text-xs text-[#1677ff]"
+                  className="p-0 text-xs text-[#059669]"
                 >
                   Thêm mới
                 </Button>
@@ -553,7 +553,7 @@ export default function EditPostPage() {
                     <div className="flex items-center gap-2">
                       <div
                         className="h-2.5 w-2.5 rounded-full"
-                        style={{ backgroundColor: c.color || "#1677ff" }}
+                        style={{ backgroundColor: c.color || "#059669" }}
                       />
                       <span>{c.name}</span>
                     </div>
@@ -611,10 +611,10 @@ export default function EditPostPage() {
               ) : (
                 <Upload.Dragger
                   {...coverUploadProps}
-                  className="!border-[#d9d9d9] !bg-[#fafafa] p-4 hover:!border-[#1677ff]"
+                  className="!border-[#d9d9d9] !bg-[#fafafa] p-4 hover:!border-[#059669]"
                 >
                   <p className="ant-upload-drag-icon !mb-1">
-                    <PictureOutlined className="!text-2xl text-[#1677ff]" />
+                    <PictureOutlined className="!text-2xl text-[#059669]" />
                   </p>
                   <p className="font-sans text-xs font-semibold text-[#262626]">
                     Tải lên ảnh đại diện bài viết
@@ -685,11 +685,11 @@ export default function EditPostPage() {
             <Input placeholder="thi-truong-dien-gio" className="font-mono text-xs" />
           </Form.Item>
 
-          <Form.Item name="color" label="Màu sắc nhận diện" initialValue="#1677ff">
+          <Form.Item name="color" label="Màu sắc nhận diện" initialValue="#059669">
             <Select
               options={[
-                { value: "#1677ff", label: <Tag color="#1677ff">Xanh lam (#1677ff)</Tag> },
-                { value: "#52c41a", label: <Tag color="#52c41a">Xanh lục (#52c41a)</Tag> },
+                { value: "#059669", label: <Tag color="#059669">Xanh ngọc (#059669)</Tag> },
+                { value: "#10b981", label: <Tag color="#10b981">Xanh lá (#10b981)</Tag> },
                 { value: "#722ed1", label: <Tag color="#722ed1">Tím hoàng gia (#722ed1)</Tag> },
                 { value: "#fa8c16", label: <Tag color="#fa8c16">Cam năng lượng (#fa8c16)</Tag> },
                 { value: "#13c2c2", label: <Tag color="#13c2c2">Xanh ngọc (#13c2c2)</Tag> },

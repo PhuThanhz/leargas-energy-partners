@@ -146,10 +146,10 @@ export default function AdminMediaPage() {
       <Card className="rounded-xl border border-[#f0f0f0] shadow-[0_1px_2px_0_rgba(0,0,0,0.03)]">
         <Dragger
           {...uploadProps}
-          className="!border-[#d9d9d9] !bg-[#fafafa] hover:!border-[#1677ff]"
+          className="!border-[#d9d9d9] !bg-[#fafafa] hover:!border-[#059669]"
         >
           <p className="ant-upload-drag-icon !mb-2">
-            <InboxOutlined className="!text-3xl text-[#1677ff]" />
+            <InboxOutlined className="!text-3xl text-[#059669]" />
           </p>
           <p className="font-sans text-sm font-semibold text-[#262626]">
             Nhấp hoặc Kéo thả ảnh vào khu vực này để tải lên
@@ -187,7 +187,7 @@ export default function AdminMediaPage() {
               return (
                 <div
                   key={item.id}
-                  className="group relative overflow-hidden rounded-xl border border-[#e8e8e8] bg-white transition-all hover:border-[#1677ff] hover:shadow-md"
+                  className="group relative overflow-hidden rounded-xl border border-[#e8e8e8] bg-white transition-all hover:border-[#059669] hover:shadow-md"
                 >
                   {/* Thumbnail */}
                   <div className="relative aspect-video w-full overflow-hidden bg-[#f5f5f5]">
@@ -218,7 +218,7 @@ export default function AdminMediaPage() {
                         size="small"
                         icon={<CopyOutlined />}
                         onClick={() => handleCopy(item.url)}
-                        className="h-6 px-1.5 text-xs text-[#1677ff] hover:bg-[#e6f4ff]"
+                        className="h-6 px-1.5 text-xs text-[#059669] hover:bg-[#ecfdf5]"
                         title="Sao chép Link ảnh"
                       >
                         Copy

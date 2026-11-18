@@ -266,7 +266,7 @@ export default function AdminPostsPage() {
   const getCategoryColor = (catName: string) => {
     const found = categories.find((c) => c.name === catName)
     if (found?.color) return found.color
-    if (catName.includes("Đầu tư")) return "#1677ff"
+    if (catName.includes("Đầu tư")) return "#059669"
     if (catName.includes("M&A")) return "#52c41a"
     if (catName.includes("Pháp lý")) return "#722ed1"
     if (catName.includes("Thi công")) return "#fa8c16"
@@ -309,7 +309,7 @@ export default function AdminPostsPage() {
             <div className="min-w-0 flex-1">
               <a
                 onClick={() => handleOpenPreview(record)}
-                className="cursor-pointer font-sans text-sm font-semibold text-[#1f1f1f] transition-colors hover:text-[#1677ff]"
+                className="cursor-pointer font-sans text-sm font-semibold text-[#1f1f1f] transition-colors hover:text-[#059669]"
               >
                 {record.title}
               </a>
@@ -402,7 +402,7 @@ export default function AdminPostsPage() {
             size="small"
             icon={<EyeOutlined />}
             onClick={() => handleOpenPreview(record)}
-            className="text-[#1677ff] hover:bg-[#e6f4ff]"
+            className="text-[#059669] hover:bg-[#ecfdf5]"
             title="Xem chi tiết & Xem trước bài viết"
           >
             Xem
@@ -414,7 +414,7 @@ export default function AdminPostsPage() {
             size="small"
             icon={<EditOutlined />}
             onClick={() => router.push(`/admin/posts/${record.id}/edit`)}
-            className="text-[#52c41a] hover:bg-[#f6ffed]"
+            className="text-[#047857] hover:bg-[#ecfdf5]"
             title="Chỉnh sửa bài viết"
           >
             Sửa
@@ -472,7 +472,7 @@ export default function AdminPostsPage() {
             type="primary"
             icon={<PlusOutlined />}
             onClick={() => router.push("/admin/posts/new")}
-            className="!rounded-lg !bg-[#1677ff] text-xs font-semibold shadow-sm hover:!bg-[#4096ff]"
+            className="!rounded-lg !bg-[#059669] text-xs font-semibold shadow-sm hover:!bg-[#047857]"
           >
             Thêm bài viết mới
           </Button>
@@ -538,7 +538,7 @@ export default function AdminPostsPage() {
         title={
           <div className="flex items-center justify-between pr-6 font-sans">
             <div className="flex items-center gap-2.5">
-              <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#e6f4ff] text-[#1677ff]">
+              <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#ecfdf5] text-[#059669]">
                 <EyeOutlined className="text-sm" />
               </span>
               <div>
@@ -584,7 +584,7 @@ export default function AdminPostsPage() {
             >
               <Button
                 icon={<GlobalOutlined />}
-                className="rounded-lg hover:!border-[#1677ff] hover:!text-[#1677ff]"
+                className="rounded-lg hover:!border-[#059669] hover:!text-[#059669]"
               >
                 Xem trên Website khách ↗
               </Button>
@@ -599,7 +599,7 @@ export default function AdminPostsPage() {
                 setPreviewModalOpen(false)
                 router.push(`/admin/posts/${previewPost.id}/edit`)
               }}
-              className="rounded-lg !bg-[#1677ff] font-medium hover:!bg-[#4096ff]"
+              className="rounded-lg !bg-[#059669] font-medium shadow-xs hover:!bg-[#047857]"
             >
               Chỉnh sửa bài viết này
             </Button>
@@ -645,7 +645,7 @@ export default function AdminPostsPage() {
 
               <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-[#8c8c8c]">
                 <div className="flex items-center gap-1.5 font-medium text-[#262626]">
-                  <UserOutlined className="text-[#1677ff]" />
+                  <UserOutlined className="text-[#059669]" />
                   <span>{previewPost.author}</span>
                 </div>
 
@@ -705,7 +705,7 @@ export default function AdminPostsPage() {
             <div className="rounded-xl border border-[#eaedf0] bg-white p-6 shadow-xs md:p-8">
               {previewLoading ? (
                 <div className="py-12 text-center text-xs text-[#8c8c8c]">
-                  <ReloadOutlined spin className="mx-auto mb-2 block text-lg text-[#1677ff]" />
+                  <ReloadOutlined spin className="mx-auto mb-2 block text-lg text-[#059669]" />
                   Đang tải toàn bộ nội dung bài viết từ hệ thống...
                 </div>
               ) : (

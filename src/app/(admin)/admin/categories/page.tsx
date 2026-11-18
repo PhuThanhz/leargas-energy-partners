@@ -38,12 +38,12 @@ interface CategoryItem {
 }
 
 const COLOR_PRESETS = [
-  "#1677ff", // Blue
-  "#52c41a", // Green
-  "#722ed1", // Purple
+  "#059669", // Emerald Green (Léargas Brand)
+  "#10b981", // Mint Green
+  "#047857", // Deep Green
   "#fa8c16", // Orange
   "#13c2c2", // Teal
-  "#eb2f96", // Magenta
+  "#722ed1", // Purple
   "#faad14", // Amber
   "#f5222d", // Red
 ]
@@ -83,7 +83,7 @@ export default function AdminCategoriesPage() {
               slug: "investment-insights",
               description:
                 "Phân tích vĩ mô, chiến lược thoái vốn và sinh lời dự án năng lượng tái tạo",
-              color: "#1677ff",
+              color: "#059669",
               displayOrder: 1,
               postCount: 1,
               createdAt: new Date().toISOString(),
@@ -93,7 +93,7 @@ export default function AdminCategoriesPage() {
               name: "M&A & Hợp tác Chiến lược",
               slug: "ma-strategic-partnership",
               description: "Thẩm định kỹ thuật, cơ cấu giao dịch M&A và kết nối dòng vốn quốc tế",
-              color: "#52c41a",
+              color: "#10b981",
               displayOrder: 2,
               postCount: 1,
               createdAt: new Date().toISOString(),
@@ -124,7 +124,7 @@ export default function AdminCategoriesPage() {
     setEditingCategory(null)
     form.resetFields()
     form.setFieldsValue({
-      color: "#1677ff",
+      color: "#059669",
       displayOrder: categories.length + 1,
     })
     setModalVisible(true)
@@ -136,7 +136,7 @@ export default function AdminCategoriesPage() {
       name: record.name,
       slug: record.slug,
       description: record.description,
-      color: record.color || "#1677ff",
+      color: record.color || "#059669",
       displayOrder: record.displayOrder,
     })
     setModalVisible(true)
@@ -219,7 +219,7 @@ export default function AdminCategoriesPage() {
         <Space orientation="vertical" size={2}>
           <div className="flexorientation items-center gap-2">
             <Tag
-              color={record.color || "#1677ff"}
+              color={record.color || "#059669"}
               className="rounded-full px-2.5 py-0.5 font-medium"
             >
               {text}
@@ -275,7 +275,7 @@ export default function AdminCategoriesPage() {
             icon={<EditOutlined />}
             size="small"
             onClick={() => handleOpenEditModal(record)}
-            className="text-[#1677ff] hover:bg-[#e6f4ff]"
+            className="text-[#059669] hover:bg-[#ecfdf5]"
           >
             Sửa
           </Button>
@@ -330,7 +330,7 @@ export default function AdminCategoriesPage() {
             type="primary"
             icon={<PlusOutlined />}
             onClick={handleOpenCreateModal}
-            className="!rounded-lg !bg-[#1677ff] text-xs font-medium shadow-sm hover:!bg-[#4096ff]"
+            className="!rounded-lg !bg-[#059669] text-xs font-medium shadow-sm hover:!bg-[#047857]"
           >
             Thêm chuyên mục mới
           </Button>
@@ -353,7 +353,7 @@ export default function AdminCategoriesPage() {
       <Modal
         title={
           <div className="flex items-center gap-2">
-            <FolderOutlined className="text-[#1677ff]" />
+            <FolderOutlined className="text-[#059669]" />
             <span>{editingCategory ? "Chỉnh sửa Chuyên mục" : "Khai báo Chuyên mục Mới"}</span>
           </div>
         }
@@ -363,7 +363,7 @@ export default function AdminCategoriesPage() {
         confirmLoading={submitting}
         okText={editingCategory ? "Lưu thay đổi" : "Tạo chuyên mục"}
         cancelText="Hủy bỏ"
-        okButtonProps={{ className: "!bg-[#1677ff]" }}
+        okButtonProps={{ className: "!bg-[#059669]" }}
         destroyOnClose
       >
         <Form form={form} layout="vertical" className="mt-4 font-sans">
@@ -391,12 +391,12 @@ export default function AdminCategoriesPage() {
           <Form.Item name="color" label="Màu sắc nhận diện (Tag Color)">
             <div>
               <Input
-                placeholder="#1677ff"
+                placeholder="#059669"
                 className="mb-2 w-36 rounded-md font-mono text-xs"
                 prefix={
                   <div
                     className="h-3.5 w-3.5 rounded-full border border-black/10"
-                    style={{ backgroundColor: form.getFieldValue("color") || "#1677ff" }}
+                    style={{ backgroundColor: form.getFieldValue("color") || "#059669" }}
                   />
                 }
               />

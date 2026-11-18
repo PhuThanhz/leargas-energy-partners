@@ -86,7 +86,7 @@ export default function AdminSettingsPage() {
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         {/* Thông tin tài khoản */}
         <div className="space-y-3.5 rounded-lg border border-[#f0f0f0] bg-white p-5 shadow-[0_1px_2px_0_rgba(0,0,0,0.03)]">
-          <div className="flex items-center gap-2 text-[#1677ff]">
+          <div className="flex items-center gap-2 text-[#059669]">
             <Shield className="h-4 w-4" />
             <h2 className="text-xs font-semibold tracking-wider uppercase">Tài khoản Quản trị</h2>
           </div>
@@ -122,13 +122,13 @@ export default function AdminSettingsPage() {
         {/* Trạng thái Backend & MySQL */}
         <div className="space-y-3.5 rounded-lg border border-[#f0f0f0] bg-white p-5 shadow-[0_1px_2px_0_rgba(0,0,0,0.03)]">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 text-[#1677ff]">
+            <div className="flex items-center gap-2 text-[#059669]">
               <Server className="h-4 w-4" />
               <h2 className="text-xs font-semibold tracking-wider uppercase">Trạng thái Dịch vụ</h2>
             </div>
             <button
               onClick={pingBackend}
-              className="flex items-center gap-1 rounded border border-[#d9d9d9] bg-white px-2 py-1 text-[11px] text-[#262626] hover:border-[#1677ff] hover:text-[#1677ff]"
+              className="flex items-center gap-1 rounded border border-[#d9d9d9] bg-white px-2 py-1 text-[11px] text-[#262626] hover:border-[#059669] hover:text-[#059669]"
             >
               <RefreshCw className="h-3 w-3" />
               Kiểm tra Ping
@@ -164,14 +164,14 @@ export default function AdminSettingsPage() {
 
             <div className="flex items-center justify-between border-t border-[#f0f0f0] pt-2">
               <span className="text-[#595959]">Cơ sở Dữ liệu:</span>
-              <span className="font-mono text-[11px] text-[#1677ff]">leargas_db</span>
+              <span className="font-mono text-[11px] text-[#059669]">leargas_db</span>
             </div>
           </div>
         </div>
 
         {/* Đổi Mật khẩu */}
         <div className="space-y-4 rounded-lg border border-[#f0f0f0] bg-white p-5 shadow-[0_1px_2px_0_rgba(0,0,0,0.03)] md:col-span-2">
-          <div className="flex items-center gap-2 text-[#1677ff]">
+          <div className="flex items-center gap-2 text-[#059669]">
             <KeyRound className="h-4 w-4" />
             <h2 className="text-xs font-semibold tracking-wider uppercase">
               Đổi Mật khẩu Quản trị
@@ -193,7 +193,7 @@ export default function AdminSettingsPage() {
                 value={oldPassword}
                 onChange={(e) => setOldPassword(e.target.value)}
                 placeholder="••••••••"
-                className="w-full rounded-md border border-[#d9d9d9] bg-white px-3 py-1.5 text-xs text-[#000000e0] hover:border-[#4096ff] focus:border-[#1677ff] focus:outline-none"
+                className="w-full rounded-md border border-[#d9d9d9] bg-white px-3 py-1.5 text-xs text-[#000000e0] hover:border-[#059669] focus:border-[#059669] focus:outline-none"
               />
             </div>
 
@@ -205,14 +205,14 @@ export default function AdminSettingsPage() {
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
                 placeholder="••••••••"
-                className="w-full rounded-md border border-[#d9d9d9] bg-white px-3 py-1.5 text-xs text-[#000000e0] hover:border-[#4096ff] focus:border-[#1677ff] focus:outline-none"
+                className="w-full rounded-md border border-[#d9d9d9] bg-white px-3 py-1.5 text-xs text-[#000000e0] hover:border-[#059669] focus:border-[#059669] focus:outline-none"
               />
             </div>
 
             <div className="sm:col-span-2">
               <button
                 type="submit"
-                className="rounded-md bg-[#1677ff] px-4 py-2 text-xs font-medium text-white shadow-sm hover:bg-[#4096ff]"
+                className="rounded-md bg-[#059669] px-4 py-2 text-xs font-medium text-white shadow-sm hover:bg-[#047857]"
               >
                 Cập nhật mật khẩu
               </button>
