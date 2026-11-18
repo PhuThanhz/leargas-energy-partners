@@ -20,6 +20,7 @@ import {
   MenuOutlined,
   CloseOutlined,
 } from "@ant-design/icons"
+import { LogoImage } from "@/components/shared/logo"
 
 import { clearAuth, getStoredAuth, isAuthenticated } from "@/lib/api/admin-client"
 
@@ -198,25 +199,25 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         >
           <div className="flex h-full flex-col justify-between">
             <div>
-              {/* Brand Header */}
+              {/* Brand Header với Logo Doanh nghiệp & Tag Admin */}
               <div
-                className={`flex h-14 items-center border-b border-[#002140] transition-all duration-200 ${
-                  collapsed ? "justify-center px-2" : "gap-2.5 px-5"
+                className={`flex h-14 items-center border-b border-[#002140] transition-all duration-200 select-none ${
+                  collapsed ? "justify-center px-2" : "justify-between px-4"
                 }`}
               >
                 {collapsed ? (
-                  <span className="font-serif text-lg font-bold tracking-wider text-[#1677ff]">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-lg border border-[#1677ff]/30 bg-[#1677ff]/20 font-serif text-sm font-bold text-[#1677ff]">
                     L
-                  </span>
+                  </div>
                 ) : (
-                  <>
-                    <span className="font-serif text-lg font-medium tracking-[0.15em] text-white">
-                      LÉARGAS
-                    </span>
-                    <span className="rounded bg-[#1677ff] px-1.5 py-0.5 text-[10px] font-medium text-white">
+                  <div className="flex items-center gap-2">
+                    <div className="pointer-events-none w-[125px]">
+                      <LogoImage tone="dark" className="h-auto w-[125px]" priority />
+                    </div>
+                    <span className="rounded bg-[#1677ff] px-1.5 py-0.5 font-sans text-[10px] font-semibold text-white shadow-xs">
                       Admin
                     </span>
-                  </>
+                  </div>
                 )}
               </div>
 

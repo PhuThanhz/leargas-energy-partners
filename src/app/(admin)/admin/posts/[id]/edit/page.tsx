@@ -438,9 +438,42 @@ export default function EditPostPage() {
                     className="font-mono text-xs leading-relaxed"
                   />
                 ) : (
-                  <div className="min-h-[360px] rounded-lg border border-[#e8e8e8] bg-[#fbfdfb] p-6">
+                  <div className="min-h-[420px] rounded-xl border border-[#e8e8e8] bg-white p-6 shadow-xs">
+                    {/* Header xem trước */}
+                    {coverImageUrl && (
+                      <div className="relative mb-5 aspect-video w-full overflow-hidden rounded-xl bg-black/5 shadow-inner">
+                        <Image
+                          src={coverImageUrl}
+                          alt={title || "Ảnh bài viết"}
+                          className="h-full w-full object-cover"
+                          fallback="/images/wind.jpg"
+                        />
+                      </div>
+                    )}
+
+                    <div className="mb-3 flex flex-wrap items-center gap-2">
+                      <Tag
+                        color="#1677ff"
+                        className="rounded-full px-2.5 py-0.5 text-xs font-semibold"
+                      >
+                        {category}
+                      </Tag>
+                      <span className="text-xs text-[#8c8c8c]">• {author}</span>
+                      <span className="text-xs text-[#8c8c8c]">• 5 phút đọc</span>
+                    </div>
+
+                    <h1 className="mb-3 font-serif text-2xl font-bold tracking-tight text-[#1f1f1f]">
+                      {title || "Tiêu đề bài viết..."}
+                    </h1>
+
+                    {excerpt && (
+                      <div className="mb-5 rounded-lg border-l-4 border-[#1677ff] bg-[#f0f5ff] p-3 text-xs text-[#262626] italic">
+                        {excerpt}
+                      </div>
+                    )}
+
                     <div
-                      className="prose prose-emerald max-w-none"
+                      className="prose prose-emerald max-w-none text-sm"
                       dangerouslySetInnerHTML={{ __html: content }}
                     />
                   </div>
