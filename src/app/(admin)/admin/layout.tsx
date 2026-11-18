@@ -13,7 +13,6 @@ import {
   SettingOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
-  PlusOutlined,
   GlobalOutlined,
   UserOutlined,
   LogoutOutlined,
@@ -282,38 +281,17 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 )}
               </div>
 
-              {/* Nút Thêm bài viết mới (Màu xanh ngọc mềm mại theo nhận diện Léargas) */}
-              <div className="p-3">
-                {collapsed ? (
-                  <Tooltip title="Thêm bài viết mới" placement="right">
-                    <Button
-                      type="primary"
-                      icon={<PlusOutlined className="text-base text-white" />}
-                      onClick={() => router.push("/admin/posts/new")}
-                      className="!flex !h-10 !w-full !items-center !justify-center !rounded-xl !border !border-emerald-400/30 !bg-gradient-to-r !from-[#059669] !to-[#047857] !shadow-[0_4px_12px_rgba(5,150,105,0.25)] transition-all hover:!from-[#10b981] hover:!to-[#059669] hover:!shadow-[0_6px_16px_rgba(5,150,105,0.35)]"
-                    />
-                  </Tooltip>
-                ) : (
-                  <Button
-                    type="primary"
-                    icon={<PlusOutlined className="text-sm text-white" />}
-                    onClick={() => router.push("/admin/posts/new")}
-                    className="!flex !h-10 !w-full !items-center !justify-center !gap-2 !rounded-xl !border !border-emerald-400/30 !bg-gradient-to-r !from-[#059669] !to-[#047857] !text-xs !font-semibold !text-white !shadow-[0_4px_12px_rgba(5,150,105,0.25)] transition-all hover:!from-[#10b981] hover:!to-[#059669] hover:!shadow-[0_6px_16px_rgba(5,150,105,0.35)] active:scale-[0.98]"
-                  >
-                    Thêm bài viết mới
-                  </Button>
-                )}
-              </div>
-
               {/* Danh sách Menu Navigation Ant Design */}
-              <Menu
-                theme="dark"
-                mode="inline"
-                selectedKeys={[selectedKey]}
-                items={menuItems}
-                onClick={({ key }) => router.push(key)}
-                className="border-none !bg-transparent font-medium"
-              />
+              <div className="pt-2">
+                <Menu
+                  theme="dark"
+                  mode="inline"
+                  selectedKeys={[selectedKey]}
+                  items={menuItems}
+                  onClick={({ key }) => router.push(key)}
+                  className="border-none !bg-transparent font-medium"
+                />
+              </div>
             </div>
 
             {/* Phần dưới Sider: Xem website & Nút thu gọn (Đã bỏ thẻ trạng thái theo yêu cầu) */}

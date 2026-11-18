@@ -26,14 +26,11 @@ import {
   UploadOutlined,
   PictureOutlined,
   DeleteOutlined,
-  BoldOutlined,
-  ItalicOutlined,
-  LinkOutlined,
-  UnorderedListOutlined,
 } from "@ant-design/icons"
 import type { UploadProps } from "antd"
 import { toast } from "sonner"
 import { adminFetch, getStoredAuth } from "@/lib/api/admin-client"
+import { RichArticleEditor } from "@/components/admin/rich-article-editor"
 
 const { Text } = Typography
 const { TextArea } = Input
@@ -145,28 +142,6 @@ export default function EditPostPage() {
       })
   }, [id])
 
-  // Chèn thẻ định dạng vào nội dung
-  const insertFormatting = (prefix: string, suffix: string = "") => {
-    const textarea = document.getElementById("post-edit-textarea") as HTMLTextAreaElement
-    if (!textarea) return
-
-    const start = textarea.selectionStart
-    const end = textarea.selectionEnd
-    const selected = content.substring(start, end)
-    const replacement = `${prefix}${selected || "Nội dung"}${suffix}`
-
-    const newContent = content.substring(0, start) + replacement + content.substring(end)
-    setContent(newContent)
-
-    setTimeout(() => {
-      textarea.focus()
-      textarea.setSelectionRange(
-        start + prefix.length,
-        start + prefix.length + (selected ? selected.length : 7)
-      )
-    }, 10)
-  }
-
   // Upload ảnh đại diện trực tiếp
   const auth = getStoredAuth()
   const coverUploadProps: UploadProps = {
@@ -184,27 +159,6 @@ export default function EditPostPage() {
         toast.success("Tải lên ảnh bìa thành công!")
       } else if (info.file.status === "error") {
         toast.error("Không thể tải lên ảnh bìa")
-      }
-    },
-  }
-
-  // Upload ảnh chèn vào bài viết
-  const inlineUploadProps: UploadProps = {
-    name: "file",
-    action: "http://localhost:8080/api/admin/media/upload",
-    headers: {
-      Authorization: auth.token ? `Bearer ${auth.token}` : "",
-    },
-    showUploadList: false,
-    onChange(info) {
-      if (info.file.status === "done") {
-        const url = info.file.response?.url || `/uploads/${info.file.name}`
-        const displayUrl = url.startsWith("http") ? url : `http://localhost:8080${url}`
-        const imgTag = `\n<figure class="my-6">\n  <img src="${displayUrl}" alt="${info.file.name}" class="w-full rounded-xl shadow-md" />\n  <figcaption class="mt-2 text-center text-xs text-gray-500">${info.file.name}</figcaption>\n</figure>\n`
-        setContent((prev) => prev + imgTag)
-        toast.success("Đã tải ảnh lên và chèn vào bài viết!")
-      } else if (info.file.status === "error") {
-        toast.error("Không thể tải ảnh chèn vào bài viết")
       }
     },
   }
@@ -357,85 +311,26 @@ export default function EditPostPage() {
 
               {/* Trình soạn thảo Nội dung */}
               <div>
-                <div className="orientation mb-2 flex items-center justify-between">
-                  <label className="text-xs font-semibold text-[#262626]">
-                    Nội dung chi tiết (HTML / Markdown) <span className="text-[#ff4d4f]">*</span>
-                  </label>
-
-                  {/* Thanh công cụ định dạng */}
-                  {activeTab === "edit" && (
-                    <div className="flex flex-wrap items-center gap-1 rounded-md border border-[#e8e8e8] bg-[#fafafa] p-1 text-xs">
-                      <Button
-                        type="text"
-                        size="small"
-                        onClick={() => insertFormatting("<h2>", "</h2>")}
-                        className="px-2 font-bold"
-                        title="Tiêu đề H2"
-                      >
-                        H2
-                      </Button>
-                      <Button
-                        type="text"
-                        size="small"
-                        onClick={() => insertFormatting("<h3>", "</h3>")}
-                        className="px-2 font-bold"
-                        title="Tiêu đề H3"
-                      >
-                        H3
-                      </Button>
-                      <Button
-                        type="text"
-                        size="small"
-                        icon={<BoldOutlined />}
-                        onClick={() => insertFormatting("<strong>", "</strong>")}
-                        title="In đậm"
-                      />
-                      <Button
-                        type="text"
-                        size="small"
-                        icon={<ItalicOutlined />}
-                        onClick={() => insertFormatting("<em>", "</em>")}
-                        title="In nghiêng"
-                      />
-                      <Button
-                        type="text"
-                        size="small"
-                        icon={<LinkOutlined />}
-                        onClick={() => insertFormatting('<a href="https://...">', "</a>")}
-                        title="Chèn liên kết"
-                      />
-                      <Button
-                        type="text"
-                        size="small"
-                        icon={<UnorderedListOutlined />}
-                        onClick={() => insertFormatting("<ul>\n  <li>", "</li>\n</ul>")}
-                        title="Danh sách"
-                      />
-
-                      <div className="mx-1 h-3.5 w-px bg-[#d9d9d9]" />
-
-                      <Upload {...inlineUploadProps}>
-                        <Button
-                          type="text"
-                          size="small"
-                          icon={<PictureOutlined className="text-[#059669]" />}
-                          className="text-[#059669]"
-                          title="Tải ảnh lên và chèn vào bài viết"
-                        >
-                          Chèn ảnh
-                        </Button>
-                      </Upload>
-                    </div>
-                  )}
+                <div className="mb-2.5 flex items-center justify-between">
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-900">
+                      Nội dung bài viết chi tiết <span className="text-[#ff4d4f]">*</span>
+                    </label>
+                    <p className="mt-0.5 text-[11px] text-slate-500">
+                      Chỉnh sửa trực quan nội dung ấn phẩm — Hỗ trợ tiêu đề H2/H3, trích dẫn chuyên
+                      sâu, hình ảnh và khối chỉ số.
+                    </p>
+                  </div>
+                  <span className="rounded-full bg-emerald-50 px-2.5 py-0.5 text-[11px] font-semibold text-emerald-700">
+                    Trình soạn thảo trực quan (WYSIWYG)
+                  </span>
                 </div>
 
                 {activeTab === "edit" ? (
-                  <TextArea
-                    id="post-edit-textarea"
-                    rows={16}
+                  <RichArticleEditor
                     value={content}
-                    onChange={(e) => setContent(e.target.value)}
-                    className="font-mono text-xs leading-relaxed"
+                    onChange={setContent}
+                    placeholder="Chỉnh sửa nội dung bài viết phân tích..."
                   />
                 ) : (
                   <div className="min-h-[420px] rounded-xl border border-[#e8e8e8] bg-white p-6 shadow-xs">
