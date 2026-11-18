@@ -23,7 +23,7 @@ interface StatItem {
 const stats: StatItem[] = [
   { value: 3260, decimals: 0, unit: "km", label: "Coastline" },
   { displayValue: "10–15%", unit: "/ year", label: "Electricity demand growth" },
-  { value: 28, decimals: 0, unit: "GW", label: "PDP8 target by 2030" },
+  { displayValue: "10%", unit: "/ year", label: "GDP growth target" },
 ]
 
 const pillars = [
