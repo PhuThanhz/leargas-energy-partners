@@ -113,7 +113,7 @@ export function WindGallery() {
         </h2>
         <Reveal delay={0.1} className="lg:max-w-[400px] xl:max-w-[440px]">
           <p className="text-[13.5px] leading-[1.65] text-muted-foreground">
-            Core wind segments, each with its own risk and return.
+            Core renewable segments, each with its own risk and return.
           </p>
         </Reveal>
 
