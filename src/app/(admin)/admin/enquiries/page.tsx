@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { Search, Building, Mail, Trash2, X } from "lucide-react"
+import { Search, Building, Trash2, X, Send } from "lucide-react"
 
 import { adminFetch } from "@/lib/api/admin-client"
 
@@ -25,60 +25,46 @@ const DEFAULT_ENQUIRIES: Enquiry[] = [
     id: 1,
     name: "Alexander Wright",
     email: "a.wright@nordicrenewables.com",
-    company: "Nordic Clean Energy Capital",
-    role: "Head of Asia-Pacific Infrastructure",
-    topic: "M&A / Equity Investment",
-    projectStage: "Operating / Late-stage",
+    company: "Quỹ Năng Lượng Sạch Bắc Âu",
+    role: "Giám đốc Hạ tầng Châu Á - Thái Bình Dương",
+    topic: "M&A / Đầu tư Vốn Cổ phần",
+    projectStage: "Đang vận hành / Giai đoạn cuối",
     indicativeCapacity: "150 - 300 MW",
     message:
-      "We are evaluating a secondary portfolio acquisition in South Central Vietnam and would like to retain LÉARGAS for commercial and regulatory advisory under PDP8.",
+      "Chúng tôi đang đánh giá danh mục dự án chuyển nhượng thứ cấp tại Nam Trung Bộ và muốn LÉARGAS tư vấn cấu trúc thương vụ và pháp lý theo Quy hoạch điện 8.",
     status: "NEW",
-    notes: "High-priority institutional LP fund. Follow up via email within 24h.",
+    notes: "Quỹ đầu tư thể chế trọng điểm. Cần gửi email phản hồi và sắp xếp lịch họp.",
     createdAt: "2026-11-18 14:30",
   },
   {
     id: 2,
-    name: "Nguyen Hoang Minh",
+    name: "Nguyễn Hoàng Minh",
     email: "minh.nh@vietnamenergycorp.vn",
-    company: "VEC Power Holdings",
-    role: "Investment Director",
-    topic: "Project Delivery & Construction",
-    projectStage: "Pre-construction / PDP8 Implementation",
-    indicativeCapacity: "80 MW Onshore",
+    company: "Tập đoàn VEC Power Holdings",
+    role: "Giám đốc Khối Đầu tư",
+    topic: "Thi công & Quản lý Dự án",
+    projectStage: "Chuẩn bị thi công / Cơ chế DPPA",
+    indicativeCapacity: "80 MW Điện gió trên bờ",
     message:
-      "Seeking strategic equity partner and international EPC structuring for our Gia Lai wind pipeline under DPPA pilot.",
+      "Tìm kiếm đối tác vốn chiến lược và nhà thầu EPC quốc tế cho cụm dự án điện gió Gia Lai trong chương trình thí điểm DPPA.",
     status: "CONTACTED",
-    notes: "Met at Vietnam Clean Energy Summit. NDA sent.",
+    notes: "Đã gặp tại Hội nghị Năng lượng Sạch. Đã gửi thỏa thuận bảo mật NDA.",
     createdAt: "2026-11-17 09:15",
   },
   {
     id: 3,
-    name: "David Chen",
-    email: "d.chen@apac-infra.sg",
-    company: "Singa Infrastructure Fund",
-    role: "Managing Director",
-    topic: "Market Entry Advisory",
-    projectStage: "Early-stage Screening",
-    indicativeCapacity: "100 MW+",
+    name: "Sarah Jenkins",
+    email: "sarah.j@globalrenewables.uk",
+    company: "Quỹ Hạ tầng Năng lượng Quốc tế",
+    role: "Đối tác Đầu tư Cấp cao",
+    topic: "Tư vấn Điện gió Ngoài khơi",
+    projectStage: "Nghiên cứu khả thi & Quy hoạch",
+    indicativeCapacity: "500 MW",
     message:
-      "Exploring partnership model with local developers for greenfield utility-scale solar and onshore wind assets.",
-    status: "QUALIFIED",
-    notes: "Follow-up video conference scheduled for Thursday.",
-    createdAt: "2026-11-16 16:45",
-  },
-  {
-    id: 4,
-    name: "Tran Thi Bich Ngoc",
-    email: "ngoc.tran@greenenergy.vn",
-    company: "Mekong Solar Assets",
-    role: "Head of Business Development",
-    topic: "Regulatory & PDP8",
-    projectStage: "Operational Asset",
-    indicativeCapacity: "50 MW",
-    message: "Looking for refinancing and equity syndication options with international DFIs.",
+      "Quan tâm đến việc đánh giá tính khả thi thương mại và hạ tầng giải tỏa công suất cho dự án điện gió ngoài khơi tỉnh Bình Thuận.",
     status: "NEW",
-    notes: "Awaiting audited generation records.",
-    createdAt: "2026-11-15 11:20",
+    notes: "Đang chờ số liệu đo gió sơ bộ từ đối tác.",
+    createdAt: "2026-11-18 22:19",
   },
 ]
 
@@ -133,10 +119,11 @@ export default function AdminEnquiriesPage() {
       prev.map((e) => (e.id === selectedEnquiry.id ? { ...e, notes: editingNotes } : e))
     )
     setSelectedEnquiry((prev) => (prev ? { ...prev, notes: editingNotes } : null))
+    alert("Đã lưu ghi chú nội bộ thành công!")
   }
 
   const handleDelete = async (id: number) => {
-    if (!confirm("Are you sure you want to delete this enquiry?")) return
+    if (!confirm("Bạn có chắc chắn muốn xóa yêu cầu tư vấn này?")) return
     try {
       await adminFetch(`/api/admin/enquiries/${id}`, { method: "DELETE" })
     } catch {
@@ -156,52 +143,66 @@ export default function AdminEnquiriesPage() {
     return matchesTab && matchesSearch
   })
 
-  const getStatusColor = (status: string) => {
+  const getStatusBadge = (status: string) => {
     switch (status) {
       case "NEW":
-        return "bg-amber-500/10 text-amber-400 border-amber-500/30"
+        return { label: "Mới tiếp nhận", className: "bg-[#fffbe6] text-[#faad14] border-[#ffe58f]" }
       case "CONTACTED":
-        return "bg-blue-500/10 text-blue-400 border-blue-500/30"
+        return { label: "Đã liên hệ", className: "bg-[#e6f4ff] text-[#1677ff] border-[#91caff]" }
       case "QUALIFIED":
-        return "bg-emerald-500/10 text-emerald-400 border-emerald-500/30"
-      case "CLOSED":
-        return "bg-gray-500/10 text-gray-400 border-gray-500/30"
+        return {
+          label: "Đạt tiêu chuẩn",
+          className: "bg-[#f6ffed] text-[#52c41a] border-[#b7eb8f]",
+        }
       default:
-        return "bg-gray-500/10 text-gray-400 border-gray-500/30"
+        return { label: "Đã đóng", className: "bg-[#fafafa] text-[#8c8c8c] border-[#d9d9d9]" }
     }
   }
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
+    <div className="space-y-5">
+      {/* Tiêu đề trang */}
       <div>
-        <h1 className="font-serif text-2xl font-light text-[#f9f6ee]">
-          Institutional Enquiries & Leads (CRM)
+        <h1 className="text-xl font-semibold text-[#000000e0]">
+          Quản lý Yêu cầu Tư vấn & Khách hàng Tiềm năng (CRM)
         </h1>
-        <p className="mt-1 text-xs text-[#7a9987]">
-          Manage advisory mandates, LP investor connections, and developer proposals
+        <p className="mt-0.5 text-xs text-[#8c8c8c]">
+          Theo dõi tiến độ kết nối vốn quốc tế, tư vấn quy hoạch và sàng lọc dự án năng lượng
         </p>
       </div>
 
-      {/* Tabs and Search Bar */}
-      <div className="flex flex-col gap-4 rounded-xl border border-[#1a382b] bg-[#0a1b14] p-4 sm:flex-row sm:items-center sm:justify-between">
-        {/* Status Tabs */}
-        <div className="flex flex-wrap items-center gap-1.5">
-          {["ALL", "NEW", "CONTACTED", "QUALIFIED", "CLOSED"].map((tab) => {
+      {/* Tabs và Bộ lọc phong cách Ant Design */}
+      <div className="flex flex-col gap-3 rounded-lg border border-[#f0f0f0] bg-white p-4 shadow-[0_1px_2px_0_rgba(0,0,0,0.03)] sm:flex-row sm:items-center sm:justify-between">
+        {/* Ant Design Style Tabs */}
+        <div className="flex flex-wrap items-center gap-2">
+          {[
+            { id: "ALL", label: "Tất cả" },
+            { id: "NEW", label: "Mới tiếp nhận" },
+            { id: "CONTACTED", label: "Đã liên hệ" },
+            { id: "QUALIFIED", label: "Đạt tiêu chuẩn" },
+            { id: "CLOSED", label: "Đã đóng" },
+          ].map((tab) => {
             const count =
-              tab === "ALL" ? enquiries.length : enquiries.filter((e) => e.status === tab).length
+              tab.id === "ALL"
+                ? enquiries.length
+                : enquiries.filter((e) => e.status === tab.id).length
+            const active = activeTab === tab.id
             return (
               <button
-                key={tab}
-                onClick={() => setActiveTab(tab)}
-                className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${
-                  activeTab === tab
-                    ? "bg-[#1c4532] text-[#f2efe9]"
-                    : "text-[#7a9987] hover:bg-[#0f281e] hover:text-[#cde0d5]"
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium transition-all ${
+                  active
+                    ? "bg-[#1677ff] text-white shadow-sm"
+                    : "bg-[#f5f5f5] text-[#595959] hover:bg-[#e8e8e8]"
                 }`}
               >
-                <span>{tab === "ALL" ? "All Leads" : tab}</span>
-                <span className="py-0.2 rounded-full bg-[#0a1b14] px-1.5 text-[10px] text-[#c9a050]">
+                <span>{tab.label}</span>
+                <span
+                  className={`py-0.2 rounded-full px-1.5 text-[10px] ${
+                    active ? "bg-white/20 text-white" : "bg-[#d9d9d9] text-[#262626]"
+                  }`}
+                >
                   {count}
                 </span>
               </button>
@@ -209,98 +210,88 @@ export default function AdminEnquiriesPage() {
           })}
         </div>
 
-        {/* Search */}
+        {/* Ô Tìm kiếm Ant Design */}
         <div className="relative w-full sm:w-64">
-          <Search className="pointer-events-none absolute top-2.5 left-3 h-3.5 w-3.5 text-[#5e7d6c]" />
+          <Search className="pointer-events-none absolute top-2 left-3 h-3.5 w-3.5 text-[#bfbfbf]" />
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search leads, firms, email..."
-            className="w-full rounded-lg border border-[#1f4231] bg-[#07130e] py-1.5 pr-3 pl-8 text-xs text-[#f2efe9] placeholder-[#405c4d] focus:border-[#c9a050] focus:outline-none"
+            placeholder="Tìm theo tên, đối tác, email..."
+            className="w-full rounded-md border border-[#d9d9d9] bg-white py-1.5 pr-3 pl-8 text-xs text-[#000000e0] placeholder-[#bfbfbf] hover:border-[#4096ff] focus:border-[#1677ff] focus:outline-none"
           />
         </div>
       </div>
 
-      {/* Enquiries Table */}
-      <div className="overflow-hidden rounded-xl border border-[#1a382b] bg-[#0a1b14]">
+      {/* Bảng Ant Design Danh sách Khách hàng */}
+      <div className="overflow-hidden rounded-lg border border-[#f0f0f0] bg-white shadow-[0_1px_2px_0_rgba(0,0,0,0.03)]">
         <table className="w-full text-left text-xs">
-          <thead className="border-b border-[#153124] bg-[#07130e] text-[10px] tracking-wider text-[#6e8f7d] uppercase">
+          <thead className="border-b border-[#f0f0f0] bg-[#fafafa] font-medium text-[#262626]">
             <tr>
-              <th className="px-5 py-3.5 font-medium">Investor / Developer</th>
-              <th className="px-5 py-3.5 font-medium">Advisory Focus</th>
-              <th className="px-5 py-3.5 font-medium">Stage & Capacity</th>
-              <th className="px-5 py-3.5 font-medium">Status</th>
-              <th className="px-5 py-3.5 text-right font-medium">Details</th>
+              <th className="px-5 py-3.5">Họ tên & Doanh nghiệp</th>
+              <th className="px-5 py-3.5">Chủ đề tư vấn</th>
+              <th className="px-5 py-3.5">Giai đoạn & Quy mô</th>
+              <th className="px-5 py-3.5">Trạng thái xử lý</th>
+              <th className="px-5 py-3.5 text-right">Thao tác</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-[#132c20]">
+          <tbody className="divide-y divide-[#f0f0f0]">
             {filteredEnquiries.length === 0 ? (
               <tr>
-                <td colSpan={5} className="px-5 py-8 text-center text-[#7a9987]">
-                  No consultation leads found under current filter.
+                <td colSpan={5} className="px-5 py-10 text-center text-[#8c8c8c]">
+                  Không có yêu cầu tư vấn nào thuộc danh mục này.
                 </td>
               </tr>
             ) : (
               filteredEnquiries.map((enquiry) => (
-                <tr key={enquiry.id} className="transition-colors hover:bg-[#0f281e]">
-                  <td className="px-5 py-4">
-                    <div className="font-medium text-[#f9f6ee]">{enquiry.name}</div>
-                    <div className="mt-0.5 flex items-center gap-1.5 text-[11px] text-[#7a9987]">
-                      <Building className="h-3 w-3 text-[#527360]" />
-                      {enquiry.company || "Independent"} · {enquiry.role || "Executive"}
+                <tr key={enquiry.id} className="transition-colors hover:bg-[#fafafa]">
+                  <td className="px-5 py-3.5">
+                    <div className="font-medium text-[#262626]">{enquiry.name}</div>
+                    <div className="mt-0.5 flex items-center gap-1.5 text-[11px] text-[#8c8c8c]">
+                      <Building className="h-3 w-3 text-[#bfbfbf]" />
+                      {enquiry.company || "Cá nhân"} {enquiry.role ? `· ${enquiry.role}` : ""}
                     </div>
-                    <div className="mt-0.5 text-[10px] text-[#527360]">{enquiry.email}</div>
+                    <div className="mt-0.5 text-[11px] text-[#1677ff]">{enquiry.email}</div>
                   </td>
-                  <td className="px-5 py-4">
-                    <div className="font-medium text-[#cde0d5]">{enquiry.topic}</div>
-                    <div className="mt-0.5 line-clamp-1 max-w-xs text-[11px] text-[#7a9987]">
+                  <td className="px-5 py-3.5">
+                    <div className="font-medium text-[#262626]">{enquiry.topic}</div>
+                    <div className="mt-0.5 line-clamp-1 max-w-xs text-[11px] text-[#8c8c8c]">
                       {enquiry.message}
                     </div>
                   </td>
-                  <td className="px-5 py-4 text-[11px] text-[#9cb5a6]">
+                  <td className="px-5 py-3.5 text-[11px] text-[#595959]">
                     <div>{enquiry.projectStage || "—"}</div>
-                    <div className="text-[10px] text-[#c9a050]">
+                    <div className="mt-0.5 text-[11px] font-medium text-[#1677ff]">
                       {enquiry.indicativeCapacity || "—"}
                     </div>
                   </td>
-                  <td className="px-5 py-4">
+                  <td className="px-5 py-3.5">
                     <select
                       value={enquiry.status}
                       onChange={(e) => handleStatusChange(enquiry.id, e.target.value)}
-                      className={`rounded-full border px-2.5 py-1 text-[10px] font-semibold tracking-wider uppercase focus:outline-none ${getStatusColor(
-                        enquiry.status
-                      )}`}
+                      className="cursor-pointer rounded-full border border-[#d9d9d9] bg-white px-2.5 py-1 text-[11px] font-medium text-[#262626] hover:border-[#1677ff] focus:outline-none"
                     >
-                      <option value="NEW" className="bg-[#0a1b14] text-amber-400">
-                        NEW
-                      </option>
-                      <option value="CONTACTED" className="bg-[#0a1b14] text-blue-400">
-                        CONTACTED
-                      </option>
-                      <option value="QUALIFIED" className="bg-[#0a1b14] text-emerald-400">
-                        QUALIFIED
-                      </option>
-                      <option value="CLOSED" className="bg-[#0a1b14] text-gray-400">
-                        CLOSED
-                      </option>
+                      <option value="NEW">Mới tiếp nhận</option>
+                      <option value="CONTACTED">Đã liên hệ</option>
+                      <option value="QUALIFIED">Đạt tiêu chuẩn</option>
+                      <option value="CLOSED">Đã đóng</option>
                     </select>
                   </td>
-                  <td className="px-5 py-4 text-right">
-                    <div className="flex items-center justify-end gap-2">
+                  <td className="px-5 py-3.5 text-right font-medium">
+                    <div className="flex items-center justify-end gap-3">
                       <button
                         onClick={() => {
                           setSelectedEnquiry(enquiry)
                           setEditingNotes(enquiry.notes || "")
                         }}
-                        className="rounded bg-[#143023] px-3 py-1.5 text-[11px] text-[#cde0d5] transition-colors hover:bg-[#1c4532]"
+                        className="text-[#1677ff] hover:text-[#4096ff]"
                       >
-                        Inspect
+                        Chi tiết
                       </button>
                       <button
                         onClick={() => handleDelete(enquiry.id)}
-                        className="rounded p-1.5 text-[#5e7d6c] hover:bg-[#2c1616] hover:text-red-400"
-                        title="Delete inquiry"
+                        className="text-[#ff4d4f] hover:text-[#cf1322]"
+                        title="Xóa yêu cầu"
                       >
                         <Trash2 className="h-3.5 w-3.5" />
                       </button>
@@ -313,116 +304,121 @@ export default function AdminEnquiriesPage() {
         </table>
       </div>
 
-      {/* Modal / Detail Drawer */}
+      {/* Modal Ant Design Chi tiết Yêu cầu */}
       {selectedEnquiry && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm">
-          <div className="w-full max-w-2xl rounded-2xl border border-[#1a382b] bg-[#0a1b14] p-6 shadow-2xl">
-            {/* Modal header */}
-            <div className="flex items-start justify-between border-b border-[#1a382b] pb-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/45 p-4 backdrop-blur-[2px]">
+          <div className="w-full max-w-2xl rounded-lg border border-[#f0f0f0] bg-white p-6 shadow-[0_6px_16px_0_rgba(0,0,0,0.08)]">
+            {/* Header Modal */}
+            <div className="flex items-start justify-between border-b border-[#f0f0f0] pb-4">
               <div>
-                <span
-                  className={`mb-1.5 inline-block rounded-full border px-2.5 py-0.5 text-[10px] font-medium tracking-wider uppercase ${getStatusColor(
-                    selectedEnquiry.status
-                  )}`}
-                >
-                  {selectedEnquiry.status}
-                </span>
-                <h2 className="font-serif text-xl font-light text-[#f9f6ee]">
-                  {selectedEnquiry.name}
-                </h2>
-                <p className="text-xs text-[#7a9987]">
-                  {selectedEnquiry.company} · {selectedEnquiry.role}
+                <div className="mb-1 flex items-center gap-2">
+                  <span
+                    className={`inline-block rounded-full border px-2 py-0.5 text-[10px] font-medium ${
+                      getStatusBadge(selectedEnquiry.status).className
+                    }`}
+                  >
+                    {getStatusBadge(selectedEnquiry.status).label}
+                  </span>
+                </div>
+                <h2 className="text-base font-semibold text-[#000000e0]">{selectedEnquiry.name}</h2>
+                <p className="text-xs text-[#8c8c8c]">
+                  {selectedEnquiry.company}{" "}
+                  {selectedEnquiry.role ? `· ${selectedEnquiry.role}` : ""}
                 </p>
               </div>
 
               <button
                 onClick={() => setSelectedEnquiry(null)}
-                className="rounded p-1 text-[#7a9987] hover:bg-[#143023] hover:text-[#f2efe9]"
+                className="rounded p-1 text-[#8c8c8c] hover:bg-[#f5f5f5] hover:text-[#262626]"
               >
-                <X className="h-5 w-5" />
+                <X className="h-4 w-4" />
               </button>
             </div>
 
-            {/* Modal body */}
+            {/* Thân Modal */}
             <div className="mt-4 space-y-4 text-xs">
-              <div className="grid grid-cols-2 gap-4 rounded-lg border border-[#142d22] bg-[#07130e] p-3.5">
+              <div className="grid grid-cols-2 gap-3 rounded-md border border-[#f0f0f0] bg-[#fafafa] p-3">
                 <div>
-                  <span className="block text-[10px] tracking-wider text-[#5e7d6c] uppercase">
-                    Email
-                  </span>
+                  <span className="block text-[10px] text-[#8c8c8c] uppercase">Email liên hệ</span>
                   <a
                     href={`mailto:${selectedEnquiry.email}`}
-                    className="font-mono text-[11px] text-[#c9a050] hover:underline"
+                    className="font-mono text-[11px] text-[#1677ff] hover:underline"
                   >
                     {selectedEnquiry.email} ↗
                   </a>
                 </div>
                 <div>
-                  <span className="block text-[10px] tracking-wider text-[#5e7d6c] uppercase">
-                    Topic
+                  <span className="block text-[10px] text-[#8c8c8c] uppercase">
+                    Lĩnh vực tư vấn
                   </span>
-                  <span className="font-medium text-[#cde0d5]">{selectedEnquiry.topic}</span>
+                  <span className="font-medium text-[#262626]">{selectedEnquiry.topic}</span>
                 </div>
                 <div>
-                  <span className="block text-[10px] tracking-wider text-[#5e7d6c] uppercase">
-                    Project Stage
+                  <span className="block text-[10px] text-[#8c8c8c] uppercase">
+                    Giai đoạn dự án
                   </span>
-                  <span className="text-[#cde0d5]">{selectedEnquiry.projectStage || "N/A"}</span>
+                  <span className="text-[#262626]">
+                    {selectedEnquiry.projectStage || "Chưa xác định"}
+                  </span>
                 </div>
                 <div>
-                  <span className="block text-[10px] tracking-wider text-[#5e7d6c] uppercase">
-                    Indicative Capacity
+                  <span className="block text-[10px] text-[#8c8c8c] uppercase">
+                    Quy mô công suất
                   </span>
-                  <span className="text-[#cde0d5]">
-                    {selectedEnquiry.indicativeCapacity || "N/A"}
+                  <span className="font-medium text-[#262626]">
+                    {selectedEnquiry.indicativeCapacity || "Chưa xác định"}
                   </span>
                 </div>
               </div>
 
-              {/* Message */}
+              {/* Tin nhắn của khách */}
               <div>
-                <span className="mb-1.5 block font-medium text-[#9cb5a6]">Submitted Message:</span>
-                <div className="rounded-lg border border-[#142d22] bg-[#07130e] p-4 leading-relaxed text-[#e0dcd3]">
+                <span className="mb-1 block font-medium text-[#262626]">
+                  Nội dung yêu cầu từ đối tác:
+                </span>
+                <div className="rounded-md border border-[#f0f0f0] bg-[#fafafa] p-3 leading-relaxed text-[#262626]">
                   {selectedEnquiry.message}
                 </div>
               </div>
 
-              {/* Internal notes */}
+              {/* Ghi chú nội bộ */}
               <div>
-                <div className="mb-1.5 flex items-center justify-between">
-                  <span className="font-medium text-[#9cb5a6]">Internal Advisory Notes:</span>
+                <div className="mb-1 flex items-center justify-between">
+                  <span className="font-medium text-[#262626]">
+                    Ghi chú nội bộ chuyên viên LÉARGAS:
+                  </span>
                   <button
                     onClick={handleSaveNotes}
-                    className="text-[11px] font-medium text-[#c9a050] hover:underline"
+                    className="text-[11px] font-medium text-[#1677ff] hover:underline"
                   >
-                    Save Notes
+                    Lưu ghi chú
                   </button>
                 </div>
                 <textarea
                   rows={3}
                   value={editingNotes}
                   onChange={(e) => setEditingNotes(e.target.value)}
-                  placeholder="Add private notes on deal feasibility, next meeting dates, adviser contacts..."
-                  className="w-full rounded-lg border border-[#1f4231] bg-[#07130e] p-3 text-xs text-[#f2efe9] focus:border-[#c9a050] focus:outline-none"
+                  placeholder="Thêm ghi chú đánh giá thương vụ, ngày họp tiếp theo, đầu mối phụ trách..."
+                  className="w-full rounded-md border border-[#d9d9d9] bg-white p-2.5 text-xs text-[#000000e0] hover:border-[#4096ff] focus:border-[#1677ff] focus:outline-none"
                 />
               </div>
             </div>
 
-            {/* Modal footer */}
-            <div className="mt-6 flex items-center justify-between border-t border-[#1a382b] pt-4">
+            {/* Footer Modal */}
+            <div className="mt-5 flex items-center justify-between border-t border-[#f0f0f0] pt-4">
               <a
-                href={`mailto:${selectedEnquiry.email}?subject=LÉARGAS Energy Partners — Regarding your advisory enquiry`}
-                className="flex items-center gap-1.5 rounded-lg bg-[#c9a050] px-4 py-2 text-xs font-semibold tracking-wider text-[#0a1b14] uppercase hover:bg-[#dbb260]"
+                href={`mailto:${selectedEnquiry.email}?subject=LÉARGAS Energy Partners — Phản hồi yêu cầu tư vấn`}
+                className="flex items-center gap-1.5 rounded-md bg-[#1677ff] px-3.5 py-1.5 text-xs font-medium text-white shadow-sm hover:bg-[#4096ff]"
               >
-                <Mail className="h-3.5 w-3.5" />
-                Reply via Email
+                <Send className="h-3.5 w-3.5" />
+                Gửi email phản hồi
               </a>
 
               <button
                 onClick={() => setSelectedEnquiry(null)}
-                className="rounded-lg border border-[#1f4231] bg-[#0c2219] px-4 py-2 text-xs text-[#cde0d5] hover:bg-[#133326]"
+                className="rounded-md border border-[#d9d9d9] bg-white px-3.5 py-1.5 text-xs text-[#595959] hover:bg-[#fafafa]"
               >
-                Close
+                Đóng
               </button>
             </div>
           </div>

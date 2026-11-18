@@ -4,13 +4,13 @@ import * as React from "react"
 import Link from "next/link"
 import {
   FileText,
-  Inbox,
-  ArrowUpRight,
+  Clock,
   CheckCircle2,
-  AlertCircle,
-  PlusCircle,
+  Plus,
+  ArrowRight,
   Database,
   Building,
+  Check,
 } from "lucide-react"
 
 import { adminFetch } from "@/lib/api/admin-client"
@@ -40,10 +40,10 @@ export default function AdminDashboardPage() {
     totalPosts: 3,
     publishedPosts: 3,
     draftPosts: 0,
-    totalEnquiries: 8,
-    newEnquiries: 3,
-    contactedEnquiries: 3,
-    qualifiedEnquiries: 2,
+    totalEnquiries: 3,
+    newEnquiries: 2,
+    contactedEnquiries: 1,
+    qualifiedEnquiries: 0,
   })
 
   const [recentEnquiries, setRecentEnquiries] = React.useState<EnquiryItem[]>([
@@ -51,46 +51,36 @@ export default function AdminDashboardPage() {
       id: 1,
       name: "Alexander Wright",
       email: "a.wright@nordicrenewables.com",
-      company: "Nordic Clean Energy Capital",
-      topic: "M&A / Equity Investment",
+      company: "Quỹ Năng Lượng Sạch Bắc Âu",
+      topic: "M&A / Đầu tư Vốn Cổ phần",
       status: "NEW",
-      createdAt: "Just now",
+      createdAt: "Vừa xong",
     },
     {
       id: 2,
-      name: "Nguyen Hoang Minh",
+      name: "Nguyễn Hoàng Minh",
       email: "minh.nh@vietnamenergycorp.vn",
-      company: "VEC Power Holdings",
-      topic: "Project Delivery & Construction",
+      company: "Tập đoàn VEC Power Holdings",
+      topic: "Thi công & Quản lý Dự án",
       status: "CONTACTED",
-      createdAt: "3 hours ago",
+      createdAt: "Hôm qua",
     },
     {
       id: 3,
-      name: "David Chen",
-      email: "d.chen@apac-infra.sg",
-      company: "Singa Infrastructure Fund",
-      topic: "Market Entry Advisory",
-      status: "QUALIFIED",
-      createdAt: "Yesterday",
-    },
-    {
-      id: 4,
-      name: "Tran Thi Bich Ngoc",
-      email: "ngoc.tran@greenenergy.vn",
-      company: "Mekong Solar Assets",
-      topic: "Regulatory & PDP8",
+      name: "Sarah Jenkins",
+      email: "sarah.j@globalrenewables.uk",
+      company: "Quỹ Hạ tầng Năng lượng Quốc tế",
+      topic: "Tư vấn Điện gió Ngoài khơi",
       status: "NEW",
-      createdAt: "2 days ago",
+      createdAt: "Hôm nay",
     },
   ])
 
   React.useEffect(() => {
-    // Attempt fetching real statistics from Spring Boot if running
     adminFetch<DashboardStats>("/api/admin/dashboard/stats")
       .then((data) => setStats(data))
       .catch(() => {
-        // Fallback default state is kept
+        // Fallback default state
       })
 
     adminFetch<{ content: EnquiryItem[] }>("/api/admin/enquiries?size=5")
@@ -100,250 +90,270 @@ export default function AdminDashboardPage() {
         }
       })
       .catch(() => {
-        // Fallback default state is kept
+        // Fallback default state
       })
   }, [])
 
-  const getStatusBadge = (status: string) => {
+  // Tag màu chuẩn Ant Design
+  const getStatusTag = (status: string) => {
     switch (status) {
       case "NEW":
-        return "bg-amber-500/10 text-amber-400 border-amber-500/30"
+        return {
+          label: "Mới tiếp nhận",
+          className: "bg-[#fffbe6] text-[#faad14] border-[#ffe58f]",
+        }
       case "CONTACTED":
-        return "bg-blue-500/10 text-blue-400 border-blue-500/30"
+        return {
+          label: "Đã liên hệ",
+          className: "bg-[#e6f4ff] text-[#1677ff] border-[#91caff]",
+        }
       case "QUALIFIED":
-        return "bg-emerald-500/10 text-emerald-400 border-emerald-500/30"
+        return {
+          label: "Đạt tiêu chuẩn",
+          className: "bg-[#f6ffed] text-[#52c41a] border-[#b7eb8f]",
+        }
       default:
-        return "bg-gray-500/10 text-gray-400 border-gray-500/30"
+        return {
+          label: "Đã đóng",
+          className: "bg-[#fafafa] text-[#8c8c8c] border-[#d9d9d9]",
+        }
     }
   }
 
   return (
-    <div className="space-y-8">
-      {/* Page Header */}
-      <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
+    <div className="space-y-6">
+      {/* Tiêu đề trang Ant Design */}
+      <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
         <div>
-          <h1 className="font-serif text-2xl font-light text-[#f9f6ee] sm:text-3xl">
-            Executive Overview
-          </h1>
-          <p className="mt-1 text-xs text-[#7a9987]">
-            LÉARGAS Energy Partners — Commercial Advisory & Deal Pipeline
+          <h1 className="text-xl font-semibold text-[#000000e0]">Tổng quan Hoạt động</h1>
+          <p className="mt-0.5 text-xs text-[#8c8c8c]">
+            Hệ thống quản lý đối tác tư vấn và nội dung cổng thông tin LÉARGAS Energy Partners
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2.5">
           <Link
             href="/admin/posts/new"
-            className="flex items-center gap-2 rounded-lg bg-[#c9a050] px-4 py-2 text-xs font-semibold tracking-wider text-[#0a1b14] uppercase transition-all hover:bg-[#dbb260]"
+            className="flex items-center gap-1.5 rounded-md bg-[#1677ff] px-3.5 py-1.5 text-xs font-medium text-white shadow-sm transition-all hover:bg-[#4096ff]"
           >
-            <PlusCircle className="h-4 w-4" />
-            Publish Article
+            <Plus className="h-3.5 w-3.5" />
+            Thêm bài viết
           </Link>
           <Link
             href="/admin/enquiries"
-            className="flex items-center gap-2 rounded-lg border border-[#1f4231] bg-[#0c2219] px-4 py-2 text-xs font-medium text-[#cde0d5] transition-colors hover:bg-[#133326]"
+            className="flex items-center gap-1.5 rounded-md border border-[#d9d9d9] bg-white px-3.5 py-1.5 text-xs font-medium text-[#262626] shadow-sm transition-colors hover:border-[#1677ff] hover:text-[#1677ff]"
           >
-            <Inbox className="h-4 w-4 text-[#c9a050]" />
-            Manage Leads
+            Xem danh sách Leads
           </Link>
         </div>
       </div>
 
-      {/* KPI Cards Grid */}
+      {/* Grid 4 Thống kê phong cách Ant Design Card */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {/* Card 1 */}
-        <div className="rounded-xl border border-[#1a382b] bg-[#0a1b14] p-5 shadow-sm">
-          <div className="flex items-center justify-between text-[#7a9987]">
-            <span className="text-xs font-medium tracking-wider uppercase">New Enquiries</span>
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-500/10 text-amber-400">
-              <AlertCircle className="h-4 w-4" />
+        {/* Card 1: Leads mới */}
+        <div className="rounded-lg border border-[#f0f0f0] bg-white p-5 shadow-[0_1px_2px_0_rgba(0,0,0,0.03)] transition-all hover:shadow-[0_4px_12px_rgba(0,0,0,0.05)]">
+          <div className="flex items-center justify-between text-xs text-[#8c8c8c]">
+            <span>Yêu cầu mới cần xử lý</span>
+            <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[#fffbe6] text-[#faad14]">
+              <Clock className="h-3.5 w-3.5" />
             </div>
           </div>
-          <div className="mt-4 flex items-baseline gap-2">
-            <span className="font-serif text-3xl font-light text-[#f9f6ee]">
-              {stats.newEnquiries}
+          <div className="mt-3 flex items-baseline gap-2">
+            <span className="text-2xl font-semibold text-[#000000e0]">{stats.newEnquiries}</span>
+            <span className="py-0.2 rounded border border-[#ffe58f] bg-[#fffbe6] px-1.5 text-[10px] font-medium text-[#faad14]">
+              Chờ phản hồi
             </span>
-            <span className="text-xs font-medium text-amber-400">Needs Attention</span>
           </div>
-          <p className="mt-2 text-[11px] text-[#5e7d6c]">
-            {stats.totalEnquiries} total institutional leads in pipeline
-          </p>
+          <div className="mt-3 flex items-center justify-between border-t border-[#f0f0f0] pt-2 text-xs text-[#8c8c8c]">
+            <span>Tổng số lead nhận:</span>
+            <span className="font-medium text-[#262626]">{stats.totalEnquiries}</span>
+          </div>
         </div>
 
-        {/* Card 2 */}
-        <div className="rounded-xl border border-[#1a382b] bg-[#0a1b14] p-5 shadow-sm">
-          <div className="flex items-center justify-between text-[#7a9987]">
-            <span className="text-xs font-medium tracking-wider uppercase">Qualified Leads</span>
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-400">
-              <CheckCircle2 className="h-4 w-4" />
+        {/* Card 2: Hồ sơ đạt chuẩn */}
+        <div className="rounded-lg border border-[#f0f0f0] bg-white p-5 shadow-[0_1px_2px_0_rgba(0,0,0,0.03)] transition-all hover:shadow-[0_4px_12px_rgba(0,0,0,0.05)]">
+          <div className="flex items-center justify-between text-xs text-[#8c8c8c]">
+            <span>Hồ sơ đạt tiêu chuẩn</span>
+            <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[#f6ffed] text-[#52c41a]">
+              <CheckCircle2 className="h-3.5 w-3.5" />
             </div>
           </div>
-          <div className="mt-4 flex items-baseline gap-2">
-            <span className="font-serif text-3xl font-light text-[#f9f6ee]">
+          <div className="mt-3 flex items-baseline gap-2">
+            <span className="text-2xl font-semibold text-[#000000e0]">
               {stats.qualifiedEnquiries}
             </span>
-            <span className="text-xs font-medium text-emerald-400">Active Discussions</span>
+            <span className="py-0.2 rounded border border-[#b7eb8f] bg-[#f6ffed] px-1.5 text-[10px] font-medium text-[#52c41a]">
+              Đang làm việc
+            </span>
           </div>
-          <p className="mt-2 text-[11px] text-[#5e7d6c]">
-            High-intent capital partners & developers
-          </p>
+          <div className="mt-3 flex items-center justify-between border-t border-[#f0f0f0] pt-2 text-xs text-[#8c8c8c]">
+            <span>Đã liên hệ ban đầu:</span>
+            <span className="font-medium text-[#262626]">{stats.contactedEnquiries}</span>
+          </div>
         </div>
 
-        {/* Card 3 */}
-        <div className="rounded-xl border border-[#1a382b] bg-[#0a1b14] p-5 shadow-sm">
-          <div className="flex items-center justify-between text-[#7a9987]">
-            <span className="text-xs font-medium tracking-wider uppercase">Published Articles</span>
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#143023] text-[#c9a050]">
-              <FileText className="h-4 w-4" />
+        {/* Card 3: Bài viết */}
+        <div className="rounded-lg border border-[#f0f0f0] bg-white p-5 shadow-[0_1px_2px_0_rgba(0,0,0,0.03)] transition-all hover:shadow-[0_4px_12px_rgba(0,0,0,0.05)]">
+          <div className="flex items-center justify-between text-xs text-[#8c8c8c]">
+            <span>Bài viết phân tích (CMS)</span>
+            <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[#e6f4ff] text-[#1677ff]">
+              <FileText className="h-3.5 w-3.5" />
             </div>
           </div>
-          <div className="mt-4 flex items-baseline gap-2">
-            <span className="font-serif text-3xl font-light text-[#f9f6ee]">
-              {stats.publishedPosts}
-            </span>
-            <span className="text-xs text-[#7a9987]">Live on website</span>
+          <div className="mt-3 flex items-baseline gap-2">
+            <span className="text-2xl font-semibold text-[#000000e0]">{stats.publishedPosts}</span>
+            <span className="text-xs text-[#8c8c8c]">Bài đã xuất bản</span>
           </div>
-          <p className="mt-2 text-[11px] text-[#5e7d6c]">
-            {stats.draftPosts} draft articles under review
-          </p>
+          <div className="mt-3 flex items-center justify-between border-t border-[#f0f0f0] pt-2 text-xs text-[#8c8c8c]">
+            <span>Bài nháp đang soạn:</span>
+            <span className="font-medium text-[#262626]">{stats.draftPosts}</span>
+          </div>
         </div>
 
-        {/* Card 4 */}
-        <div className="rounded-xl border border-[#1a382b] bg-[#0a1b14] p-5 shadow-sm">
-          <div className="flex items-center justify-between text-[#7a9987]">
-            <span className="text-xs font-medium tracking-wider uppercase">
-              Backend Architecture
-            </span>
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#143023] text-[#c9a050]">
-              <Database className="h-4 w-4" />
+        {/* Card 4: Trạng thái Server */}
+        <div className="rounded-lg border border-[#f0f0f0] bg-white p-5 shadow-[0_1px_2px_0_rgba(0,0,0,0.03)] transition-all hover:shadow-[0_4px_12px_rgba(0,0,0,0.05)]">
+          <div className="flex items-center justify-between text-xs text-[#8c8c8c]">
+            <span>Hệ thống Backend</span>
+            <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[#f6ffed] text-[#52c41a]">
+              <Database className="h-3.5 w-3.5" />
             </div>
           </div>
-          <div className="mt-4 flex items-baseline gap-2">
-            <span className="text-sm font-semibold text-[#f9f6ee]">Spring Boot 3</span>
-            <span className="rounded bg-emerald-950 px-1.5 py-0.5 text-[10px] text-emerald-300">
-              MySQL 8+
+          <div className="mt-3 flex items-baseline gap-2">
+            <span className="text-base font-semibold text-[#000000e0]">Spring Boot 3</span>
+            <span className="py-0.2 rounded border border-[#b7eb8f] bg-[#f6ffed] px-1.5 text-[10px] font-medium text-[#52c41a]">
+              Cổng 8080
             </span>
           </div>
-          <p className="mt-2 text-[11px] text-[#5e7d6c]">Port 8080 · JWT Auth · Workbench Ready</p>
+          <div className="mt-3 flex items-center justify-between border-t border-[#f0f0f0] pt-2 text-xs text-[#8c8c8c]">
+            <span>Cơ sở dữ liệu:</span>
+            <span className="flex items-center gap-1 font-medium text-[#52c41a]">
+              <Check className="h-3 w-3" /> MySQL Workbench
+            </span>
+          </div>
         </div>
       </div>
 
-      {/* Main Grid: Recent Inquiries & Quick Links */}
-      <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
-        {/* Recent Inquiries Table (2 cols) */}
-        <div className="rounded-xl border border-[#1a382b] bg-[#0a1b14] lg:col-span-2">
-          <div className="flex items-center justify-between border-b border-[#1a382b] p-5">
+      {/* Khối chính: Bảng danh sách Ant Design & Tiện ích bên phải */}
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+        {/* Bảng Ant Design (chiếm 2 cột) */}
+        <div className="rounded-lg border border-[#f0f0f0] bg-white shadow-[0_1px_2px_0_rgba(0,0,0,0.03)] lg:col-span-2">
+          {/* Header bảng */}
+          <div className="flex items-center justify-between border-b border-[#f0f0f0] px-5 py-4">
             <div>
-              <h2 className="font-serif text-base font-light text-[#f9f6ee]">
-                Recent Institutional Enquiries
+              <h2 className="text-sm font-semibold text-[#000000e0]">
+                Yêu cầu Tư vấn Mới tiếp nhận
               </h2>
-              <p className="text-xs text-[#7a9987]">Latest consultation requests from investors</p>
+              <p className="text-xs text-[#8c8c8c]">
+                Danh sách các đối tác, nhà đầu tư liên hệ tư vấn chiến lược & năng lượng
+              </p>
             </div>
             <Link
               href="/admin/enquiries"
-              className="flex items-center gap-1 text-xs text-[#c9a050] hover:underline"
+              className="flex items-center gap-1 text-xs font-medium text-[#1677ff] hover:text-[#4096ff]"
             >
-              View all ({stats.totalEnquiries})
-              <ArrowUpRight className="h-3.5 w-3.5" />
+              Xem tất cả ({stats.totalEnquiries})
+              <ArrowRight className="h-3 w-3" />
             </Link>
           </div>
 
+          {/* Table Ant Design */}
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="border-b border-[#153124] bg-[#07130e] text-[10px] tracking-wider text-[#6e8f7d] uppercase">
+              <thead className="border-b border-[#f0f0f0] bg-[#fafafa] font-medium text-[#262626]">
                 <tr>
-                  <th className="px-5 py-3 font-medium">Investor / Firm</th>
-                  <th className="px-5 py-3 font-medium">Topic</th>
-                  <th className="px-5 py-3 font-medium">Status</th>
-                  <th className="px-5 py-3 text-right font-medium">Action</th>
+                  <th className="px-5 py-3">Họ tên & Đơn vị</th>
+                  <th className="px-5 py-3">Chủ đề tư vấn</th>
+                  <th className="px-5 py-3">Trạng thái</th>
+                  <th className="px-5 py-3 text-right">Thao tác</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#132c20]">
-                {recentEnquiries.map((item) => (
-                  <tr key={item.id} className="transition-colors hover:bg-[#0f281e]">
-                    <td className="px-5 py-3.5">
-                      <div className="font-medium text-[#f2efe9]">{item.name}</div>
-                      <div className="flex items-center gap-1.5 text-[11px] text-[#7a9987]">
-                        <Building className="h-3 w-3 text-[#527360]" />
-                        {item.company || item.email}
-                      </div>
-                    </td>
-                    <td className="px-5 py-3.5 text-[#9cb5a6]">{item.topic}</td>
-                    <td className="px-5 py-3.5">
-                      <span
-                        className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] font-medium ${getStatusBadge(
-                          item.status
-                        )}`}
-                      >
-                        {item.status}
-                      </span>
-                    </td>
-                    <td className="px-5 py-3.5 text-right">
-                      <Link
-                        href="/admin/enquiries"
-                        className="rounded bg-[#143023] px-2.5 py-1 text-[11px] text-[#cde0d5] hover:bg-[#1a3d2c]"
-                      >
-                        Inspect
-                      </Link>
-                    </td>
-                  </tr>
-                ))}
+              <tbody className="divide-y divide-[#f0f0f0]">
+                {recentEnquiries.map((item) => {
+                  const tag = getStatusTag(item.status)
+                  return (
+                    <tr key={item.id} className="transition-colors hover:bg-[#fafafa]">
+                      <td className="px-5 py-3.5">
+                        <div className="font-medium text-[#262626]">{item.name}</div>
+                        <div className="mt-0.5 flex items-center gap-1 text-[11px] text-[#8c8c8c]">
+                          <Building className="h-3 w-3 text-[#bfbfbf]" />
+                          {item.company || item.email}
+                        </div>
+                      </td>
+                      <td className="px-5 py-3.5 text-[#595959]">{item.topic}</td>
+                      <td className="px-5 py-3.5">
+                        <span
+                          className={`inline-block rounded-full border px-2 py-0.5 text-[10px] font-medium ${tag.className}`}
+                        >
+                          {tag.label}
+                        </span>
+                      </td>
+                      <td className="px-5 py-3.5 text-right">
+                        <Link
+                          href="/admin/enquiries"
+                          className="font-medium text-[#1677ff] hover:text-[#4096ff]"
+                        >
+                          Chi tiết
+                        </Link>
+                      </td>
+                    </tr>
+                  )
+                })}
               </tbody>
             </table>
           </div>
         </div>
 
-        {/* Right Column: System Status & Resources */}
+        {/* Khối bên phải Ant Design Card: Bài viết & Tài liệu API */}
         <div className="space-y-6">
-          {/* Quick CMS Status */}
-          <div className="rounded-xl border border-[#1a382b] bg-[#0a1b14] p-5">
-            <h3 className="mb-3 font-serif text-sm font-light text-[#f9f6ee]">Content Pipeline</h3>
-            <div className="space-y-3">
-              <div className="flex items-center justify-between border-b border-[#142d22] pb-2 text-xs">
-                <span className="text-[#9cb5a6]">Buying a wind project: first screening</span>
-                <span className="rounded bg-emerald-950 px-2 py-0.5 text-[10px] text-emerald-300">
-                  Published
-                </span>
+          {/* Card Bài viết mới */}
+          <div className="rounded-lg border border-[#f0f0f0] bg-white p-5 shadow-[0_1px_2px_0_rgba(0,0,0,0.03)]">
+            <h3 className="mb-3 text-sm font-semibold text-[#000000e0]">
+              Bài viết Phân tích (CMS)
+            </h3>
+            <div className="space-y-2.5 text-xs">
+              <div className="border-b border-[#f5f5f5] pb-2">
+                <p className="line-clamp-1 font-medium text-[#262626]">
+                  Mua dự án điện gió: Những câu hỏi đầu tiên
+                </p>
+                <span className="text-[10px] text-[#52c41a]">● Đã xuất bản</span>
               </div>
-              <div className="flex items-center justify-between border-b border-[#142d22] pb-2 text-xs">
-                <span className="text-[#9cb5a6]">Selling a wind project: market preparation</span>
-                <span className="rounded bg-emerald-950 px-2 py-0.5 text-[10px] text-emerald-300">
-                  Published
-                </span>
+              <div className="border-b border-[#f5f5f5] pb-2">
+                <p className="line-clamp-1 font-medium text-[#262626]">
+                  Bán dự án điện gió: Chuẩn bị trước khi tiếp cận thị trường
+                </p>
+                <span className="text-[10px] text-[#52c41a]">● Đã xuất bản</span>
               </div>
-              <div className="flex items-center justify-between border-b border-[#142d22] pb-2 text-xs">
-                <span className="text-[#9cb5a6]">Navigating PDP8: priorities for investors</span>
-                <span className="rounded bg-emerald-950 px-2 py-0.5 text-[10px] text-emerald-300">
-                  Published
-                </span>
+              <div className="border-b border-[#f5f5f5] pb-2">
+                <p className="line-clamp-1 font-medium text-[#262626]">
+                  Định hướng Quy hoạch điện 8 (PDP8) cho nhà đầu tư
+                </p>
+                <span className="text-[10px] text-[#52c41a]">● Đã xuất bản</span>
               </div>
             </div>
             <Link
               href="/admin/posts"
-              className="mt-4 flex w-full items-center justify-center gap-1 rounded-lg border border-[#1f4231] bg-[#0c2219] py-2 text-xs text-[#cde0d5] hover:bg-[#133326]"
+              className="mt-4 flex w-full items-center justify-center gap-1 rounded-md border border-[#d9d9d9] bg-white py-1.5 text-xs text-[#262626] hover:border-[#1677ff] hover:text-[#1677ff]"
             >
-              Open Articles Manager
-              <ArrowUpRight className="h-3.5 w-3.5" />
+              Vào trang Quản lý Bài viết
+              <ArrowRight className="h-3 w-3" />
             </Link>
           </div>
 
-          {/* MySQL & Spring Boot Guide */}
-          <div className="rounded-xl border border-[#1a382b] bg-[#0a1b14] p-5">
-            <div className="mb-2 flex items-center gap-2 text-[#c9a050]">
+          {/* Card Hướng dẫn Kết nối MySQL */}
+          <div className="rounded-lg border border-[#f0f0f0] bg-white p-5 shadow-[0_1px_2px_0_rgba(0,0,0,0.03)]">
+            <div className="mb-2 flex items-center gap-2 text-[#1677ff]">
               <Database className="h-4 w-4" />
               <h3 className="text-xs font-semibold tracking-wider uppercase">
-                MySQL Workbench Setup
+                Kết nối MySQL Workbench
               </h3>
             </div>
-            <p className="text-xs leading-relaxed text-[#7a9987]">
-              Database schema DDL script is located at:
+            <p className="text-xs leading-relaxed text-[#595959]">
+              Toàn bộ dữ liệu được lưu trữ trực tiếp trong cơ sở dữ liệu MySQL{" "}
+              <code className="font-mono text-[#0958d9]">leargas_db</code>.
             </p>
-            <code className="mt-2 block rounded border border-[#153124] bg-[#07130e] p-2 font-mono text-[10px] text-[#cde0d5]">
-              backend/db/schema.sql
-            </code>
-            <p className="mt-2 text-[11px] text-[#5e7d6c]">
-              Open MySQL Workbench, create connection to local or VPS MySQL, and execute the SQL
-              script.
-            </p>
+            <div className="mt-2 rounded border border-[#f0f0f0] bg-[#fafafa] p-2 font-mono text-[11px] text-[#595959]">
+              localhost:3306 / leargas_db
+            </div>
           </div>
         </div>
       </div>
