@@ -84,18 +84,23 @@ export function FirmIdentity() {
             <LineDraw className="bg-ink/15" />
             <div className="grid grid-cols-3 divide-x divide-ink/10">
               {stats.map((s) => (
-                <div key={s.label} className="py-[clamp(16px,3vh,28px)] pr-4 pl-5 first:pl-0">
-                  <div className="font-heading text-[clamp(26px,min(3.2vw,5.5vh),52px)] leading-none font-semibold tracking-[-0.03em] text-green tabular-nums">
+                <div
+                  key={s.label}
+                  className="py-[clamp(16px,3vh,28px)] pr-2 pl-3 first:pl-0 sm:pr-4 sm:pl-5"
+                >
+                  <div className="font-heading text-[clamp(22px,min(2.7vw,4.6vh),44px)] leading-none font-semibold tracking-[-0.03em] whitespace-nowrap text-green tabular-nums">
                     {s.displayValue ? (
                       <span>{s.displayValue}</span>
                     ) : (
                       <CountUp to={s.value ?? 0} decimals={s.decimals ?? 0} repeat />
                     )}
-                    <span className="ml-1 text-[0.4em] font-normal tracking-normal text-muted-foreground">
+                    <span className="ml-1 inline-block text-[0.38em] font-normal tracking-normal whitespace-nowrap text-muted-foreground">
                       {s.unit}
                     </span>
                   </div>
-                  <div className="mt-2 text-[13px] text-muted-foreground">{s.label}</div>
+                  <div className="mt-2 text-[12.5px] leading-snug text-muted-foreground sm:text-[13px]">
+                    {s.label}
+                  </div>
                 </div>
               ))}
             </div>
