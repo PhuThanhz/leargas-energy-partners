@@ -74,7 +74,7 @@ CREATE TABLE IF NOT EXISTS media_files (
     FOREIGN KEY (uploaded_by) REFERENCES users(id) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Seed default initial administrator (password: admin123, BCrypt encoded: $2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iwK8h.ye)
+-- Seed default initial administrator (password: admin123, BCrypt encoded)
 INSERT INTO users (username, email, password_hash, full_name, role, is_active)
-SELECT 'admin', 'admin@leargasenergy.com', '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iwK8h.ye', 'LÉARGAS Administrator', 'ROLE_ADMIN', TRUE
+SELECT 'admin', 'admin@leargasenergy.com', '$2b$10$9ytM8ORt/kLqzZFlA6qdOuR800g7SbKl.75nrFEGSDUILGBrNVLKG', 'LÉARGAS Administrator', 'ROLE_ADMIN', TRUE
 WHERE NOT EXISTS (SELECT 1 FROM users WHERE username = 'admin');
