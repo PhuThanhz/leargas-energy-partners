@@ -12,9 +12,17 @@ import {
 } from "@/components/motion/reveal"
 import { photos } from "@/content/media"
 
-const stats = [
+interface StatItem {
+  value?: number
+  displayValue?: string
+  decimals?: number
+  unit: string
+  label: string
+}
+
+const stats: StatItem[] = [
   { value: 3260, decimals: 0, unit: "km", label: "Coastline" },
-  { value: 9.5, decimals: 1, unit: "m/s", label: "Mean wind speed" },
+  { displayValue: "10–15%", unit: "/ year", label: "Electricity demand growth" },
   { value: 28, decimals: 0, unit: "GW", label: "PDP8 target by 2030" },
 ]
 
@@ -77,8 +85,12 @@ export function FirmIdentity() {
             <div className="grid grid-cols-3 divide-x divide-ink/10">
               {stats.map((s) => (
                 <div key={s.label} className="py-[clamp(16px,3vh,28px)] pr-4 pl-5 first:pl-0">
-                  <div className="font-heading text-[clamp(30px,min(3.4vw,6vh),56px)] leading-none font-semibold tracking-[-0.03em] text-green tabular-nums">
-                    <CountUp to={s.value} decimals={s.decimals} repeat />
+                  <div className="font-heading text-[clamp(26px,min(3.2vw,5.5vh),52px)] leading-none font-semibold tracking-[-0.03em] text-green tabular-nums">
+                    {s.displayValue ? (
+                      <span>{s.displayValue}</span>
+                    ) : (
+                      <CountUp to={s.value ?? 0} decimals={s.decimals ?? 0} repeat />
+                    )}
                     <span className="ml-1 text-[0.4em] font-normal tracking-normal text-muted-foreground">
                       {s.unit}
                     </span>
