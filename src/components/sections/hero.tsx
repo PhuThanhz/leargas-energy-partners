@@ -25,7 +25,7 @@ export function Hero() {
   return (
     <section
       aria-roledescription="carousel"
-      aria-label="Energy opportunities across Vietnam and Asia-Pacific"
+      aria-label="Energy opportunities across Vietnam"
       className="relative isolate -mt-[68px] flex min-h-[100dvh] flex-col overflow-hidden bg-green-deep text-white md:-mt-[76px]"
     >
       {/* Slides: cross-fade with a slow Ken Burns zoom */}
@@ -80,8 +80,7 @@ export function Hero() {
             className="mt-[clamp(24px,5vh,48px)] flex flex-col gap-6 md:flex-row md:items-end md:justify-between"
           >
             <p className="max-w-[440px] text-[16px] leading-[1.7] text-white/75">
-              Boutique advisory connecting international capital with energy in Vietnam and
-              Asia-Pacific.
+              Boutique advisory connecting international capital with energy in Vietnam.
             </p>
             <div className="flex flex-wrap items-center gap-3">
               <Link href="/#services" className={arrowButton({ variant: "gold", size: "md" })}>

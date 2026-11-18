@@ -54,7 +54,7 @@ export function Footer() {
             </Link>
             <p className="mt-6 max-w-[340px] text-[14px] leading-[1.7] text-white/55">
               Boutique strategic and investment advisory, connecting international capital with
-              energy across Vietnam and Asia-Pacific.
+              energy across Vietnam.
             </p>
           </div>
 

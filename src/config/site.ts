@@ -4,7 +4,7 @@ export const siteConfig = {
   name: "LÉARGAS Energy Partners",
   title: "LÉARGAS Energy Partners | Strategic & Investment Advisory · Vietnam & APAC",
   description:
-    "A boutique strategic and investment advisory firm connecting international capital with energy opportunities in Vietnam and Asia-Pacific – from market entry and M&A to project delivery.",
+    "A boutique strategic and investment advisory firm connecting international capital with energy opportunities in Vietnam – from market entry and M&A to project delivery.",
   url: env.NEXT_PUBLIC_SITE_URL,
   keywords: [
     "investment advisory Vietnam",
