@@ -62,10 +62,13 @@ public class SecurityConfig {
                 })
             )
             .authorizeHttpRequests(auth -> auth
+                // CORS preflight requests
+                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 // Public authentication endpoints
                 .requestMatchers("/api/auth/**").permitAll()
                 // Public content endpoints
                 .requestMatchers(HttpMethod.GET, "/api/posts/**").permitAll()
+                .requestMatchers(HttpMethod.HEAD, "/api/posts/**").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/enquiries").permitAll()
                 // Static assets & Swagger docs
                 .requestMatchers("/uploads/**", "/swagger-ui/**", "/v3/api-docs/**", "/api-docs/**", "/swagger-ui.html").permitAll()
