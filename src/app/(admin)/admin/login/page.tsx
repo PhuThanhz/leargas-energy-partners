@@ -31,8 +31,10 @@ export default function AdminLoginPage() {
       const data = await res.json().catch(() => null)
 
       if (!res.ok) {
-        const errorMsg =
-          data?.detail || data?.title || "Tên đăng nhập hoặc mật khẩu không chính xác."
+        let errorMsg = data?.detail || data?.title || "Tên đăng nhập hoặc mật khẩu không chính xác."
+        if (errorMsg === "Invalid username or password") {
+          errorMsg = "Tên đăng nhập hoặc mật khẩu không chính xác."
+        }
         toast.error("Đăng nhập thất bại", {
           description: errorMsg,
         })

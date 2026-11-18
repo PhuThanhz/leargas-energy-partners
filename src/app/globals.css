@@ -298,3 +298,60 @@
     transform: scale(1);
   }
 }
+
+/* Custom Sonner Toast Styles (Enterprise & Ant Design inspired) */
+[data-sonner-toast][data-type="error"] {
+  background: #fef2f2 !important;
+  border-color: #fecaca !important;
+  color: #991b1b !important;
+  box-shadow:
+    0 10px 25px -5px rgba(239, 68, 68, 0.15),
+    0 8px 10px -6px rgba(239, 68, 68, 0.1) !important;
+}
+
+[data-sonner-toast][data-type="error"] [data-title] {
+  color: #991b1b !important;
+  font-weight: 600 !important;
+}
+
+[data-sonner-toast][data-type="error"] [data-description] {
+  color: #b91c1c !important;
+}
+
+[data-sonner-toast][data-type="error"] [data-icon] svg {
+  color: #dc2626 !important;
+}
+
+[data-sonner-toast][data-type="success"] {
+  background: #f0fdf4 !important;
+  border-color: #bbf7d0 !important;
+  color: #166534 !important;
+  box-shadow:
+    0 10px 25px -5px rgba(34, 197, 94, 0.15),
+    0 8px 10px -6px rgba(34, 197, 94, 0.1) !important;
+}
+
+[data-sonner-toast][data-type="success"] [data-title] {
+  color: #166534 !important;
+  font-weight: 600 !important;
+}
+
+[data-sonner-toast][data-type="success"] [data-description] {
+  color: #15803d !important;
+}
+
+[data-sonner-toast][data-type="success"] [data-icon] svg {
+  color: #16a34a !important;
+}
+
+[data-sonner-toast][data-type="warning"] {
+  background: #fffbeb !important;
+  border-color: #fde68a !important;
+  color: #92400e !important;
+}
+
+[data-sonner-toast][data-type="info"] {
+  background: #eff6ff !important;
+  border-color: #bfdbfe !important;
+  color: #1e40af !important;
+}
