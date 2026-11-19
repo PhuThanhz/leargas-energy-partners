@@ -3,12 +3,12 @@
 import * as React from "react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
-import { Layout, Menu, Button, Tooltip, ConfigProvider } from "antd"
+import { Layout, Menu, Button, Tooltip, ConfigProvider, Dropdown } from "antd"
+import type { MenuProps } from "antd"
 import {
   DashboardOutlined,
   FileTextOutlined,
   FolderOutlined,
-  PictureOutlined,
   CustomerServiceOutlined,
   SettingOutlined,
   MenuFoldOutlined,
@@ -18,6 +18,7 @@ import {
   LogoutOutlined,
   MenuOutlined,
   CloseOutlined,
+  DownOutlined,
 } from "@ant-design/icons"
 import { LogoImage } from "@/components/shared/logo"
 
@@ -97,6 +98,46 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     router.push("/admin/login")
   }
 
+  const userMenuItems: MenuProps["items"] = [
+    {
+      key: "user-header",
+      label: (
+        <div className="px-1 py-1">
+          <div className="font-semibold text-slate-900">
+            {user?.fullName || "LÉARGAS Administrator"}
+          </div>
+          <div className="font-mono text-[11px] text-slate-500">
+            {user?.email || "admin@leargasenergy.com"}
+          </div>
+          <div className="mt-1">
+            <span className="py-0.2 rounded-full border border-emerald-200/60 bg-emerald-50 px-2 text-[10px] font-semibold text-emerald-700">
+              ROLE_ADMIN
+            </span>
+          </div>
+        </div>
+      ),
+      disabled: true,
+    },
+    {
+      type: "divider",
+    },
+    {
+      key: "settings",
+      icon: <SettingOutlined className="text-slate-500" />,
+      label: <Link href="/admin/settings">Cài đặt Hệ thống</Link>,
+    },
+    {
+      type: "divider",
+    },
+    {
+      key: "logout",
+      danger: true,
+      icon: <LogoutOutlined />,
+      label: "Đăng xuất tài khoản",
+      onClick: handleLogout,
+    },
+  ]
+
   const menuItems = [
     {
       type: "group" as const,
@@ -131,11 +172,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           icon: <FolderOutlined className="text-sm" />,
           label: "Chuyên mục (Taxonomy)",
         },
-        {
-          key: "/admin/media",
-          icon: <PictureOutlined className="text-sm" />,
-          label: "Thư viện Ảnh & File",
-        },
       ],
     },
     {
@@ -164,7 +200,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     "/admin/dashboard",
     "/admin/posts",
     "/admin/categories",
-    "/admin/media",
     "/admin/enquiries",
     "/admin/settings",
   ]
@@ -179,7 +214,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     { key: "/admin/dashboard", icon: <DashboardOutlined />, label: "Bảng điều khiển" },
     { key: "/admin/posts", icon: <FileTextOutlined />, label: "Quản lý Bài viết" },
     { key: "/admin/categories", icon: <FolderOutlined />, label: "Chuyên mục (Taxonomy)" },
-    { key: "/admin/media", icon: <PictureOutlined />, label: "Thư viện Ảnh & File" },
     { key: "/admin/enquiries", icon: <CustomerServiceOutlined />, label: "Yêu cầu Tư vấn (Leads)" },
     { key: "/admin/settings", icon: <SettingOutlined />, label: "Cài đặt Hệ thống" },
   ]
@@ -191,7 +225,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       return ["Quản lý Bài viết", "Chỉnh sửa bài viết"]
     if (pathname.includes("/admin/posts")) return ["Quản lý Bài viết", "Danh sách"]
     if (pathname.includes("/admin/categories")) return ["Nội dung CMS", "Quản lý Chuyên mục"]
-    if (pathname.includes("/admin/media")) return ["Nội dung CMS", "Thư viện Hình ảnh"]
     if (pathname.includes("/admin/enquiries")) return ["Khách hàng & Tư vấn", "Danh sách Leads"]
     if (pathname.includes("/admin/settings")) return ["Hệ thống", "Cài đặt chung"]
     return ["Trang chủ", "Bảng điều khiển"]
@@ -376,23 +409,17 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
               <div className="hidden h-4 w-px bg-[#f0f0f0] sm:block" />
 
-              <div className="flex items-center gap-2">
-                <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[#059669]/10 text-xs font-semibold text-[#059669]">
-                  <UserOutlined />
+              <Dropdown menu={{ items: userMenuItems }} trigger={["click"]} placement="bottomRight">
+                <div className="flex cursor-pointer items-center gap-2 rounded-full border border-slate-200/80 bg-slate-50/80 py-1 pr-3 pl-1.5 transition-all hover:border-slate-300 hover:bg-slate-100 active:scale-98">
+                  <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[#059669]/10 text-xs font-semibold text-[#059669]">
+                    <UserOutlined />
+                  </div>
+                  <span className="text-xs font-medium text-slate-800">
+                    {user?.fullName || "LÉARGAS Administrator"}
+                  </span>
+                  <DownOutlined className="text-[9px] text-slate-400" />
                 </div>
-                <span className="text-xs font-medium text-[#262626]">
-                  {user?.fullName || "Quản trị viên"}
-                </span>
-              </div>
-
-              <button
-                onClick={handleLogout}
-                title="Đăng xuất"
-                className="flex items-center gap-1 text-xs text-[#ff4d4f] hover:text-[#cf1322] hover:underline"
-              >
-                <LogoutOutlined />
-                <span className="hidden sm:inline">Đăng xuất</span>
-              </button>
+              </Dropdown>
 
               {/* Nút menu cho mobile */}
               <Button
