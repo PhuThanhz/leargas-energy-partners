@@ -48,7 +48,11 @@ export function isAuthenticated(): boolean {
   return Boolean(auth.token)
 }
 
-export const API_HOST = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080"
+export const API_HOST =
+  process.env.NEXT_PUBLIC_API_URL ||
+  (typeof window !== "undefined" && process.env.NODE_ENV === "production"
+    ? ""
+    : "http://localhost:8080")
 
 /** Turn a backend-relative media path (`/uploads/x.jpg`) into an absolute URL. */
 export function resolveMediaUrl(url: string): string {

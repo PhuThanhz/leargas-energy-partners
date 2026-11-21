@@ -1,4 +1,42 @@
 services:
+  mysql:
+    image: mysql:8.0
+    container_name: leargas_mysql
+    restart: always
+    environment:
+      MYSQL_DATABASE: leargas_db
+      MYSQL_USER: leargas_user
+      MYSQL_PASSWORD: leargas_secure_password_2026
+      MYSQL_ROOT_PASSWORD: leargas_root_password_2026
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./backend/db/schema.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    networks:
+      - leargas_network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: leargas_backend
+    restart: always
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_NAME=leargas_db
+      - DB_USER=leargas_user
+      - DB_PASSWORD=leargas_secure_password_2026
+      - JWT_SECRET=404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
+    volumes:
+      - backend_uploads:/app/uploads
+    depends_on:
+      - mysql
+    expose:
+      - "8080"
+    networks:
+      - leargas_network
+
   app:
     build:
       context: .
@@ -10,6 +48,10 @@ services:
       - PORT=3000
       - HOSTNAME=0.0.0.0
       - NEXT_PUBLIC_SITE_URL=https://leargasenergy.com
+      - API_BASE_URL=http://backend:8080
+      - NEXT_PUBLIC_API_URL=https://leargasenergy.com
+    depends_on:
+      - backend
     expose:
       - "3000"
     networks:
@@ -27,8 +69,13 @@ services:
       - /etc/letsencrypt:/etc/letsencrypt:ro
     depends_on:
       - app
+      - backend
     networks:
       - leargas_network
+
+volumes:
+  mysql_data:
+  backend_uploads:
 
 networks:
   leargas_network:

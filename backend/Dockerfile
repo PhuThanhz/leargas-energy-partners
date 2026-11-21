@@ -11,6 +11,7 @@ RUN mvn clean package -DskipTests
 FROM eclipse-temurin:21-jre-alpine
 WORKDIR /app
 RUN addgroup -S leargas && adduser -S leargas -G leargas
+RUN mkdir -p /app/uploads && chown -R leargas:leargas /app
 USER leargas
 COPY --from=builder /app/target/leargas-backend-1.0.0.jar app.jar
 EXPOSE 8080
