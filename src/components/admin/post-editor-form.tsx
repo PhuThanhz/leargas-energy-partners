@@ -3,7 +3,20 @@
 import * as React from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { Card, Button, Input, Select, Modal, Form, Upload, Radio, Space, Image } from "antd"
+import {
+  Card,
+  Button,
+  Input,
+  Select,
+  Modal,
+  Form,
+  Upload,
+  Radio,
+  Space,
+  Image,
+  Tooltip,
+  ColorPicker,
+} from "antd"
 import type { UploadProps } from "antd"
 import {
   ArrowLeftOutlined,
@@ -19,7 +32,8 @@ import { toast } from "sonner"
 import { adminFetch, adminUpload, resolveMediaUrl } from "@/lib/api/admin-client"
 import { addHeadingIds, getTableOfContents, slugify } from "@/lib/heading-ids"
 import { cn } from "@/lib/utils"
-import { refreshBlog } from "@/app/(admin)/admin/posts/actions"
+import { ARTICLE_BACKGROUNDS, DEFAULT_ARTICLE_BG, isTooDarkForText } from "@/lib/article-colors"
+import { refreshBlogSafely } from "@/app/(admin)/admin/posts/refresh-blog"
 import { MediaPicker } from "@/components/admin/media-picker"
 import { RichArticleEditor } from "@/components/admin/rich-article-editor"
 import { ArticleView } from "@/components/blog/article-view"
@@ -35,6 +49,8 @@ export interface PostDetail {
   category: string
   author: string
   coverImageUrl: string
+  /** #rrggbb, or "" for the site default. */
+  backgroundColor: string
   excerpt: string
   content: string
   status: PostStatus
@@ -88,6 +104,7 @@ export function PostEditorForm({ initial, onSave }: PostEditorFormProps) {
       category: initial?.category ?? "",
       author: initial?.author || DEFAULT_AUTHOR,
       coverImageUrl: initial?.coverImageUrl ?? DEFAULT_COVER,
+      backgroundColor: initial?.backgroundColor ?? "",
       excerpt: initial?.excerpt ?? "",
       content: initial?.content ?? STARTER_CONTENT,
       status: initial?.status ?? "DRAFT",
@@ -234,7 +251,8 @@ export function PostEditorForm({ initial, onSave }: PostEditorFormProps) {
         content: addHeadingIds(values.content),
         status,
       })
-      await refreshBlog(saved.slug, initial?.slug).catch(() => undefined)
+      // The post is saved at this point; refreshing the public cache must never hang the form.
+      const refreshed = await refreshBlogSafely([saved.slug, initial?.slug])
 
       toast.success(
         status === "PUBLISHED"
@@ -246,7 +264,10 @@ export function PostEditorForm({ initial, onSave }: PostEditorFormProps) {
           ? { description: `Đường dẫn được đổi thành /blog/${saved.slug}` }
           : undefined
       )
-      router.push("/admin/posts")
+      // A pending server action would hold up client navigation, so fall back to a full load.
+      if (refreshed) router.push("/admin/posts")
+      // eslint-disable-next-line @next/next/no-location-assign-relative-destination -- intentional hard load, see above
+      else window.location.assign("/admin/posts")
     } catch (error) {
       toast.error("Không thể lưu bài viết", {
         description: error instanceof Error ? error.message : undefined,
@@ -271,6 +292,8 @@ export function PostEditorForm({ initial, onSave }: PostEditorFormProps) {
 
   const wasPublished = initial?.status === "PUBLISHED"
   const coverSrc = resolveMediaUrl(values.coverImageUrl)
+  const customBg =
+    !!values.backgroundColor && !ARTICLE_BACKGROUNDS.some((c) => c.value === values.backgroundColor)
   const previewHtml = React.useMemo(() => addHeadingIds(values.content), [values.content])
   const categoryOptions = [
     ...categories,
@@ -361,6 +384,7 @@ export function PostEditorForm({ initial, onSave }: PostEditorFormProps) {
             category={values.category}
             author={values.author || DEFAULT_AUTHOR}
             coverImageUrl={coverSrc}
+            backgroundColor={values.backgroundColor || null}
             publishedAt={initial?.publishedAt || new Date().toISOString()}
             readingTimeMinutes={readingMinutes(values.content)}
             toc={getTableOfContents(previewHtml)}
@@ -436,9 +460,10 @@ export function PostEditorForm({ initial, onSave }: PostEditorFormProps) {
                 </label>
 
                 <RichArticleEditor
+                  paperColor={values.backgroundColor || undefined}
                   value={values.content}
                   onChange={(html) => set("content", html)}
-                  placeholder="Bắt đầu viết nội dung bài viết… Bôi đen văn bản để định dạng hoặc dùng thanh công cụ."
+                  placeholder="Viết nội dung, hoặc gõ / để chèn…"
                 />
               </div>
             </div>
@@ -573,6 +598,66 @@ export function PostEditorForm({ initial, onSave }: PostEditorFormProps) {
                   className="rounded font-mono text-xs"
                 />
               </div>
+            </div>
+          </Card>
+
+          <Card
+            title={<span className="text-xs font-bold text-[#1f1f1f]">Màu nền bài</span>}
+            className="rounded-xl border border-[#f0f0f0] shadow-[0_1px_2px_0_rgba(0,0,0,0.03)]"
+          >
+            <div className="space-y-3">
+              <div className="flex flex-wrap items-center gap-2">
+                {ARTICLE_BACKGROUNDS.map((c) => {
+                  const selected = values.backgroundColor === c.value
+                  return (
+                    <Tooltip key={c.label} title={c.label}>
+                      <button
+                        type="button"
+                        aria-label={c.label}
+                        aria-pressed={selected}
+                        onClick={() => set("backgroundColor", c.value)}
+                        className={cn(
+                          "h-8 w-8 rounded-full ring-1 ring-black/10 transition",
+                          selected ? "ring-2 ring-[#1f1f1f] ring-offset-2" : "hover:scale-110"
+                        )}
+                        style={{ backgroundColor: c.value || DEFAULT_ARTICLE_BG }}
+                      />
+                    </Tooltip>
+                  )
+                })}
+                <ColorPicker
+                  disabledAlpha
+                  value={values.backgroundColor || DEFAULT_ARTICLE_BG}
+                  onChangeComplete={(c) => set("backgroundColor", c.toHexString().toLowerCase())}
+                  presets={[]}
+                >
+                  <Tooltip title="Màu khác">
+                    <button
+                      type="button"
+                      aria-label="Chọn màu khác"
+                      className={cn(
+                        "h-8 w-8 rounded-full ring-1 ring-black/10 transition hover:scale-110",
+                        customBg && "ring-2 ring-[#1f1f1f] ring-offset-2"
+                      )}
+                      style={{
+                        background: customBg
+                          ? values.backgroundColor
+                          : "conic-gradient(#efe7d8, #edf1ea, #e9efef, #faf7f0, #efe7d8)",
+                      }}
+                    />
+                  </Tooltip>
+                </ColorPicker>
+              </div>
+              <p className="text-xs text-[#8c8c8c]">
+                {values.backgroundColor
+                  ? `${ARTICLE_BACKGROUNDS.find((c) => c.value === values.backgroundColor)?.label ?? "Màu tuỳ chọn"} · ${values.backgroundColor}`
+                  : "Mặc định của website"}
+              </p>
+              {values.backgroundColor && isTooDarkForText(values.backgroundColor) && (
+                <p className="text-xs text-[#d4380d]">
+                  Màu này khá tối, chữ trong bài sẽ khó đọc. Nên chọn màu sáng hơn.
+                </p>
+              )}
             </div>
           </Card>
 

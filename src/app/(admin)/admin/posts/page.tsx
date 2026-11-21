@@ -32,7 +32,7 @@ import {
 } from "@ant-design/icons"
 import { toast } from "sonner"
 import { adminFetch, resolveMediaUrl } from "@/lib/api/admin-client"
-import { refreshBlog } from "./actions"
+import { refreshBlogSafely } from "./refresh-blog"
 
 const { Title, Text } = Typography
 
@@ -167,6 +167,12 @@ const DEFAULT_POSTS: PostItem[] = [
   },
 ]
 
+const STATUS_STYLE: Record<string, { label: string; color: string }> = {
+  PUBLISHED: { label: "Đã xuất bản", color: "#059669" },
+  DRAFT: { label: "Bản nháp", color: "#d4a017" },
+  ARCHIVED: { label: "Lưu trữ", color: "#bfbfbf" },
+}
+
 export default function AdminPostsPage() {
   const router = useRouter()
   const [posts, setPosts] = React.useState<PostItem[]>(DEFAULT_POSTS)
@@ -237,7 +243,7 @@ export default function AdminPostsPage() {
     try {
       await adminFetch(`/api/admin/posts/${id}`, { method: "DELETE" })
       setPosts((prev) => prev.filter((p) => p.id !== id))
-      await refreshBlog(slug).catch(() => undefined)
+      void refreshBlogSafely([slug])
       toast.success("Đã xóa bài viết thành công!", {
         description: `Bài viết "${title}" đã được xóa khỏi hệ thống.`,
       })
@@ -289,6 +295,7 @@ export default function AdminPostsPage() {
     {
       title: "Bài viết",
       key: "postInfo",
+      width: 380,
       render: (_: unknown, record: PostItem) => {
         const cover = resolveMediaUrl(record.coverImageUrl || "/images/wind.jpg")
 
@@ -305,12 +312,13 @@ export default function AdminPostsPage() {
             </div>
 
             <div className="min-w-0 flex-1">
-              <a
+              <button
+                type="button"
                 onClick={() => handleOpenPreview(record)}
-                className="cursor-pointer font-sans text-sm font-semibold text-[#1f1f1f] transition-colors hover:text-[#059669]"
+                className="line-clamp-2 cursor-pointer text-left font-sans text-sm leading-snug font-semibold text-[#1f1f1f] transition-colors hover:text-[#059669]"
               >
                 {record.title}
-              </a>
+              </button>
               {record.excerpt && (
                 <p className="mt-0.5 line-clamp-1 text-xs text-[#8c8c8c]">{record.excerpt}</p>
               )}
@@ -326,11 +334,15 @@ export default function AdminPostsPage() {
       title: "Chuyên mục",
       dataIndex: "category",
       key: "category",
-      width: 170,
+      width: 190,
       render: (cat: string) => (
-        <Tag color={getCategoryColor(cat)} className="rounded-full px-2.5 py-0.5 font-medium">
-          {cat}
-        </Tag>
+        <span className="inline-flex items-center gap-2 text-[13px] text-[#434343]">
+          <span
+            className="h-1.5 w-1.5 shrink-0 rounded-full"
+            style={{ backgroundColor: getCategoryColor(cat) }}
+          />
+          <span className="leading-snug">{cat}</span>
+        </span>
       ),
     },
     {
@@ -351,27 +363,17 @@ export default function AdminPostsPage() {
       title: "Trạng thái",
       dataIndex: "status",
       key: "status",
-      width: 130,
-      align: "center" as const,
+      width: 140,
       render: (status: string) => {
-        if (status === "PUBLISHED") {
-          return (
-            <Tag color="success" className="rounded-md font-medium">
-              Đã xuất bản
-            </Tag>
-          )
-        }
-        if (status === "DRAFT") {
-          return (
-            <Tag color="warning" className="rounded-md font-medium">
-              Bản nháp
-            </Tag>
-          )
-        }
+        const { label, color } = STATUS_STYLE[status] ?? STATUS_STYLE.ARCHIVED!
         return (
-          <Tag color="default" className="rounded-md font-medium">
-            Lưu trữ
-          </Tag>
+          <span className="inline-flex items-center gap-2 text-[13px] whitespace-nowrap text-[#434343]">
+            <span
+              className="h-1.5 w-1.5 shrink-0 rounded-full"
+              style={{ backgroundColor: color }}
+            />
+            {label}
+          </span>
         )
       },
     },
@@ -390,7 +392,7 @@ export default function AdminPostsPage() {
     {
       title: "Thao tác",
       key: "actions",
-      width: 190,
+      width: 180,
       align: "right" as const,
       render: (_: unknown, record: PostItem) => (
         <Space size="small">

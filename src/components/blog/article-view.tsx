@@ -15,6 +15,8 @@ export interface ArticleViewProps {
   category: string
   author: string
   coverImageUrl?: string | null
+  /** Reading-area background (#rrggbb); falls back to the site's stone colour. */
+  backgroundColor?: string | null
   publishedAt: string
   readingTimeMinutes: number
   toc: { id: string; title: string }[]
@@ -54,6 +56,7 @@ export function ArticleView({
   category,
   author,
   coverImageUrl,
+  backgroundColor,
   publishedAt,
   readingTimeMinutes,
   toc,
@@ -121,7 +124,7 @@ export function ArticleView({
       </header>
 
       {/* Body: sticky contents beside a comfortable reading column */}
-      <div className="bg-stone-soft">
+      <div className="bg-stone-soft" style={backgroundColor ? { backgroundColor } : undefined}>
         <div
           className={cn(
             "grid gap-10",

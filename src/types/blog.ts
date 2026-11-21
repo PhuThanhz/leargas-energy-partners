@@ -18,6 +18,8 @@ export type PostSummary = {
 export type Post = PostSummary & {
   /** HTML body. `<h2 id="…">` headings are used to build the table of contents. */
   content: string
+  /** Reading-area background (#rrggbb); null/absent = site default. */
+  backgroundColor?: string | null
   updatedAt?: string | null
 }
 

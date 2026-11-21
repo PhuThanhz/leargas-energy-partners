@@ -1,11 +1,16 @@
 "use client"
 
 import * as React from "react"
-import { useEditor, EditorContent } from "@tiptap/react"
+import { useEditor, useEditorState, EditorContent } from "@tiptap/react"
+import { BubbleMenu } from "@tiptap/react/menus"
 import StarterKit from "@tiptap/starter-kit"
-import LinkExtension from "@tiptap/extension-link"
 import ImageExtension from "@tiptap/extension-image"
 import Placeholder from "@tiptap/extension-placeholder"
+import { TableKit } from "@tiptap/extension-table"
+import Typography from "@tiptap/extension-typography"
+import FileHandler from "@tiptap/extension-file-handler"
+import { DragHandle } from "@tiptap/extension-drag-handle-react"
+import type { Editor } from "@tiptap/core"
 import {
   Bold,
   Italic,
@@ -19,27 +24,59 @@ import {
   Image as ImageIcon,
   Undo2,
   Redo2,
+  Pilcrow,
+  Table as TableIcon,
+  GripVertical,
+  Rows3,
+  Columns3,
+  Trash2,
   Code2,
-  Eye,
-  FileCode,
-  Sparkles,
 } from "lucide-react"
-import { Tooltip, Modal, Input, message } from "antd"
+import { Tooltip, Modal, Input } from "antd"
+import { toast } from "sonner"
 import { adminUpload } from "@/lib/api/admin-client"
 import { MediaPicker } from "@/components/admin/media-picker"
+import { cn } from "@/lib/utils"
+import { SlashCommand } from "@/components/admin/editor/slash-command"
 
 interface RichArticleEditorProps {
   value: string
   onChange: (value: string) => void
   placeholder?: string
   minHeight?: string
+  /** Paper colour of the writing area, so it matches the published article. */
+  paperColor?: string
+}
+
+const IMAGE_TYPES = ["image/png", "image/jpeg", "image/gif", "image/webp", "image/avif"]
+const MAX_UPLOAD_MB = 10
+
+/** Upload dropped or pasted images and insert them where they landed. */
+async function uploadAndInsert(editor: Editor, files: File[], pos?: number) {
+  for (const file of files) {
+    if (file.size > MAX_UPLOAD_MB * 1024 * 1024) {
+      toast.error(`"${file.name}" vượt quá ${MAX_UPLOAD_MB}MB`)
+      continue
+    }
+    const id = toast.loading(`Đang tải "${file.name}"…`)
+    try {
+      const src = await adminUpload(file)
+      const node = { type: "image", attrs: { src, alt: "" } }
+      if (pos === undefined) editor.chain().focus().insertContent(node).run()
+      else editor.chain().focus().insertContentAt(pos, node).run()
+      toast.success("Đã chèn ảnh", { id })
+    } catch {
+      toast.error(`Không tải được "${file.name}"`, { id })
+    }
+  }
 }
 
 export function RichArticleEditor({
   value,
   onChange,
-  placeholder = "Bắt đầu soạn thảo bài viết phân tích chuyên sâu tại đây... Bạn có thể định dạng tiêu đề, danh sách, trích dẫn và chèn hình ảnh trực tiếp.",
+  placeholder = "Viết nội dung, hoặc gõ / để chèn…",
   minHeight = "460px",
+  paperColor,
 }: RichArticleEditorProps) {
   const [mode, setMode] = React.useState<"visual" | "html">("visual")
   const [linkModalOpen, setLinkModalOpen] = React.useState(false)
@@ -54,31 +91,34 @@ export function RichArticleEditor({
   const editor = useEditor({
     extensions: [
       StarterKit.configure({
-        heading: {
-          levels: [2, 3, 4],
+        heading: { levels: [2, 3, 4] },
+        link: {
+          openOnClick: false,
+          HTMLAttributes: { target: "_blank", rel: "noopener noreferrer" },
         },
       }),
-      LinkExtension.configure({
-        openOnClick: false,
-        HTMLAttributes: {
-          class: "text-emerald-700 underline font-medium hover:text-emerald-800 transition-colors",
-          target: "_blank",
-          rel: "noopener noreferrer",
-        },
+      TableKit.configure({ table: { resizable: false } }),
+      Typography,
+      FileHandler.configure({
+        allowedMimeTypes: IMAGE_TYPES,
+        onDrop: (ed, files, pos) => void uploadAndInsert(ed, files, pos),
+        onPaste: (ed, files) => void uploadAndInsert(ed, files),
       }),
+      // State setters are stable, so the slash menu can open the image dialog directly.
+      SlashCommand.configure({ onImage: () => setImageModalOpen(true) }),
       ImageExtension.configure({
         inline: false,
         allowBase64: true,
       }),
       Placeholder.configure({
-        placeholder,
+        placeholder: ({ node }) => (node.type.name === "heading" ? "Tiêu đề mục" : placeholder),
       }),
     ],
     content: value || "",
     immediatelyRender: false,
     editorProps: {
       attributes: {
-        class: "article-body focus:outline-none min-h-[380px] px-8 py-6",
+        class: "article-body focus:outline-none px-10 py-12",
       },
     },
     onUpdate: ({ editor: ed }) => {
@@ -128,48 +168,50 @@ export function RichArticleEditor({
     try {
       const uploadedUrl = await adminUpload(file)
       editor?.chain().focus().setImage({ src: uploadedUrl }).run()
-      message.success("Đã chèn hình ảnh thành công!")
+      toast.success("Đã chèn ảnh")
       setImageModalOpen(false)
     } catch {
-      message.error("Không thể tải ảnh lên máy chủ. Bạn có thể chèn bằng đường link URL.")
+      toast.error("Không thể tải ảnh lên. Bạn có thể chèn bằng link URL.")
     } finally {
       setUploadingImage(false)
       e.target.value = ""
     }
   }
 
-  // Quick insertion helpers for rich financial blog formatting
-  const insertCalloutBox = () => {
-    if (!editor) return
-    const calloutHTML = `
-      <div style="background-color: #f0fdf4; border-left: 4px solid #059669; padding: 16px 20px; border-radius: 8px; margin: 20px 0;">
-        <strong style="color: #065f46; display: block; margin-bottom: 6px; font-size: 14px;">💡 ĐIỂM NHẤN CHIẾN LƯỢC / PHÂN TÍCH THƯƠNG VỤ:</strong>
-        <span style="color: #1f2937; font-size: 14px; line-height: 1.6;">Nhập nội dung nhận định thể chế, cơ chế DPPA hoặc rủi ro pháp lý cần lưu ý tại đây...</span>
-      </div>
-    `
-    editor.chain().focus().insertContent(calloutHTML).run()
-  }
+  // Toolbar state; re-renders only when one of these values changes.
+  const active = useEditorState({
+    editor,
+    selector: ({ editor: ed }) => ({
+      paragraph: !!ed && !ed.isActive("heading") && !ed.isActive("blockquote"),
+      h2: !!ed?.isActive("heading", { level: 2 }),
+      h3: !!ed?.isActive("heading", { level: 3 }),
+      bold: !!ed?.isActive("bold"),
+      italic: !!ed?.isActive("italic"),
+      link: !!ed?.isActive("link"),
+      quote: !!ed?.isActive("blockquote"),
+      bullet: !!ed?.isActive("bulletList"),
+      ordered: !!ed?.isActive("orderedList"),
+      table: !!ed?.isActive("table"),
+      canUndo: !!ed?.can().undo(),
+      canRedo: !!ed?.can().redo(),
+    }),
+  })
 
-  const insertKeyStatBento = () => {
-    if (!editor) return
-    const bentoHTML = `
-      <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 24px 0; padding: 16px; background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px;">
-        <div style="text-align: center; padding: 12px 8px; background: white; border-radius: 8px; border: 1px solid #f1f5f9;">
-          <div style="font-size: 11px; text-transform: uppercase; color: #64748b; font-weight: 600;">Tổng công suất</div>
-          <div style="font-size: 20px; font-weight: 700; color: #0f172a; margin-top: 4px;">150 MW</div>
-        </div>
-        <div style="text-align: center; padding: 12px 8px; background: white; border-radius: 8px; border: 1px solid #f1f5f9;">
-          <div style="font-size: 11px; text-transform: uppercase; color: #64748b; font-weight: 600;">Định giá dự kiến</div>
-          <div style="font-size: 20px; font-weight: 700; color: #059669; margin-top: 4px;">$180M</div>
-        </div>
-        <div style="text-align: center; padding: 12px 8px; background: white; border-radius: 8px; border: 1px solid #f1f5f9;">
-          <div style="font-size: 11px; text-transform: uppercase; color: #64748b; font-weight: 600;">Tiến độ COD</div>
-          <div style="font-size: 20px; font-weight: 700; color: #0f172a; margin-top: 4px;">Q4/2026</div>
-        </div>
-      </div>
-    `
-    editor.chain().focus().insertContent(bentoHTML).run()
-  }
+  // Stable callback: a new function each render would make BubbleMenu re-register in a loop.
+  const modeRef = React.useRef(mode)
+  React.useEffect(() => {
+    modeRef.current = mode
+  }, [mode])
+  const shouldShowBubble = React.useCallback(
+    ({
+      editor: ed,
+      state,
+    }: {
+      editor: NonNullable<typeof editor>
+      state: { selection: { empty: boolean } }
+    }) => modeRef.current === "visual" && !state.selection.empty && !ed.isActive("image"),
+    []
+  )
 
   if (!editor) {
     return (
@@ -179,278 +221,258 @@ export function RichArticleEditor({
     )
   }
 
+  const words = value
+    .replace(/<[^>]+>/g, " ")
+    .replace(/&[a-z#0-9]+;/gi, " ")
+    .split(/\s+/)
+    .filter(Boolean).length
+  const openLink = () => {
+    setLinkUrl(editor.getAttributes("link").href || "")
+    setLinkModalOpen(true)
+  }
+
   return (
-    <div className="overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-[0_2px_12px_rgba(0,0,0,0.04)] transition-all focus-within:border-emerald-500 focus-within:shadow-[0_4px_20px_rgba(5,150,105,0.08)]">
-      {/* Top Floating-style Editor Control Bar */}
-      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 bg-slate-50/70 px-4 py-2.5 backdrop-blur-sm select-none">
-        {/* Left Toolbar Items: Rich formatting controls */}
-        <div className="flex flex-wrap items-center gap-1 text-slate-700">
-          <Tooltip title="Tiêu đề mục lớn (H2)">
-            <button
-              type="button"
-              onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-              className={`flex h-8 items-center gap-1 rounded-lg px-2.5 text-xs font-semibold transition-colors ${
-                editor.isActive("heading", { level: 2 })
-                  ? "bg-emerald-600 text-white shadow-2xs"
-                  : "text-slate-700 hover:bg-slate-200/70"
-              }`}
+    <div className="rounded-xl border border-[#ececec] bg-white">
+      {/* Toolbar: one row, sticks to the top while scrolling a long article */}
+      <div className="sticky top-0 z-10 flex min-h-12 flex-wrap items-center gap-1 rounded-t-xl border-b border-[#f0f0f0] bg-white/95 px-2 py-2 backdrop-blur select-none">
+        <ToolButton
+          label="Hoàn tác (⌘Z)"
+          onClick={() => editor.chain().focus().undo().run()}
+          disabled={!active?.canUndo}
+        >
+          <Undo2 />
+        </ToolButton>
+        <ToolButton
+          label="Làm lại (⌘⇧Z)"
+          onClick={() => editor.chain().focus().redo().run()}
+          disabled={!active?.canRedo}
+        >
+          <Redo2 />
+        </ToolButton>
+        <Divider />
+        <ToolButton
+          label="Đoạn văn"
+          active={active?.paragraph}
+          onClick={() => editor.chain().focus().setParagraph().run()}
+        >
+          <Pilcrow />
+        </ToolButton>
+        <ToolButton
+          label="Tiêu đề mục (H2)"
+          active={active?.h2}
+          onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
+        >
+          <Heading2 />
+        </ToolButton>
+        <ToolButton
+          label="Tiêu đề phụ (H3)"
+          active={active?.h3}
+          onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
+        >
+          <Heading3 />
+        </ToolButton>
+        <Divider />
+        <ToolButton
+          label="In đậm (⌘B)"
+          active={active?.bold}
+          onClick={() => editor.chain().focus().toggleBold().run()}
+        >
+          <Bold />
+        </ToolButton>
+        <ToolButton
+          label="In nghiêng (⌘I)"
+          active={active?.italic}
+          onClick={() => editor.chain().focus().toggleItalic().run()}
+        >
+          <Italic />
+        </ToolButton>
+        <ToolButton label="Liên kết" active={active?.link} onClick={openLink}>
+          <LinkIcon />
+        </ToolButton>
+        <Divider />
+        <ToolButton
+          label="Trích dẫn"
+          active={active?.quote}
+          onClick={() => editor.chain().focus().toggleBlockquote().run()}
+        >
+          <Quote />
+        </ToolButton>
+        <ToolButton
+          label="Danh sách"
+          active={active?.bullet}
+          onClick={() => editor.chain().focus().toggleBulletList().run()}
+        >
+          <List />
+        </ToolButton>
+        <ToolButton
+          label="Danh sách đánh số"
+          active={active?.ordered}
+          onClick={() => editor.chain().focus().toggleOrderedList().run()}
+        >
+          <ListOrdered />
+        </ToolButton>
+        <ToolButton
+          label="Đường phân cách"
+          onClick={() => editor.chain().focus().setHorizontalRule().run()}
+        >
+          <Minus />
+        </ToolButton>
+        <Divider />
+        <ToolButton
+          label="Chèn ảnh (hoặc kéo thả / dán ảnh vào bài)"
+          onClick={() => setImageModalOpen(true)}
+        >
+          <ImageIcon />
+        </ToolButton>
+        <ToolButton
+          label="Chèn bảng"
+          active={active?.table}
+          onClick={() =>
+            editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()
+          }
+        >
+          <TableIcon />
+        </ToolButton>
+
+        {/* Table tools appear only while the cursor is inside a table */}
+        {active?.table && (
+          <>
+            <Divider />
+            <ToolButton
+              label="Thêm hàng bên dưới"
+              onClick={() => editor.chain().focus().addRowAfter().run()}
             >
-              <Heading2 className="h-4 w-4" />
-              <span>H2</span>
-            </button>
-          </Tooltip>
-
-          <Tooltip title="Tiêu đề mục con (H3)">
-            <button
-              type="button"
-              onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
-              className={`flex h-8 items-center gap-1 rounded-lg px-2 text-xs font-semibold transition-colors ${
-                editor.isActive("heading", { level: 3 })
-                  ? "bg-emerald-600 text-white shadow-2xs"
-                  : "text-slate-700 hover:bg-slate-200/70"
-              }`}
+              <Rows3 />
+            </ToolButton>
+            <ToolButton
+              label="Thêm cột bên phải"
+              onClick={() => editor.chain().focus().addColumnAfter().run()}
             >
-              <Heading3 className="h-4 w-4" />
-              <span>H3</span>
-            </button>
-          </Tooltip>
+              <Columns3 />
+            </ToolButton>
+            <ToolButton label="Xoá hàng" onClick={() => editor.chain().focus().deleteRow().run()}>
+              <Rows3 className="opacity-50" />
+            </ToolButton>
+            <ToolButton label="Xoá cột" onClick={() => editor.chain().focus().deleteColumn().run()}>
+              <Columns3 className="opacity-50" />
+            </ToolButton>
+            <ToolButton label="Xoá bảng" onClick={() => editor.chain().focus().deleteTable().run()}>
+              <Trash2 />
+            </ToolButton>
+          </>
+        )}
 
-          <div className="mx-1 h-4 w-px bg-slate-200" />
-
-          <Tooltip title="In đậm (Bold - Ctrl+B)">
-            <button
-              type="button"
-              onClick={() => editor.chain().focus().toggleBold().run()}
-              className={`flex h-8 w-8 items-center justify-center rounded-lg transition-colors ${
-                editor.isActive("bold")
-                  ? "bg-emerald-600 text-white shadow-2xs"
-                  : "text-slate-700 hover:bg-slate-200/70"
-              }`}
-            >
-              <Bold className="h-4 w-4" />
-            </button>
-          </Tooltip>
-
-          <Tooltip title="In nghiêng (Italic - Ctrl+I)">
-            <button
-              type="button"
-              onClick={() => editor.chain().focus().toggleItalic().run()}
-              className={`flex h-8 w-8 items-center justify-center rounded-lg transition-colors ${
-                editor.isActive("italic")
-                  ? "bg-emerald-600 text-white shadow-2xs"
-                  : "text-slate-700 hover:bg-slate-200/70"
-              }`}
-            >
-              <Italic className="h-4 w-4" />
-            </button>
-          </Tooltip>
-
-          <Tooltip title="Đoạn trích dẫn chiến lược (Blockquote)">
-            <button
-              type="button"
-              onClick={() => editor.chain().focus().toggleBlockquote().run()}
-              className={`flex h-8 w-8 items-center justify-center rounded-lg transition-colors ${
-                editor.isActive("blockquote")
-                  ? "bg-emerald-600 text-white shadow-2xs"
-                  : "text-slate-700 hover:bg-slate-200/70"
-              }`}
-            >
-              <Quote className="h-4 w-4" />
-            </button>
-          </Tooltip>
-
-          <div className="mx-1 h-4 w-px bg-slate-200" />
-
-          <Tooltip title="Danh sách đầu mục (Bullet List)">
-            <button
-              type="button"
-              onClick={() => editor.chain().focus().toggleBulletList().run()}
-              className={`flex h-8 w-8 items-center justify-center rounded-lg transition-colors ${
-                editor.isActive("bulletList")
-                  ? "bg-emerald-600 text-white shadow-2xs"
-                  : "text-slate-700 hover:bg-slate-200/70"
-              }`}
-            >
-              <List className="h-4 w-4" />
-            </button>
-          </Tooltip>
-
-          <Tooltip title="Danh sách số thứ tự (Ordered List)">
-            <button
-              type="button"
-              onClick={() => editor.chain().focus().toggleOrderedList().run()}
-              className={`flex h-8 w-8 items-center justify-center rounded-lg transition-colors ${
-                editor.isActive("orderedList")
-                  ? "bg-emerald-600 text-white shadow-2xs"
-                  : "text-slate-700 hover:bg-slate-200/70"
-              }`}
-            >
-              <ListOrdered className="h-4 w-4" />
-            </button>
-          </Tooltip>
-
-          <Tooltip title="Đường kẻ phân cách nội dung (Divider)">
-            <button
-              type="button"
-              onClick={() => editor.chain().focus().setHorizontalRule().run()}
-              className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-700 hover:bg-slate-200/70"
-            >
-              <Minus className="h-4 w-4" />
-            </button>
-          </Tooltip>
-
-          <div className="mx-1 h-4 w-px bg-slate-200" />
-
-          <Tooltip title="Chèn liên kết (Link)">
-            <button
-              type="button"
-              onClick={() => {
-                setLinkUrl(editor.getAttributes("link").href || "")
-                setLinkModalOpen(true)
-              }}
-              className={`flex h-8 items-center gap-1 rounded-lg px-2 text-xs transition-colors ${
-                editor.isActive("link")
-                  ? "bg-emerald-600 text-white shadow-2xs"
-                  : "text-slate-700 hover:bg-slate-200/70"
-              }`}
-            >
-              <LinkIcon className="h-3.5 w-3.5" />
-              <span>Link</span>
-            </button>
-          </Tooltip>
-
-          <Tooltip title="Chèn hình ảnh vào nội dung">
-            <button
-              type="button"
-              onClick={() => setImageModalOpen(true)}
-              className="flex h-8 items-center gap-1 rounded-lg border border-emerald-200/60 bg-emerald-50 px-2.5 text-xs font-medium text-emerald-800 transition-colors hover:bg-emerald-100/70"
-            >
-              <ImageIcon className="h-3.5 w-3.5 text-emerald-700" />
-              <span>Chèn ảnh</span>
-            </button>
-          </Tooltip>
-
-          {/* Quick Luxury Templates */}
-          <Tooltip title="Chèn khung Điểm nhấn chiến lược (Callout)">
-            <button
-              type="button"
-              onClick={insertCalloutBox}
-              className="hidden h-8 items-center gap-1 rounded-lg px-2 text-xs font-medium text-slate-700 transition-colors hover:bg-slate-200/70 sm:flex"
-            >
-              <Sparkles className="h-3.5 w-3.5 text-amber-500" />
-              <span>Box Điểm nhấn</span>
-            </button>
-          </Tooltip>
-
-          <Tooltip title="Chèn bảng 3 chỉ số Bento tài chính (Key Stats)">
-            <button
-              type="button"
-              onClick={insertKeyStatBento}
-              className="hidden h-8 items-center gap-1 rounded-lg px-2 text-xs font-medium text-slate-700 transition-colors hover:bg-slate-200/70 md:flex"
-            >
-              <Code2 className="h-3.5 w-3.5 text-teal-600" />
-              <span>Bento Chỉ số</span>
-            </button>
-          </Tooltip>
-        </div>
-
-        {/* Right Toolbar: Undo, Redo, Mode Switch */}
-        <div className="flex items-center gap-1.5">
-          <Tooltip title="Hoàn tác (Ctrl+Z)">
-            <button
-              type="button"
-              onClick={() => editor.chain().focus().undo().run()}
-              disabled={!editor.can().undo()}
-              className="flex h-7 w-7 items-center justify-center rounded-md text-slate-500 hover:bg-slate-200/70 disabled:opacity-30"
-            >
-              <Undo2 className="h-3.5 w-3.5" />
-            </button>
-          </Tooltip>
-
-          <Tooltip title="Làm lại (Ctrl+Y)">
-            <button
-              type="button"
-              onClick={() => editor.chain().focus().redo().run()}
-              disabled={!editor.can().redo()}
-              className="flex h-7 w-7 items-center justify-center rounded-md text-slate-500 hover:bg-slate-200/70 disabled:opacity-30"
-            >
-              <Redo2 className="h-3.5 w-3.5" />
-            </button>
-          </Tooltip>
-
-          <div className="mx-1 h-4 w-px bg-slate-200" />
-
-          {/* Switch between Visual Editor & Raw HTML */}
-          <div className="flex rounded-lg border border-slate-200 bg-white p-0.5 shadow-2xs">
-            <button
-              type="button"
-              onClick={() => setMode("visual")}
-              className={`flex items-center gap-1 rounded-md px-2.5 py-1 text-[11px] font-medium transition-all ${
-                mode === "visual"
-                  ? "bg-emerald-600 text-white shadow-xs"
-                  : "text-slate-600 hover:text-slate-900"
-              }`}
-            >
-              <Eye className="h-3 w-3" />
-              <span>Trực quan</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => setMode("html")}
-              className={`flex items-center gap-1 rounded-md px-2.5 py-1 text-[11px] font-medium transition-all ${
-                mode === "html"
-                  ? "bg-emerald-600 text-white shadow-xs"
-                  : "text-slate-600 hover:text-slate-900"
-              }`}
-            >
-              <FileCode className="h-3 w-3" />
-              <span>Mã HTML</span>
-            </button>
-          </div>
+        <div className="ml-auto">
+          <ToolButton
+            label={mode === "html" ? "Quay lại soạn thảo" : "Xem / sửa mã HTML"}
+            active={mode === "html"}
+            onClick={() => setMode(mode === "html" ? "visual" : "html")}
+          >
+            <Code2 />
+          </ToolButton>
         </div>
       </div>
 
-      {/* Editor Body */}
-      {mode === "visual" ? (
-        <div style={{ minHeight }} className="cursor-text bg-white">
-          <EditorContent editor={editor} />
-        </div>
-      ) : (
-        <div className="bg-slate-900 p-4 font-mono">
-          <textarea
-            value={value}
-            onChange={(e) => {
-              const newHtml = e.target.value
-              onChange(newHtml)
-              editor.commands.setContent(newHtml, { emitUpdate: false })
-            }}
-            rows={18}
-            className="w-full resize-y bg-transparent text-xs leading-relaxed text-emerald-400 focus:outline-none"
-            placeholder="Nhập hoặc chỉnh sửa trực tiếp mã HTML/Markdown tại đây..."
-          />
-        </div>
+      {/* Grip left of each block: drag to reorder paragraphs, headings, images… */}
+      {mode === "visual" && (
+        <DragHandle editor={editor}>
+          <div
+            className="flex h-6 w-5 cursor-grab items-center justify-center rounded text-[#bfb8ac] transition-colors hover:bg-black/5 hover:text-[#595959] active:cursor-grabbing"
+            title="Kéo để đổi vị trí"
+          >
+            <GripVertical className="h-4 w-4" />
+          </div>
+        </DragHandle>
       )}
 
-      {/* Bottom Status & Word Counter Bar */}
-      <div className="flex items-center justify-between border-t border-slate-100 bg-slate-50/50 px-4 py-2 text-[11px] text-slate-500">
-        <div className="flex items-center gap-3">
-          <span>
-            Độ dài:{" "}
-            <strong className="text-slate-700">
-              {editor.storage.characterCount?.words?.() ||
-                value.split(/\s+/).filter(Boolean).length}
-            </strong>{" "}
-            từ
-          </span>
-          <span>•</span>
-          <span className="font-medium text-emerald-700">
-            Trình soạn thảo cao cấp TipTap Engine v3.34
-          </span>
+      {/* Quick formatting when text is selected */}
+      <BubbleMenu
+        editor={editor}
+        shouldShow={shouldShowBubble}
+        className="flex items-center gap-0.5 rounded-lg bg-[#1f1f1f] p-1 shadow-lg"
+      >
+        {[
+          {
+            label: "H2",
+            icon: <Heading2 />,
+            active: active?.h2,
+            run: () => editor.chain().focus().toggleHeading({ level: 2 }).run(),
+          },
+          {
+            label: "H3",
+            icon: <Heading3 />,
+            active: active?.h3,
+            run: () => editor.chain().focus().toggleHeading({ level: 3 }).run(),
+          },
+          {
+            label: "Đậm",
+            icon: <Bold />,
+            active: active?.bold,
+            run: () => editor.chain().focus().toggleBold().run(),
+          },
+          {
+            label: "Nghiêng",
+            icon: <Italic />,
+            active: active?.italic,
+            run: () => editor.chain().focus().toggleItalic().run(),
+          },
+          { label: "Liên kết", icon: <LinkIcon />, active: active?.link, run: openLink },
+          {
+            label: "Trích dẫn",
+            icon: <Quote />,
+            active: active?.quote,
+            run: () => editor.chain().focus().toggleBlockquote().run(),
+          },
+        ].map((b) => (
+          <button
+            key={b.label}
+            type="button"
+            title={b.label}
+            onClick={b.run}
+            className={cn(
+              "flex h-7 w-7 items-center justify-center rounded-md transition-colors [&_svg]:h-3.5 [&_svg]:w-3.5",
+              b.active
+                ? "bg-white/15 text-white"
+                : "text-white/70 hover:bg-white/10 hover:text-white"
+            )}
+          >
+            {b.icon}
+          </button>
+        ))}
+      </BubbleMenu>
+
+      {/* Body: same paper colour and reading column as the published article */}
+      {mode === "visual" ? (
+        <div
+          style={{ minHeight, ...(paperColor ? { backgroundColor: paperColor } : {}) }}
+          className="cursor-text bg-stone-soft transition-colors"
+          onClick={() => !editor.isFocused && editor.commands.focus("end")}
+        >
+          <div className="mx-auto max-w-[760px]">
+            <EditorContent editor={editor} />
+          </div>
         </div>
-        <div className="flex items-center gap-2 text-slate-400">
-          <span>Hỗ trợ định dạng chuẩn ấn phẩm Léargas Energy Partners</span>
-        </div>
+      ) : (
+        <textarea
+          value={value}
+          onChange={(e) => {
+            const newHtml = e.target.value
+            onChange(newHtml)
+            editor.commands.setContent(newHtml, { emitUpdate: false })
+          }}
+          style={{ minHeight }}
+          spellCheck={false}
+          className="block w-full resize-y bg-[#1b1f1d] p-6 font-mono text-xs leading-relaxed text-[#cfe3d8] focus:outline-none"
+        />
+      )}
+
+      <div className="flex items-center justify-between rounded-b-xl border-t border-[#f0f0f0] px-4 py-2 text-[11px] text-[#8c8c8c]">
+        <span>
+          {words.toLocaleString("vi-VN")} từ · khoảng {Math.max(1, Math.ceil(words / 200))} phút đọc
+        </span>
+        <span className="hidden sm:inline">
+          Gõ / để chèn nhanh · Bôi đen chữ để định dạng · Kéo thả ảnh vào bài
+        </span>
       </div>
 
       {/* Modal Chèn Link */}
@@ -542,4 +564,42 @@ export function RichArticleEditor({
       />
     </div>
   )
+}
+
+function ToolButton({
+  label,
+  active = false,
+  disabled = false,
+  onClick,
+  children,
+}: {
+  label: string
+  active?: boolean
+  disabled?: boolean
+  onClick: () => void
+  children: React.ReactNode
+}) {
+  return (
+    <Tooltip title={label} mouseEnterDelay={0.4}>
+      <button
+        type="button"
+        aria-label={label}
+        aria-pressed={active}
+        onClick={onClick}
+        disabled={disabled}
+        className={cn(
+          "flex h-8 w-8 shrink-0 items-center justify-center rounded-md transition-colors disabled:opacity-30 [&_svg]:h-4 [&_svg]:w-4",
+          active
+            ? "bg-[#e8f2ec] text-[#065f46]"
+            : "text-[#595959] hover:bg-[#f5f5f5] hover:text-[#1f1f1f]"
+        )}
+      >
+        {children}
+      </button>
+    </Tooltip>
+  )
+}
+
+function Divider() {
+  return <div className="mx-1 h-5 w-px shrink-0 bg-[#f0f0f0]" />
 }

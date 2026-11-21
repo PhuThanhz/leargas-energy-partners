@@ -47,6 +47,7 @@ CREATE TABLE IF NOT EXISTS posts (
     author VARCHAR(100) DEFAULT 'LÉARGAS Editorial',
     reading_time_minutes INT DEFAULT 5,
     cover_image_url VARCHAR(500) DEFAULT '/images/wind.jpg',
+    background_color VARCHAR(7) NULL,
     status VARCHAR(30) NOT NULL DEFAULT 'DRAFT',
     published_at DATETIME NULL,
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,

@@ -74,6 +74,7 @@ public class PostService {
                 .author(request.getAuthor() != null ? request.getAuthor() : "LÉARGAS Editorial")
                 .readingTimeMinutes(request.getReadingTimeMinutes() != null ? request.getReadingTimeMinutes() : calculateReadingTime(request.getContent()))
                 .coverImageUrl(request.getCoverImageUrl() != null ? request.getCoverImageUrl() : "/images/wind.jpg")
+                .backgroundColor(normalizeColor(request.getBackgroundColor()))
                 .status(status)
                 .publishedAt(publishedAt)
                 .build();
@@ -101,6 +102,7 @@ public class PostService {
         if (request.getCategory() != null) post.setCategory(request.getCategory());
         if (request.getAuthor() != null) post.setAuthor(request.getAuthor());
         if (request.getCoverImageUrl() != null) post.setCoverImageUrl(request.getCoverImageUrl());
+        if (request.getBackgroundColor() != null) post.setBackgroundColor(normalizeColor(request.getBackgroundColor()));
         if (request.getReadingTimeMinutes() != null) {
             post.setReadingTimeMinutes(request.getReadingTimeMinutes());
         } else if (contentChanged) {
@@ -155,6 +157,7 @@ public class PostService {
                 .author(post.getAuthor())
                 .readingTimeMinutes(post.getReadingTimeMinutes())
                 .coverImageUrl(post.getCoverImageUrl())
+                .backgroundColor(post.getBackgroundColor())
                 .status(post.getStatus())
                 .publishedAt(post.getPublishedAt() != null
                         ? post.getPublishedAt().format(DateTimeFormatter.ISO_LOCAL_DATE)
@@ -163,6 +166,11 @@ public class PostService {
                         ? post.getUpdatedAt().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
                         : null)
                 .build();
+    }
+
+    /** "" → null (site default); otherwise lower-case #rrggbb (already validated by the DTO). */
+    private String normalizeColor(String color) {
+        return (color == null || color.isBlank()) ? null : color.toLowerCase(Locale.ROOT);
     }
 
     private String uniqueSlug(String base, Long excludeId) {

@@ -51,6 +51,10 @@ public class Post {
     @Builder.Default
     private String coverImageUrl = "/images/wind.jpg";
 
+    /** Reading-area background for this article (#RRGGBB); null = site default. */
+    @Column(name = "background_color", length = 7)
+    private String backgroundColor;
+
     @Column(nullable = false, length = 30)
     @Builder.Default
     private String status = "DRAFT"; // DRAFT, PUBLISHED, ARCHIVED

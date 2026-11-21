@@ -321,6 +321,30 @@
     font-size: 14px;
     line-height: 1.7;
   }
+  /* Data tables: hairline rules only, no boxes. */
+  .article-body table {
+    width: 100%;
+    margin: 36px 0;
+    border-collapse: collapse;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+  .article-body th,
+  .article-body td {
+    padding: 12px 16px 12px 0;
+    border-bottom: 1px solid var(--line);
+    text-align: left;
+    vertical-align: top;
+  }
+  .article-body th {
+    font-weight: 600;
+    color: var(--ink);
+    border-bottom-color: color-mix(in srgb, var(--ink) 35%, transparent);
+  }
+  .article-body th p,
+  .article-body td p {
+    margin: 0;
+  }
   /* Disclaimer at the end of an article: quiet, separated by a hairline. */
   .article-note {
     margin-top: 48px;
@@ -493,86 +517,39 @@
   padding-block: 8px 3px !important;
 }
 
-/* TipTap Visual Editor Luxury Polish */
+/* Admin editor (TipTap): typography comes from .article-body. */
 .ProseMirror {
   outline: none !important;
 }
 
-.ProseMirror p.is-editor-empty:first-child::before {
+.ProseMirror .is-empty::before {
   content: attr(data-placeholder);
   float: left;
-  color: #94a3b8;
-  pointer-events: none;
   height: 0;
+  color: #a8a29e;
+  pointer-events: none;
 }
 
-.ProseMirror h2 {
-  font-size: 1.5rem !important;
-  font-weight: 700 !important;
-  letter-spacing: -0.02em !important;
-  color: #0f172a !important;
-  margin-top: 1.75rem !important;
-  margin-bottom: 0.75rem !important;
-  line-height: 1.35 !important;
+/* No drop cap while the first paragraph is still empty (it would sit on the placeholder). */
+.ProseMirror.article-body > p.is-empty:first-of-type::first-letter {
+  all: unset;
 }
 
-.ProseMirror h3 {
-  font-size: 1.25rem !important;
-  font-weight: 600 !important;
-  color: #1e293b !important;
-  margin-top: 1.5rem !important;
-  margin-bottom: 0.5rem !important;
-  line-height: 1.4 !important;
+/* Admin editor: tables scroll sideways instead of overflowing the column. */
+.ProseMirror .tableWrapper {
+  overflow-x: auto;
 }
-
-.ProseMirror p {
-  margin-top: 0 !important;
-  margin-bottom: 0.85rem !important;
-  line-height: 1.75 !important;
-  color: #334155 !important;
+.ProseMirror td,
+.ProseMirror th {
+  position: relative;
+  min-width: 80px;
 }
-
-.ProseMirror blockquote {
-  border-left: 4px solid #059669 !important;
-  background: #f0fdf4 !important;
-  padding: 0.875rem 1.25rem !important;
-  border-radius: 0.5rem !important;
-  margin: 1.25rem 0 !important;
-  color: #065f46 !important;
-  font-style: italic !important;
-}
-
-.ProseMirror ul {
-  list-style-type: disc !important;
-  padding-left: 1.5rem !important;
-  margin: 0.75rem 0 1rem 0 !important;
-}
-
-.ProseMirror ol {
-  list-style-type: decimal !important;
-  padding-left: 1.5rem !important;
-  margin: 0.75rem 0 1rem 0 !important;
-}
-
-.ProseMirror li {
-  margin-bottom: 0.35rem !important;
-  line-height: 1.65 !important;
-  color: #334155 !important;
-}
-
-.ProseMirror img {
-  border-radius: 0.75rem !important;
-  border: 1px solid #e2e8f0 !important;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05) !important;
-  max-width: 100% !important;
-  height: auto !important;
-  margin: 1.5rem auto !important;
-}
-
-.ProseMirror hr {
-  border: none !important;
-  border-top: 1px solid #e2e8f0 !important;
-  margin: 2rem 0 !important;
+.ProseMirror .selectedCell::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: color-mix(in srgb, var(--gold-deep) 12%, transparent);
+  pointer-events: none;
 }
 
 /* Admin editor: show which image is selected. */

@@ -20,6 +20,7 @@ public class PostDetailDto {
     private String author;
     private Integer readingTimeMinutes;
     private String coverImageUrl;
+    private String backgroundColor;
     private String status;
     private String publishedAt;
     private String updatedAt;

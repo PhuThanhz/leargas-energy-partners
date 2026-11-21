@@ -50,6 +50,7 @@ export default async function BlogPostPage({ params }: PageProps<"/blog/[slug]">
         category={post.category}
         author={post.author}
         coverImageUrl={post.coverImageUrl}
+        backgroundColor={post.backgroundColor}
         publishedAt={post.publishedAt}
         readingTimeMinutes={post.readingTimeMinutes}
         toc={toc}
