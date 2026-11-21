@@ -6,9 +6,9 @@ import { useEffect, useState } from "react"
 
 import { LogoImage } from "@/components/shared/logo"
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
-import { mainNav } from "@/config/navigation"
+import type { NavItem } from "@/types"
 
-export function MobileNav() {
+export function MobileNav({ items }: { items: NavItem[] }) {
   const [open, setOpen] = useState(false)
 
   // Close the menu when the viewport grows to the desktop breakpoint.
@@ -34,7 +34,7 @@ export function MobileNav() {
           </SheetTitle>
         </SheetHeader>
         <nav aria-label="Mobile navigation" className="flex flex-col px-4">
-          {mainNav.map((item) => (
+          {items.map((item) => (
             <Link
               key={item.href}
               href={item.href}

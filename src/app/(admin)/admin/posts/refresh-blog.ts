@@ -1,4 +1,4 @@
-import { refreshBlog } from "./actions"
+import { refreshBlog, refreshSiteContent } from "./actions"
 
 /**
  * Call the refreshBlog server action without letting it block the UI.
@@ -8,6 +8,17 @@ import { refreshBlog } from "./actions"
 export function refreshBlogSafely(slugs: (string | undefined)[], ms = 4000): Promise<boolean> {
   return Promise.race([
     refreshBlog(...slugs).then(
+      () => true,
+      () => false
+    ),
+    new Promise<boolean>((resolve) => setTimeout(() => resolve(false), ms)),
+  ])
+}
+
+/** Same as refreshBlogSafely, for website sections edited in Admin → Website. */
+export function refreshSiteSafely(ms = 4000): Promise<boolean> {
+  return Promise.race([
+    refreshSiteContent().then(
       () => true,
       () => false
     ),

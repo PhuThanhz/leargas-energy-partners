@@ -91,3 +91,10 @@ CREATE TABLE IF NOT EXISTS media_files (
 INSERT INTO users (username, email, password_hash, full_name, role, is_active)
 SELECT 'admin', 'admin@leargasenergy.com', '$2b$10$9ytM8ORt/kLqzZFlA6qdOuR800g7SbKl.75nrFEGSDUILGBrNVLKG', 'LÉARGAS Administrator', 'ROLE_ADMIN', TRUE
 WHERE NOT EXISTS (SELECT 1 FROM users WHERE username = 'admin');
+
+-- Editable website sections (hero, services, footer…) as JSON; missing rows use frontend defaults.
+CREATE TABLE IF NOT EXISTS site_content (
+    section_key VARCHAR(50) PRIMARY KEY,
+    data LONGTEXT NOT NULL,
+    updated_at DATETIME NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

@@ -5,31 +5,18 @@ import Image from "next/image"
 import { useEffect, useState } from "react"
 
 import { Reveal, RevealLines, Stagger, StaggerItem } from "@/components/motion/reveal"
-import { services } from "@/content/home"
-import { photos } from "@/content/media"
+import type { SiteContent } from "@/content/site"
 import { cn } from "@/lib/utils"
 
 const ease = [0.22, 1, 0.36, 1] as const
 const PANEL_MS = 6000
 
 /**
- * One photograph per service, in the same order as `services`. `focus` is the object-position
- * that keeps the main turbine (tower, hub and blades) inside even the narrow collapsed strip.
- */
-const panelPhotos = [
-  { ...photos.sunsetSky, focus: "29% 50%" },
-  { ...photos.aerialGolden, focus: "80% 50%" },
-  { ...photos.hillside, focus: "82% 50%" },
-  { ...photos.silhouette, focus: "77% 50%" },
-  { ...photos.offshoreDay, focus: "41% 50%" },
-  { ...photos.foggyOffshore, focus: "74% 55%" },
-]
-
-/**
  * Advisory capabilities as six photographic panels. The active panel widens to reveal its
  * service; panels auto-advance quietly and open on hover or focus.
  */
-export function ExpertiseSection() {
+export function ExpertiseSection({ content }: { content: SiteContent["services"] }) {
+  const services = content.items
   const [index, setIndex] = useState(0)
   const [paused, setPaused] = useState(false)
 
@@ -37,7 +24,7 @@ export function ExpertiseSection() {
     if (paused) return
     const id = window.setTimeout(() => setIndex((i) => (i + 1) % services.length), PANEL_MS)
     return () => window.clearTimeout(id)
-  }, [index, paused])
+  }, [index, paused, services.length])
 
   return (
     <section
@@ -54,18 +41,15 @@ export function ExpertiseSection() {
           <h2 className="font-heading text-[clamp(26px,min(2.8vw,4.6vh),40px)] leading-[1.1] font-bold tracking-[-0.02em]">
             <RevealLines
               lines={[
-                "One senior partner for the",
+                content.title,
                 <span key="1" className="inline-block pb-1 text-gold-pale italic">
-                  entire investment lifecycle.
+                  {content.accent}
                 </span>,
               ]}
             />
           </h2>
           <Reveal delay={0.1} className="lg:max-w-[380px]">
-            <p className="text-[14px] leading-[1.65] text-white/65">
-              From first regulatory read to commercial operation – engineers, legal and tax advisers
-              coordinated by one accountable partner.
-            </p>
+            <p className="text-[14px] leading-[1.65] text-white/65">{content.intro}</p>
           </Reveal>
         </div>
 
@@ -77,10 +61,11 @@ export function ExpertiseSection() {
         >
           {services.map((service, i) => {
             const on = i === index
-            const photo = panelPhotos[i % panelPhotos.length]!
+            // `focus` keeps the main turbine inside even the narrow collapsed strip.
+            const focus = service.focus || "50% 50%"
             return (
               <StaggerItem
-                key={service.title}
+                key={`${service.title}-${i}`}
                 className={cn(
                   "relative min-h-0 min-w-0 transition-[flex-grow] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]",
                   on ? "grow-[3]" : "grow"
@@ -100,11 +85,11 @@ export function ExpertiseSection() {
                   className="group absolute inset-0 cursor-pointer overflow-hidden rounded-[4px] text-left"
                 >
                   <Image
-                    src={photo.src}
+                    src={service.image.src}
                     alt=""
                     fill
                     sizes="(min-width: 1024px) 50vw, 100vw"
-                    style={{ objectPosition: photo.focus }}
+                    style={{ objectPosition: focus }}
                     className={cn(
                       "object-cover transition-transform duration-[1.6s] ease-[cubic-bezier(0.22,1,0.36,1)]",
                       on ? "scale-100" : "scale-[1.03] group-hover:scale-100"

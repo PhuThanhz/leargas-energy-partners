@@ -1,26 +1,24 @@
 "use client"
 
 import { motion } from "motion/react"
+import type { CSSProperties } from "react"
 
 const ease = [0.22, 1, 0.36, 1] as const
 
-const executionSteps = [
-  { step: "01", title: "Discover", detail: "Turn your investment thesis into a clear mandate." },
-  {
-    step: "02",
-    title: "Validate",
-    detail: "Regulatory, grid and land due diligence on the ground.",
-  },
-  { step: "03", title: "Transact", detail: "Structuring, negotiation and financial close." },
-  { step: "04", title: "Steward", detail: "Support through operation and refinancing." },
-]
-
 /** Seconds for the timeline to travel the full width; each milestone lights as it is reached. */
 const TRAVEL = 2.4
-const at = (i: number) => (i / executionSteps.length) * TRAVEL
 
-/** Four-phase advisory process: a timeline that draws itself and lights each milestone in turn. */
-export function ExecutionSteps() {
+/** Advisory process: a timeline that draws itself and lights each milestone in turn. */
+export function ExecutionSteps({
+  title,
+  steps,
+}: {
+  title: string
+  steps: { title: string; detail: string }[]
+}) {
+  const executionSteps = steps.map((s, i) => ({ ...s, step: String(i + 1).padStart(2, "0") }))
+  const at = (i: number) => (i / Math.max(executionSteps.length, 1)) * TRAVEL
+
   return (
     <motion.div
       initial="hidden"
@@ -32,7 +30,7 @@ export function ExecutionSteps() {
         transition={{ duration: 0.8, ease }}
         className="font-heading text-[clamp(22px,2.8vh+0.6vw,32px)] leading-tight font-medium text-white"
       >
-        How we work
+        {title}
       </motion.h3>
 
       <div className="relative mt-[clamp(20px,4vh,36px)]">
@@ -49,7 +47,10 @@ export function ExecutionSteps() {
           transition={{ duration: TRAVEL, ease: "easeInOut", delay: 0.3 }}
         />
 
-        <ol className="relative grid gap-x-8 gap-y-9 lg:grid-cols-4">
+        <ol
+          className="relative grid gap-x-8 gap-y-9 lg:[grid-template-columns:repeat(var(--steps),minmax(0,1fr))]"
+          style={{ "--steps": Math.max(executionSteps.length, 1) } as CSSProperties}
+        >
           {executionSteps.map((item, i) => (
             <li key={item.step} className="group relative pl-10 lg:pl-0">
               {/* Milestone dot lights up as the line reaches it */}

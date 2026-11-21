@@ -6,21 +6,22 @@ import Link from "next/link"
 import { useEffect, useState } from "react"
 
 import { arrowButton } from "@/components/shared/arrow-button"
-import { heroSlides } from "@/content/media"
+import type { SiteContent } from "@/content/site"
 import { cn } from "@/lib/utils"
 
 const SLIDE_MS = 6500
 const ease = [0.22, 1, 0.36, 1] as const
 
-export function Hero() {
+export function Hero({ content }: { content: SiteContent["hero"] }) {
+  const heroSlides = content.slides.length ? content.slides : [{ src: "/images/wind.jpg", alt: "" }]
   const [index, setIndex] = useState(0)
 
-  const slide = heroSlides[index]!
+  const slide = heroSlides[index % heroSlides.length]!
 
   useEffect(() => {
     const id = window.setTimeout(() => setIndex((i) => (i + 1) % heroSlides.length), SLIDE_MS)
     return () => window.clearTimeout(id)
-  }, [index])
+  }, [index, heroSlides.length])
 
   return (
     <section
@@ -65,12 +66,12 @@ export function Hero() {
         <div className="my-auto py-6">
           <h1 className="font-heading text-[clamp(34px,min(6.2vw,10vh),100px)] leading-[1.02] font-semibold tracking-[-0.04em]">
             <span className="sr-only">
-              Where global capital meets Vietnam&apos;s energy future.
+              {[content.line1, content.line2, content.accent].filter(Boolean).join(" ")}
             </span>
             <span aria-hidden className="block">
-              <BlurWords className="block text-white" words="Where global capital" delay={0.25} />
-              <BlurWords className="block text-white" words="meets Vietnam's" delay={0.55} />
-              <BlurWords className="block text-gold-pale" words="energy future." delay={0.8} />
+              <BlurWords className="block text-white" words={content.line1} delay={0.25} />
+              <BlurWords className="block text-white" words={content.line2} delay={0.55} />
+              <BlurWords className="block text-gold-pale" words={content.accent} delay={0.8} />
             </span>
           </h1>
           <motion.div
@@ -79,15 +80,13 @@ export function Hero() {
             transition={{ duration: 0.9, ease, delay: 1.3 }}
             className="mt-[clamp(24px,5vh,48px)] flex flex-col gap-6 md:flex-row md:items-end md:justify-between"
           >
-            <p className="max-w-[440px] text-[16px] leading-[1.7] text-white/75">
-              Boutique advisory connecting international capital with energy in Vietnam.
-            </p>
+            <p className="max-w-[440px] text-[16px] leading-[1.7] text-white/75">{content.intro}</p>
             <div className="flex flex-wrap items-center gap-3">
               <Link href="/#services" className={arrowButton({ variant: "gold", size: "md" })}>
-                <span>Our capabilities</span>
+                <span>{content.primaryCta}</span>
               </Link>
               <Link href="/#contact" className={arrowButton({ variant: "light", size: "md" })}>
-                <span>Start a conversation</span>
+                <span>{content.secondaryCta}</span>
               </Link>
             </div>
           </motion.div>

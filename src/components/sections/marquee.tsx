@@ -1,7 +1,5 @@
-import { capabilities } from "@/content/home"
-
 /** Infinite ticker of capabilities across the investment lifecycle. */
-export function Marquee() {
+export function Marquee({ items: capabilities }: { items: string[] }) {
   const row = (
     <ul className="flex shrink-0 items-center gap-12 pr-12" aria-hidden>
       {capabilities.map((word) => (

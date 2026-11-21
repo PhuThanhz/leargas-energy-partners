@@ -1,11 +1,12 @@
 import Link from "next/link"
 
 import { Reveal, RevealLines } from "@/components/motion/reveal"
+import type { SiteContent } from "@/content/site"
 import { getPosts } from "@/lib/api/blog"
 
 import { InsightsSlider } from "./insights-slider"
 
-export async function Insights() {
+export async function Insights({ content }: { content: SiteContent["insights"] }) {
   const posts = await getPosts(0, 6)
 
   return (
@@ -25,9 +26,9 @@ export async function Insights() {
             <h2 className="font-heading text-[clamp(26px,min(2.8vw,4.6vh),40px)] leading-[1.1] font-bold tracking-[-0.02em] text-ink">
               <RevealLines
                 lines={[
-                  "Perspectives on energy transition.",
+                  content.title,
                   <span key="1" className="inline-block pb-1 text-gold-deep italic">
-                    Clarity for your next mandate.
+                    {content.accent}
                   </span>,
                 ]}
               />
@@ -38,7 +39,7 @@ export async function Insights() {
               href="/blog"
               className="group inline-flex items-center gap-2 border-b border-ink/40 pb-1 text-sm text-ink transition-colors hover:border-gold-deep hover:text-gold-deep"
             >
-              All insights
+              {content.linkLabel}
             </Link>
           </Reveal>
         </div>

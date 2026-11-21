@@ -2,19 +2,19 @@ import Image from "next/image"
 
 import { EnquiryButton } from "@/components/enquiry/enquiry-button"
 import { Reveal, RevealLines } from "@/components/motion/reveal"
-import { photos } from "@/content/media"
+import type { SiteContent } from "@/content/site"
 
 import { ExecutionSteps } from "./execution"
 import { TurbineArt } from "./turbine-art"
 
-export function ContactCta() {
+export function ContactCta({ content }: { content: SiteContent["contact"] }) {
   return (
     <section
       id="contact"
       className="relative isolate section-screen overflow-hidden bg-[radial-gradient(ellipse_at_bottom_left,#001a12_0%,#013525_50%,#001c14_100%)] py-14 text-white md:py-18 lg:py-[clamp(28px,5vh,56px)]"
     >
       <Image
-        src={photos.sunsetSky.src}
+        src={content.image.src}
         alt=""
         fill
         sizes="100vw"
@@ -29,7 +29,7 @@ export function ContactCta() {
       />
 
       <div id="approach" className="relative z-10 wrap scroll-mt-[100px]">
-        <ExecutionSteps />
+        <ExecutionSteps title={content.stepsTitle} steps={content.steps} />
       </div>
 
       <div className="relative z-10 wrap mt-[clamp(28px,6vh,64px)]">
@@ -38,9 +38,9 @@ export function ContactCta() {
             <h2 className="max-w-[820px] font-heading text-[clamp(30px,4vh+1.6vw,60px)] leading-[1.02] font-bold tracking-[-0.02em]">
               <RevealLines
                 lines={[
-                  "Bring us your ambition.",
+                  content.title,
                   <span key="1" className="text-gold-pale italic">
-                    We&apos;ll bring the ground truth.
+                    {content.accent}
                   </span>,
                 ]}
               />
@@ -51,11 +51,9 @@ export function ContactCta() {
               className="mt-[clamp(16px,3vh,28px)] flex flex-wrap items-center gap-6"
             >
               <EnquiryButton variant="gold" size="lg">
-                Start a conversation
+                {content.buttonLabel}
               </EnquiryButton>
-              <p className="text-[14px] text-white/65">
-                A confidential conversation with our founding partners.
-              </p>
+              <p className="text-[14px] text-white/65">{content.note}</p>
             </Reveal>
           </div>
           <Reveal viewport={{ once: true }} delay={0.3} y={0} className="hidden lg:block">

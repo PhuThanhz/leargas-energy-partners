@@ -7,17 +7,20 @@ import {
   Marquee,
   WindGallery,
 } from "@/components/sections"
+import { getSiteContent } from "@/lib/api/site-content"
 
-export default function HomePage() {
+export default async function HomePage() {
+  const site = await getSiteContent()
+
   return (
     <>
-      <Hero />
-      <Marquee />
-      <FirmIdentity />
-      <ExpertiseSection />
-      <WindGallery />
-      <Insights />
-      <ContactCta />
+      <Hero content={site.hero} />
+      <Marquee items={site.marquee.items} />
+      <FirmIdentity content={site.about} />
+      <ExpertiseSection content={site.services} />
+      <WindGallery content={site.portfolio} />
+      <Insights content={site.insights} />
+      <ContactCta content={site.contact} />
     </>
   )
 }

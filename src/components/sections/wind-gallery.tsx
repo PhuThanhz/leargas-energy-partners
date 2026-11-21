@@ -14,19 +14,20 @@ import Image from "next/image"
 import { useRef, useState } from "react"
 
 import { Reveal, RevealLines } from "@/components/motion/reveal"
-import { gallerySlides } from "@/content/media"
+import type { SiteContent } from "@/content/site"
 import { cn } from "@/lib/utils"
 
 /** Drift speed of the reel, in pixels per second. */
 const SPEED = 28
 const ease = [0.22, 1, 0.36, 1] as const
-const count = gallerySlides.length
 
 /**
  * The wind spectrum as a slowly drifting, endless photo reel (Flickity-style): it glides on its
  * own, can be dragged, pauses on hover, and the tabs / arrows glide it to a given segment.
  */
-export function WindGallery() {
+export function WindGallery({ content }: { content: SiteContent["portfolio"] }) {
+  const gallerySlides = content.slides.map((s) => ({ ...s, src: s.image.src, alt: s.image.alt }))
+  const count = Math.max(gallerySlides.length, 1)
   const reduce = useReducedMotion()
   const x = useMotionValue(0)
   const firstCard = useRef<HTMLDivElement>(null)
@@ -104,17 +105,15 @@ export function WindGallery() {
         <h2 className="shrink-0 font-heading text-[clamp(26px,min(2.8vw,4.6vh),40px)] leading-[1.1] font-bold tracking-[-0.02em]">
           <RevealLines
             lines={[
-              "From utility-scale onshore",
+              content.title,
               <span key="1" className="inline-block pb-1 text-gold-deep italic">
-                to open ocean waters.
+                {content.accent}
               </span>,
             ]}
           />
         </h2>
         <Reveal delay={0.1} className="lg:max-w-[400px] xl:max-w-[440px]">
-          <p className="text-[13.5px] leading-[1.65] text-muted-foreground">
-            Core renewable segments, each with its own risk and return.
-          </p>
+          <p className="text-[13.5px] leading-[1.65] text-muted-foreground">{content.intro}</p>
         </Reveal>
 
         <Reveal delay={0.15} className="flex items-center gap-4">
@@ -152,7 +151,7 @@ export function WindGallery() {
         <div className="flex scrollbar-none items-center gap-6 overflow-x-auto border-b border-line">
           {gallerySlides.map((slide, idx) => (
             <button
-              key={slide.kicker}
+              key={`${slide.kicker}-${idx}`}
               type="button"
               onClick={() => goTo(idx)}
               className={cn(

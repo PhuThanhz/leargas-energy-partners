@@ -5,18 +5,16 @@ import { BackToTop, FooterWordmark } from "@/components/layout/footer-motion"
 import { LineDraw, RevealLines } from "@/components/motion/reveal"
 import { LinkedInIcon } from "@/components/shared/linkedin-icon"
 import { LogoImage } from "@/components/shared/logo"
-import { mainNav } from "@/config/navigation"
 import { siteConfig } from "@/config/site"
-import { photos } from "@/content/media"
+import type { SiteContent } from "@/content/site"
+import type { NavItem } from "@/types"
 
-const presence = ["Hanoi", "Ho Chi Minh City"]
-
-export function Footer() {
+export function Footer({ content, nav }: { content: SiteContent["footer"]; nav: NavItem[] }) {
   return (
     <footer className="relative isolate overflow-hidden bg-[#00140e] text-white">
       {/* Turbines on the horizon, barely there, with a warm glow behind the statement */}
       <Image
-        src={photos.silhouette.src}
+        src={content.image.src}
         alt=""
         fill
         sizes="100vw"
@@ -34,10 +32,10 @@ export function Footer() {
           <h2 className="font-heading text-[clamp(38px,5.2vw,80px)] leading-[1] font-semibold tracking-[-0.03em]">
             <RevealLines
               lines={[
-                "Global perspective.",
-                "Local insight.",
+                content.line1,
+                content.line2,
                 <span key="2" className="text-gold-pale italic">
-                  Lasting value.
+                  {content.accent}
                 </span>,
               ]}
             />
@@ -53,15 +51,14 @@ export function Footer() {
               <LogoImage className="w-[200px] md:w-[220px]" />
             </Link>
             <p className="mt-6 max-w-[340px] text-[14px] leading-[1.7] text-white/55">
-              Boutique strategic and investment advisory, connecting international capital with
-              energy across Vietnam.
+              {content.description}
             </p>
           </div>
 
           <nav aria-label="Footer" className="col-span-2 lg:col-span-3 lg:col-start-6">
             <p className="text-[13px] text-white/40">Explore</p>
             <ul className="mt-5 grid grid-cols-2 gap-x-6 gap-y-3 text-[15px]">
-              {mainNav.map((item) => (
+              {nav.map((item) => (
                 <li key={item.href}>
                   <Link
                     href={item.href}
@@ -78,7 +75,7 @@ export function Footer() {
           <div className="lg:col-span-2">
             <p className="text-[13px] text-white/40">Presence</p>
             <ul className="mt-5 space-y-3 text-[15px] text-white/80">
-              {presence.map((city) => (
+              {content.presence.map((city) => (
                 <li key={city}>{city}</li>
               ))}
             </ul>
@@ -87,7 +84,7 @@ export function Footer() {
           <div className="lg:col-span-2">
             <p className="text-[13px] text-white/40">Connect</p>
             <a
-              href={siteConfig.links.linkedin}
+              href={content.linkedin}
               target="_blank"
               rel="noopener noreferrer"
               className="group mt-5 inline-flex items-center gap-3 text-[15px] text-white/80 transition-colors hover:text-white"

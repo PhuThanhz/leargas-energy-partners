@@ -163,6 +163,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       ),
       children: [
         {
+          key: "/admin/website",
+          icon: <GlobalOutlined className="text-sm" />,
+          label: "Website",
+        },
+        {
           key: "/admin/posts",
           icon: <FileTextOutlined className="text-sm" />,
           label: "Posts",
@@ -198,6 +203,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   const flatKeys = [
     "/admin/dashboard",
+    "/admin/website",
     "/admin/posts",
     "/admin/categories",
     "/admin/enquiries",
@@ -212,6 +218,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   const mobileMenuItems = [
     { key: "/admin/dashboard", icon: <DashboardOutlined />, label: "Dashboard" },
+    { key: "/admin/website", icon: <GlobalOutlined />, label: "Website" },
     { key: "/admin/posts", icon: <FileTextOutlined />, label: "Posts" },
     { key: "/admin/categories", icon: <FolderOutlined />, label: "Categories" },
     { key: "/admin/enquiries", icon: <CustomerServiceOutlined />, label: "Enquiries" },
@@ -224,6 +231,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     if (pathname.includes("/admin/posts") && pathname.includes("/edit"))
       return ["Posts", "Edit post"]
     if (pathname.includes("/admin/posts")) return ["Posts", "All posts"]
+    if (pathname.includes("/admin/website")) return ["Content", "Website"]
     if (pathname.includes("/admin/categories")) return ["Content", "Categories"]
     if (pathname.includes("/admin/enquiries")) return ["Clients", "Enquiries"]
     if (pathname.includes("/admin/settings")) return ["System", "Settings"]
