@@ -3,6 +3,7 @@ services:
     image: mysql:8.0
     container_name: leargas_mysql
     restart: always
+    command: --innodb-buffer-pool-size=128M --max-connections=50
     environment:
       MYSQL_DATABASE: leargas_db
       MYSQL_USER: leargas_user
