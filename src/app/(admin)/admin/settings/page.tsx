@@ -3,7 +3,7 @@
 import * as React from "react"
 import { Shield, KeyRound, Server, CheckCircle2, XCircle, RefreshCw } from "lucide-react"
 
-import { getStoredAuth, type AuthState } from "@/lib/api/admin-client"
+import { API_HOST, getStoredAuth, type AuthState } from "@/lib/api/admin-client"
 
 const emptySubscribe = () => () => {}
 
@@ -25,9 +25,7 @@ export default function AdminSettingsPage() {
     setBackendStatus("CHECKING")
     const start = Date.now()
     try {
-      const res = await fetch("http://localhost:8080/api/posts", { method: "HEAD" }).catch(
-        () => null
-      )
+      const res = await fetch(`${API_HOST}/api/posts`, { method: "HEAD" }).catch(() => null)
       const duration = Date.now() - start
       if (res && (res.ok || res.status === 401 || res.status === 403 || res.status === 200)) {
         setBackendStatus("ONLINE")
@@ -45,7 +43,7 @@ export default function AdminSettingsPage() {
   React.useEffect(() => {
     let active = true
     const start = Date.now()
-    fetch("http://localhost:8080/api/posts", { method: "HEAD" })
+    fetch(`${API_HOST}/api/posts`, { method: "HEAD" })
       .then((res) => {
         if (!active) return
         const duration = Date.now() - start

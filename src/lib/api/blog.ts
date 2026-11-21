@@ -3,6 +3,7 @@ import "server-only"
 import { cacheLife, cacheTag } from "next/cache"
 
 import { localPosts } from "@/content/posts"
+import { addHeadingIds } from "@/lib/heading-ids"
 import { isApiConfigured } from "@/lib/env"
 import type { PageResponse, Post, PostSummary } from "@/types"
 
@@ -57,7 +58,8 @@ export async function getPostBySlug(slug: string): Promise<Post | null> {
 
   if (!isApiConfigured) return localPosts.find((post) => post.slug === slug) ?? null
   try {
-    return await apiFetch<Post>(`/api/posts/${encodeURIComponent(slug)}`)
+    const post = await apiFetch<Post>(`/api/posts/${encodeURIComponent(slug)}`)
+    return { ...post, content: addHeadingIds(post.content) }
   } catch (error) {
     if (error instanceof ApiError && error.isNotFound) return null
     throw error
@@ -66,8 +68,10 @@ export async function getPostBySlug(slug: string): Promise<Post | null> {
 
 /** Build a table of contents from `<h2 id="…">` headings in the post HTML. */
 export function getTableOfContents(html: string) {
-  return [...html.matchAll(/<h2 id="([^"]+)">(.*?)<\/h2>/g)].map(([, id, title]) => ({
-    id: id!,
-    title: title!.replace(/<[^>]+>/g, ""),
-  }))
+  return [...html.matchAll(/<h2[^>]*\sid="([^"]+)"[^>]*>([\s\S]*?)<\/h2>/g)].map(
+    ([, id, title]) => ({
+      id: id!,
+      title: title!.replace(/<[^>]+>/g, ""),
+    })
+  )
 }

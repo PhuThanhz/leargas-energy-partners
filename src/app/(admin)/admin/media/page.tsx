@@ -5,7 +5,7 @@ import { Upload, Card, Button, Popconfirm, Typography, Empty, Image } from "antd
 import { InboxOutlined, CopyOutlined, DeleteOutlined, ReloadOutlined } from "@ant-design/icons"
 import type { UploadProps } from "antd"
 import { toast } from "sonner"
-import { adminFetch, getStoredAuth } from "@/lib/api/admin-client"
+import { API_HOST, adminFetch, getStoredAuth } from "@/lib/api/admin-client"
 
 const { Title, Text } = Typography
 const { Dragger } = Upload
@@ -101,7 +101,7 @@ export default function AdminMediaPage() {
   const uploadProps: UploadProps = {
     name: "file",
     multiple: true,
-    action: "http://localhost:8080/api/admin/media/upload",
+    action: `${API_HOST}/api/admin/media/upload`,
     headers: {
       Authorization: auth.token ? `Bearer ${auth.token}` : "",
     },
@@ -181,7 +181,7 @@ export default function AdminMediaPage() {
               const displayUrl = item.url.startsWith("http")
                 ? item.url
                 : item.url.startsWith("/uploads")
-                  ? `http://localhost:8080${item.url}`
+                  ? `${API_HOST}${item.url}`
                   : item.url
 
               return (

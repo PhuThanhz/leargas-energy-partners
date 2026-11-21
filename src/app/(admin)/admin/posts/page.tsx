@@ -31,7 +31,8 @@ import {
   LinkOutlined,
 } from "@ant-design/icons"
 import { toast } from "sonner"
-import { adminFetch } from "@/lib/api/admin-client"
+import { adminFetch, resolveMediaUrl } from "@/lib/api/admin-client"
+import { refreshBlog } from "./actions"
 
 const { Title, Text } = Typography
 
@@ -232,10 +233,11 @@ export default function AdminPostsPage() {
     }
   }, [])
 
-  const handleDelete = async (id: number, title: string) => {
+  const handleDelete = async (id: number, title: string, slug?: string) => {
     try {
       await adminFetch(`/api/admin/posts/${id}`, { method: "DELETE" })
       setPosts((prev) => prev.filter((p) => p.id !== id))
+      await refreshBlog(slug).catch(() => undefined)
       toast.success("Đã xóa bài viết thành công!", {
         description: `Bài viết "${title}" đã được xóa khỏi hệ thống.`,
       })
@@ -288,11 +290,7 @@ export default function AdminPostsPage() {
       title: "Bài viết",
       key: "postInfo",
       render: (_: unknown, record: PostItem) => {
-        const cover = record.coverImageUrl?.startsWith("http")
-          ? record.coverImageUrl
-          : record.coverImageUrl?.startsWith("/uploads")
-            ? `http://localhost:8080${record.coverImageUrl}`
-            : record.coverImageUrl || "/images/wind.jpg"
+        const cover = resolveMediaUrl(record.coverImageUrl || "/images/wind.jpg")
 
         return (
           <div className="flex items-start gap-3">
@@ -424,7 +422,7 @@ export default function AdminPostsPage() {
           <Popconfirm
             title="Xác nhận xóa bài viết?"
             description={`Bạn có chắc muốn xóa bài "${record.title}"?`}
-            onConfirm={() => handleDelete(record.id, record.title)}
+            onConfirm={() => handleDelete(record.id, record.title, record.slug)}
             okText="Xóa"
             cancelText="Hủy"
             okButtonProps={{ danger: true }}
@@ -605,20 +603,14 @@ export default function AdminPostsPage() {
             </Button>
           ),
         ]}
-        destroyOnClose
+        destroyOnHidden
       >
         {previewPost && (
           <div className="space-y-6 py-2 font-sans">
             {/* Ảnh bìa bài viết với badge chuyên mục & tỉ lệ điện ảnh */}
             <div className="relative aspect-[21/9] w-full overflow-hidden rounded-xl border border-[#eaedf0] bg-[#001c14] shadow-sm">
               <Image
-                src={
-                  previewPost.coverImageUrl?.startsWith("http")
-                    ? previewPost.coverImageUrl
-                    : previewPost.coverImageUrl?.startsWith("/uploads")
-                      ? `http://localhost:8080${previewPost.coverImageUrl}`
-                      : previewPost.coverImageUrl || "/images/wind.jpg"
-                }
+                src={resolveMediaUrl(previewPost.coverImageUrl || "/images/wind.jpg")}
                 alt={previewPost.title}
                 className="h-full w-full object-cover transition-transform duration-700 hover:scale-105"
                 fallback="/images/wind.jpg"

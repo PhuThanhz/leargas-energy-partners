@@ -25,6 +25,7 @@ import {
   Sparkles,
 } from "lucide-react"
 import { Tooltip, Modal, Input, message } from "antd"
+import { adminUpload } from "@/lib/api/admin-client"
 
 interface RichArticleEditorProps {
   value: string
@@ -126,20 +127,8 @@ export function RichArticleEditor({
     if (!file) return
 
     setUploadingImage(true)
-    const formData = new FormData()
-    formData.append("file", file)
-
     try {
-      const res = await fetch("http://localhost:8080/api/media/upload", {
-        method: "POST",
-        body: formData,
-      })
-      if (!res.ok) throw new Error("Upload thất bại")
-      const data = await res.json()
-      const uploadedUrl = data.url?.startsWith("http")
-        ? data.url
-        : `http://localhost:8080${data.url}`
-
+      const uploadedUrl = await adminUpload(file)
       editor?.chain().focus().setImage({ src: uploadedUrl }).run()
       message.success("Đã chèn hình ảnh thành công!")
       setImageModalOpen(false)
@@ -513,9 +502,7 @@ export function RichArticleEditor({
               className="block w-full cursor-pointer text-xs text-slate-500 file:mr-3 file:rounded-lg file:border-0 file:bg-emerald-50 file:px-3 file:py-1.5 file:text-xs file:font-semibold file:text-emerald-700 hover:file:bg-emerald-100"
             />
             {uploadingImage && (
-              <p className="mt-1 animate-pulse text-xs text-emerald-600">
-                Đang tải ảnh lên máy chủ Spring Boot...
-              </p>
+              <p className="mt-1 animate-pulse text-xs text-emerald-600">Đang tải ảnh lên...</p>
             )}
           </div>
 

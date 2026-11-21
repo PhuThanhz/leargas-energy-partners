@@ -16,7 +16,7 @@ import {
   Mail,
 } from "lucide-react"
 
-import { adminFetch } from "@/lib/api/admin-client"
+import { API_HOST, adminFetch, resolveMediaUrl } from "@/lib/api/admin-client"
 
 interface DashboardStats {
   totalPosts: number
@@ -84,7 +84,7 @@ export default function AdminDashboardPage() {
       })
       .catch(() => {
         // Fallback public posts
-        fetch("http://localhost:8080/api/posts?size=6")
+        fetch(`${API_HOST}/api/posts?size=6`)
           .then((r) => r.json())
           .then((data) => {
             if (data.content) setRecentPosts(data.content)
@@ -98,7 +98,7 @@ export default function AdminDashboardPage() {
         if (Array.isArray(cats)) setCategories(cats)
       })
       .catch(() => {
-        fetch("http://localhost:8080/api/categories")
+        fetch(`${API_HOST}/api/categories`)
           .then((r) => r.json())
           .then((cats) => {
             if (Array.isArray(cats)) setCategories(cats)
@@ -112,9 +112,7 @@ export default function AdminDashboardPage() {
 
   const getCoverSrc = (coverUrl?: string) => {
     if (!coverUrl) return "/images/wind.jpg"
-    if (coverUrl.startsWith("http")) return coverUrl
-    if (coverUrl.startsWith("/uploads")) return `http://localhost:8080${coverUrl}`
-    return coverUrl
+    return resolveMediaUrl(coverUrl)
   }
 
   return (

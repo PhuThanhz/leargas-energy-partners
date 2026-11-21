@@ -364,7 +364,7 @@ export default function AdminCategoriesPage() {
         okText={editingCategory ? "Lưu thay đổi" : "Tạo chuyên mục"}
         cancelText="Hủy bỏ"
         okButtonProps={{ className: "!bg-[#059669]" }}
-        destroyOnClose
+        destroyOnHidden
       >
         <Form form={form} layout="vertical" className="mt-4 font-sans">
           <Form.Item

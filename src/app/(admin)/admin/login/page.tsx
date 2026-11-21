@@ -6,7 +6,7 @@ import { User, Lock, Eye, EyeOff, ArrowRight } from "lucide-react"
 import { toast } from "sonner"
 
 import { LogoImage } from "@/components/shared/logo"
-import { saveAuth } from "@/lib/api/admin-client"
+import { API_HOST, saveAuth } from "@/lib/api/admin-client"
 
 export default function AdminLoginPage() {
   const router = useRouter()
@@ -22,7 +22,7 @@ export default function AdminLoginPage() {
 
     try {
       // Gọi trực tiếp đến Backend Spring Boot (xác thực MySQL & cấp JWT)
-      const res = await fetch("http://localhost:8080/api/auth/login", {
+      const res = await fetch(`${API_HOST}/api/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username: username.trim(), password }),

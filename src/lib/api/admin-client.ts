@@ -48,7 +48,13 @@ export function isAuthenticated(): boolean {
   return Boolean(auth.token)
 }
 
-const API_HOST = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080"
+export const API_HOST = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080"
+
+/** Turn a backend-relative media path (`/uploads/x.jpg`) into an absolute URL. */
+export function resolveMediaUrl(url: string): string {
+  if (!url || /^(https?:|data:)/.test(url)) return url
+  return url.startsWith("/uploads/") ? `${API_HOST}${url}` : url
+}
 
 export async function adminFetch<T>(path: string, options: RequestInit = {}): Promise<T> {
   const auth = getStoredAuth()
@@ -82,4 +88,15 @@ export async function adminFetch<T>(path: string, options: RequestInit = {}): Pr
   }
 
   return response.json()
+}
+
+/** Upload a file to the media library and return its absolute URL. */
+export async function adminUpload(file: File): Promise<string> {
+  const body = new FormData()
+  body.append("file", file)
+  const data = await adminFetch<{ url: string }>("/api/admin/media/upload", {
+    method: "POST",
+    body,
+  })
+  return resolveMediaUrl(data.url)
 }

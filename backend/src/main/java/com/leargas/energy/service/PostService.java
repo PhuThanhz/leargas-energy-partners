@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.Normalizer;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
@@ -54,13 +55,9 @@ public class PostService {
 
     @Transactional
     public PostDetailDto createPost(CreatePostRequest request) {
-        String slug = (request.getSlug() != null && !request.getSlug().isBlank())
+        String slug = uniqueSlug((request.getSlug() != null && !request.getSlug().isBlank())
                 ? generateSlug(request.getSlug())
-                : generateSlug(request.getTitle());
-
-        if (postRepository.existsBySlug(slug)) {
-            slug = slug + "-" + System.currentTimeMillis();
-        }
+                : generateSlug(request.getTitle()), null);
 
         String status = (request.getStatus() != null && !request.getStatus().isBlank())
                 ? request.getStatus().toUpperCase(Locale.ROOT)
@@ -92,9 +89,13 @@ public class PostService {
 
         post.setTitle(request.getTitle());
         if (request.getSlug() != null && !request.getSlug().isBlank()) {
-            post.setSlug(generateSlug(request.getSlug()));
+            String requested = generateSlug(request.getSlug());
+            if (!requested.equals(post.getSlug())) {
+                post.setSlug(uniqueSlug(requested, post.getId()));
+            }
         }
         post.setExcerpt(request.getExcerpt());
+        boolean contentChanged = request.getContent() != null && !request.getContent().equals(post.getContent());
         post.setContent(request.getContent());
 
         if (request.getCategory() != null) post.setCategory(request.getCategory());
@@ -102,6 +103,8 @@ public class PostService {
         if (request.getCoverImageUrl() != null) post.setCoverImageUrl(request.getCoverImageUrl());
         if (request.getReadingTimeMinutes() != null) {
             post.setReadingTimeMinutes(request.getReadingTimeMinutes());
+        } else if (contentChanged) {
+            post.setReadingTimeMinutes(calculateReadingTime(request.getContent()));
         }
 
         if (request.getStatus() != null && !request.getStatus().isBlank()) {
@@ -162,9 +165,23 @@ public class PostService {
                 .build();
     }
 
+    private String uniqueSlug(String base, Long excludeId) {
+        String root = base.isBlank() ? "bai-viet" : base;
+        String candidate = root;
+        int suffix = 2;
+        while (excludeId == null
+                ? postRepository.existsBySlug(candidate)
+                : postRepository.existsBySlugAndIdNot(candidate, excludeId)) {
+            candidate = root + "-" + suffix++;
+        }
+        return candidate;
+    }
+
     private String generateSlug(String input) {
         if (input == null) return "";
-        return input.toLowerCase(Locale.ROOT)
+        String ascii = Normalizer.normalize(input.replace('đ', 'd').replace('Đ', 'D'), Normalizer.Form.NFD)
+                .replaceAll("\\p{M}", "");
+        return ascii.toLowerCase(Locale.ROOT)
                 .replaceAll("[^a-z0-9\\s-]", "")
                 .replaceAll("\\s+", "-")
                 .replaceAll("-+", "-")
@@ -173,7 +190,9 @@ public class PostService {
 
     private int calculateReadingTime(String content) {
         if (content == null || content.isBlank()) return 3;
-        int wordCount = content.split("\\s+").length;
+        String text = content.replaceAll("<[^>]+>", " ").replaceAll("&[a-zA-Z#0-9]+;", " ").trim();
+        if (text.isEmpty()) return 1;
+        int wordCount = text.split("\\s+").length;
         return Math.max(1, (int) Math.ceil((double) wordCount / 200));
     }
 }
