@@ -75,9 +75,9 @@ export default function AdminSettingsPage() {
   return (
     <div className="mx-auto max-w-4xl space-y-6">
       <div>
-        <h1 className="text-xl font-semibold text-[#000000e0]">Cài đặt & Trạng thái Hệ thống</h1>
+        <h1 className="text-xl font-semibold text-[#000000e0]">Settings & system status</h1>
         <p className="mt-0.5 text-xs text-[#8c8c8c]">
-          Quản lý tài khoản quản trị, bảo mật và kiểm tra kết nối với Backend Spring Boot & MySQL
+          Admin account, security and backend connection status
         </p>
       </div>
 
@@ -86,32 +86,32 @@ export default function AdminSettingsPage() {
         <div className="space-y-3.5 rounded-lg border border-[#f0f0f0] bg-white p-5 shadow-[0_1px_2px_0_rgba(0,0,0,0.03)]">
           <div className="flex items-center gap-2 text-[#059669]">
             <Shield className="h-4 w-4" />
-            <h2 className="text-xs font-semibold tracking-wider uppercase">Tài khoản Quản trị</h2>
+            <h2 className="text-xs font-semibold tracking-wider uppercase">Admin account</h2>
           </div>
 
           <div className="space-y-3 border-t border-[#f5f5f5] pt-3 text-xs">
             <div>
-              <span className="block text-[10px] text-[#8c8c8c] uppercase">Họ và tên</span>
+              <span className="block text-[10px] text-[#8c8c8c] uppercase">Full name</span>
               <span className="text-xs font-medium text-[#262626]">
-                {auth?.user?.fullName || "Quản trị viên LÉARGAS"}
+                {auth?.user?.fullName || "LÉARGAS Administrator"}
               </span>
             </div>
             <div>
-              <span className="block text-[10px] text-[#8c8c8c] uppercase">Tên đăng nhập</span>
+              <span className="block text-[10px] text-[#8c8c8c] uppercase">Username</span>
               <span className="font-mono text-xs text-[#262626]">
                 {auth?.user?.username || "admin"}
               </span>
             </div>
             <div>
-              <span className="block text-[10px] text-[#8c8c8c] uppercase">Email liên hệ</span>
+              <span className="block text-[10px] text-[#8c8c8c] uppercase">Email</span>
               <span className="text-xs text-[#262626]">
                 {auth?.user?.email || "admin@leargasenergy.com"}
               </span>
             </div>
             <div>
-              <span className="block text-[10px] text-[#8c8c8c] uppercase">Quyền hạn</span>
+              <span className="block text-[10px] text-[#8c8c8c] uppercase">Role</span>
               <span className="mt-0.5 inline-block rounded border border-[#b7eb8f] bg-[#f6ffed] px-2 py-0.5 text-[10px] font-medium text-[#52c41a]">
-                {auth?.user?.role || "ROLE_ADMIN"} (Toàn quyền)
+                {auth?.user?.role || "ROLE_ADMIN"} (full access)
               </span>
             </div>
           </div>
@@ -122,14 +122,14 @@ export default function AdminSettingsPage() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2 text-[#059669]">
               <Server className="h-4 w-4" />
-              <h2 className="text-xs font-semibold tracking-wider uppercase">Trạng thái Dịch vụ</h2>
+              <h2 className="text-xs font-semibold tracking-wider uppercase">Service status</h2>
             </div>
             <button
               onClick={pingBackend}
               className="flex items-center gap-1 rounded border border-[#d9d9d9] bg-white px-2 py-1 text-[11px] text-[#262626] hover:border-[#059669] hover:text-[#059669]"
             >
               <RefreshCw className="h-3 w-3" />
-              Kiểm tra Ping
+              Ping
             </button>
           </div>
 
@@ -140,28 +140,26 @@ export default function AdminSettingsPage() {
                 {backendStatus === "ONLINE" && (
                   <>
                     <CheckCircle2 className="h-4 w-4 text-[#52c41a]" />
-                    <span className="text-[#52c41a]">Đang hoạt động ({latency}ms)</span>
+                    <span className="text-[#52c41a]">Online ({latency}ms)</span>
                   </>
                 )}
                 {backendStatus === "OFFLINE" && (
                   <>
                     <XCircle className="h-4 w-4 text-[#faad14]" />
-                    <span className="text-[#faad14]">Ngoại tuyến (Chế độ thử nghiệm)</span>
+                    <span className="text-[#faad14]">Offline</span>
                   </>
                 )}
-                {backendStatus === "CHECKING" && (
-                  <span className="text-[#8c8c8c]">Đang kiểm tra...</span>
-                )}
+                {backendStatus === "CHECKING" && <span className="text-[#8c8c8c]">Checking…</span>}
               </div>
             </div>
 
             <div className="flex items-center justify-between border-t border-[#f0f0f0] pt-2">
-              <span className="text-[#595959]">Hệ quản trị CSDL:</span>
+              <span className="text-[#595959]">Database engine:</span>
               <span className="font-mono text-[#262626]">MySQL 8.x / MySQL Workbench</span>
             </div>
 
             <div className="flex items-center justify-between border-t border-[#f0f0f0] pt-2">
-              <span className="text-[#595959]">Cơ sở Dữ liệu:</span>
+              <span className="text-[#595959]">Database:</span>
               <span className="font-mono text-[11px] text-[#059669]">leargas_db</span>
             </div>
           </div>
@@ -171,20 +169,18 @@ export default function AdminSettingsPage() {
         <div className="space-y-4 rounded-lg border border-[#f0f0f0] bg-white p-5 shadow-[0_1px_2px_0_rgba(0,0,0,0.03)] md:col-span-2">
           <div className="flex items-center gap-2 text-[#059669]">
             <KeyRound className="h-4 w-4" />
-            <h2 className="text-xs font-semibold tracking-wider uppercase">
-              Đổi Mật khẩu Quản trị
-            </h2>
+            <h2 className="text-xs font-semibold tracking-wider uppercase">Change password</h2>
           </div>
 
           {passwordSaved && (
             <div className="rounded-md border border-[#b7eb8f] bg-[#f6ffed] p-3 text-xs text-[#52c41a]">
-              Mật khẩu quản trị đã được cập nhật thành công trong hệ thống bảo mật.
+              Your password has been updated.
             </div>
           )}
 
           <form onSubmit={handlePasswordChange} className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
-              <label className="mb-1 block text-xs text-[#262626]">Mật khẩu hiện tại</label>
+              <label className="mb-1 block text-xs text-[#262626]">Current password</label>
               <input
                 type="password"
                 required
@@ -196,7 +192,7 @@ export default function AdminSettingsPage() {
             </div>
 
             <div>
-              <label className="mb-1 block text-xs text-[#262626]">Mật khẩu mới</label>
+              <label className="mb-1 block text-xs text-[#262626]">New password</label>
               <input
                 type="password"
                 required
@@ -212,7 +208,7 @@ export default function AdminSettingsPage() {
                 type="submit"
                 className="rounded-md bg-[#059669] px-4 py-2 text-xs font-medium text-white shadow-sm hover:bg-[#047857]"
               >
-                Cập nhật mật khẩu
+                Update password
               </button>
             </div>
           </form>

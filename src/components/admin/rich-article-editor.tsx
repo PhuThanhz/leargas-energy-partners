@@ -55,18 +55,18 @@ const MAX_UPLOAD_MB = 10
 async function uploadAndInsert(editor: Editor, files: File[], pos?: number) {
   for (const file of files) {
     if (file.size > MAX_UPLOAD_MB * 1024 * 1024) {
-      toast.error(`"${file.name}" vượt quá ${MAX_UPLOAD_MB}MB`)
+      toast.error(`"${file.name}" is larger than ${MAX_UPLOAD_MB}MB`)
       continue
     }
-    const id = toast.loading(`Đang tải "${file.name}"…`)
+    const id = toast.loading(`Uploading "${file.name}"…`)
     try {
       const src = await adminUpload(file)
       const node = { type: "image", attrs: { src, alt: "" } }
       if (pos === undefined) editor.chain().focus().insertContent(node).run()
       else editor.chain().focus().insertContentAt(pos, node).run()
-      toast.success("Đã chèn ảnh", { id })
+      toast.success("Image inserted", { id })
     } catch {
-      toast.error(`Không tải được "${file.name}"`, { id })
+      toast.error(`Could not upload "${file.name}"`, { id })
     }
   }
 }
@@ -74,7 +74,7 @@ async function uploadAndInsert(editor: Editor, files: File[], pos?: number) {
 export function RichArticleEditor({
   value,
   onChange,
-  placeholder = "Viết nội dung, hoặc gõ / để chèn…",
+  placeholder = "Start writing, or type / to insert…",
   minHeight = "460px",
   paperColor,
 }: RichArticleEditorProps) {
@@ -111,7 +111,7 @@ export function RichArticleEditor({
         allowBase64: true,
       }),
       Placeholder.configure({
-        placeholder: ({ node }) => (node.type.name === "heading" ? "Tiêu đề mục" : placeholder),
+        placeholder: ({ node }) => (node.type.name === "heading" ? "Heading" : placeholder),
       }),
     ],
     content: value || "",
@@ -168,10 +168,10 @@ export function RichArticleEditor({
     try {
       const uploadedUrl = await adminUpload(file)
       editor?.chain().focus().setImage({ src: uploadedUrl }).run()
-      toast.success("Đã chèn ảnh")
+      toast.success("Image inserted")
       setImageModalOpen(false)
     } catch {
-      toast.error("Không thể tải ảnh lên. Bạn có thể chèn bằng link URL.")
+      toast.error("Could not upload the image. You can insert it by URL instead.")
     } finally {
       setUploadingImage(false)
       e.target.value = ""
@@ -216,7 +216,7 @@ export function RichArticleEditor({
   if (!editor) {
     return (
       <div className="flex h-72 items-center justify-center rounded-2xl border border-slate-200 bg-slate-50 text-xs text-slate-400">
-        Đang khởi tạo trình soạn thảo bài viết...
+        Loading editor…
       </div>
     )
   }
@@ -236,14 +236,14 @@ export function RichArticleEditor({
       {/* Toolbar: one row, sticks to the top while scrolling a long article */}
       <div className="sticky top-0 z-10 flex min-h-12 flex-wrap items-center gap-1 rounded-t-xl border-b border-[#f0f0f0] bg-white/95 px-2 py-2 backdrop-blur select-none">
         <ToolButton
-          label="Hoàn tác (⌘Z)"
+          label="Undo (⌘Z)"
           onClick={() => editor.chain().focus().undo().run()}
           disabled={!active?.canUndo}
         >
           <Undo2 />
         </ToolButton>
         <ToolButton
-          label="Làm lại (⌘⇧Z)"
+          label="Redo (⌘⇧Z)"
           onClick={() => editor.chain().focus().redo().run()}
           disabled={!active?.canRedo}
         >
@@ -251,21 +251,21 @@ export function RichArticleEditor({
         </ToolButton>
         <Divider />
         <ToolButton
-          label="Đoạn văn"
+          label="Paragraph"
           active={active?.paragraph}
           onClick={() => editor.chain().focus().setParagraph().run()}
         >
           <Pilcrow />
         </ToolButton>
         <ToolButton
-          label="Tiêu đề mục (H2)"
+          label="Heading (H2)"
           active={active?.h2}
           onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
         >
           <Heading2 />
         </ToolButton>
         <ToolButton
-          label="Tiêu đề phụ (H3)"
+          label="Subheading (H3)"
           active={active?.h3}
           onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
         >
@@ -273,59 +273,59 @@ export function RichArticleEditor({
         </ToolButton>
         <Divider />
         <ToolButton
-          label="In đậm (⌘B)"
+          label="Bold (⌘B)"
           active={active?.bold}
           onClick={() => editor.chain().focus().toggleBold().run()}
         >
           <Bold />
         </ToolButton>
         <ToolButton
-          label="In nghiêng (⌘I)"
+          label="Italic (⌘I)"
           active={active?.italic}
           onClick={() => editor.chain().focus().toggleItalic().run()}
         >
           <Italic />
         </ToolButton>
-        <ToolButton label="Liên kết" active={active?.link} onClick={openLink}>
+        <ToolButton label="Link" active={active?.link} onClick={openLink}>
           <LinkIcon />
         </ToolButton>
         <Divider />
         <ToolButton
-          label="Trích dẫn"
+          label="Quote"
           active={active?.quote}
           onClick={() => editor.chain().focus().toggleBlockquote().run()}
         >
           <Quote />
         </ToolButton>
         <ToolButton
-          label="Danh sách"
+          label="Bullet list"
           active={active?.bullet}
           onClick={() => editor.chain().focus().toggleBulletList().run()}
         >
           <List />
         </ToolButton>
         <ToolButton
-          label="Danh sách đánh số"
+          label="Numbered list"
           active={active?.ordered}
           onClick={() => editor.chain().focus().toggleOrderedList().run()}
         >
           <ListOrdered />
         </ToolButton>
         <ToolButton
-          label="Đường phân cách"
+          label="Divider"
           onClick={() => editor.chain().focus().setHorizontalRule().run()}
         >
           <Minus />
         </ToolButton>
         <Divider />
         <ToolButton
-          label="Chèn ảnh (hoặc kéo thả / dán ảnh vào bài)"
+          label="Image (or drag / paste one into the post)"
           onClick={() => setImageModalOpen(true)}
         >
           <ImageIcon />
         </ToolButton>
         <ToolButton
-          label="Chèn bảng"
+          label="Table"
           active={active?.table}
           onClick={() =>
             editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()
@@ -339,24 +339,30 @@ export function RichArticleEditor({
           <>
             <Divider />
             <ToolButton
-              label="Thêm hàng bên dưới"
+              label="Add row below"
               onClick={() => editor.chain().focus().addRowAfter().run()}
             >
               <Rows3 />
             </ToolButton>
             <ToolButton
-              label="Thêm cột bên phải"
+              label="Add column to the right"
               onClick={() => editor.chain().focus().addColumnAfter().run()}
             >
               <Columns3 />
             </ToolButton>
-            <ToolButton label="Xoá hàng" onClick={() => editor.chain().focus().deleteRow().run()}>
+            <ToolButton label="Delete row" onClick={() => editor.chain().focus().deleteRow().run()}>
               <Rows3 className="opacity-50" />
             </ToolButton>
-            <ToolButton label="Xoá cột" onClick={() => editor.chain().focus().deleteColumn().run()}>
+            <ToolButton
+              label="Delete column"
+              onClick={() => editor.chain().focus().deleteColumn().run()}
+            >
               <Columns3 className="opacity-50" />
             </ToolButton>
-            <ToolButton label="Xoá bảng" onClick={() => editor.chain().focus().deleteTable().run()}>
+            <ToolButton
+              label="Delete table"
+              onClick={() => editor.chain().focus().deleteTable().run()}
+            >
               <Trash2 />
             </ToolButton>
           </>
@@ -364,7 +370,7 @@ export function RichArticleEditor({
 
         <div className="ml-auto">
           <ToolButton
-            label={mode === "html" ? "Quay lại soạn thảo" : "Xem / sửa mã HTML"}
+            label={mode === "html" ? "Back to editor" : "View / edit HTML"}
             active={mode === "html"}
             onClick={() => setMode(mode === "html" ? "visual" : "html")}
           >
@@ -378,7 +384,7 @@ export function RichArticleEditor({
         <DragHandle editor={editor}>
           <div
             className="flex h-6 w-5 cursor-grab items-center justify-center rounded text-[#bfb8ac] transition-colors hover:bg-black/5 hover:text-[#595959] active:cursor-grabbing"
-            title="Kéo để đổi vị trí"
+            title="Drag to move"
           >
             <GripVertical className="h-4 w-4" />
           </div>
@@ -405,20 +411,20 @@ export function RichArticleEditor({
             run: () => editor.chain().focus().toggleHeading({ level: 3 }).run(),
           },
           {
-            label: "Đậm",
+            label: "Bold",
             icon: <Bold />,
             active: active?.bold,
             run: () => editor.chain().focus().toggleBold().run(),
           },
           {
-            label: "Nghiêng",
+            label: "Italic",
             icon: <Italic />,
             active: active?.italic,
             run: () => editor.chain().focus().toggleItalic().run(),
           },
-          { label: "Liên kết", icon: <LinkIcon />, active: active?.link, run: openLink },
+          { label: "Link", icon: <LinkIcon />, active: active?.link, run: openLink },
           {
-            label: "Trích dẫn",
+            label: "Quote",
             icon: <Quote />,
             active: active?.quote,
             run: () => editor.chain().focus().toggleBlockquote().run(),
@@ -468,27 +474,26 @@ export function RichArticleEditor({
 
       <div className="flex items-center justify-between rounded-b-xl border-t border-[#f0f0f0] px-4 py-2 text-[11px] text-[#8c8c8c]">
         <span>
-          {words.toLocaleString("vi-VN")} từ · khoảng {Math.max(1, Math.ceil(words / 200))} phút đọc
+          {words.toLocaleString("en-GB")} {words === 1 ? "word" : "words"} · about{" "}
+          {Math.max(1, Math.ceil(words / 200))} min read
         </span>
         <span className="hidden sm:inline">
-          Gõ / để chèn nhanh · Bôi đen chữ để định dạng · Kéo thả ảnh vào bài
+          Type / to insert · Select text to format · Drop images into the post
         </span>
       </div>
 
       {/* Modal Chèn Link */}
       <Modal
-        title="Chèn liên kết liên kết ngoài"
+        title="Insert link"
         open={linkModalOpen}
         onOk={setLink}
         onCancel={() => setLinkModalOpen(false)}
-        okText="Áp dụng link"
-        cancelText="Hủy"
+        okText="Apply"
+        cancelText="Cancel"
         okButtonProps={{ className: "!bg-[#059669]" }}
       >
         <div className="space-y-3 py-2 font-sans">
-          <label className="block text-xs font-semibold text-slate-700">
-            Đường dẫn URL (Hỗ trợ https://...):
-          </label>
+          <label className="block text-xs font-semibold text-slate-700">URL (https://…)</label>
           <Input
             placeholder="https://example.com/bao-cao-pdp8"
             value={linkUrl}
@@ -501,18 +506,18 @@ export function RichArticleEditor({
 
       {/* Modal Chèn Ảnh */}
       <Modal
-        title="Chèn hình ảnh vào bài viết"
+        title="Insert image"
         open={imageModalOpen}
         onOk={insertImage}
         onCancel={() => setImageModalOpen(false)}
-        okText="Chèn ảnh này"
-        cancelText="Đóng"
+        okText="Insert"
+        cancelText="Close"
         okButtonProps={{ className: "!bg-[#059669]" }}
       >
         <div className="space-y-4 py-2 font-sans">
           <div>
             <label className="mb-1.5 block text-xs font-semibold text-slate-700">
-              Tải ảnh mới từ thiết bị:
+              Upload from your computer
             </label>
             <input
               type="file"
@@ -522,7 +527,7 @@ export function RichArticleEditor({
               className="block w-full cursor-pointer text-xs text-slate-500 file:mr-3 file:rounded-lg file:border-0 file:bg-emerald-50 file:px-3 file:py-1.5 file:text-xs file:font-semibold file:text-emerald-700 hover:file:bg-emerald-100"
             />
             {uploadingImage && (
-              <p className="mt-1 animate-pulse text-xs text-emerald-600">Đang tải ảnh lên...</p>
+              <p className="mt-1 animate-pulse text-xs text-emerald-600">Uploading…</p>
             )}
           </div>
 
@@ -531,21 +536,21 @@ export function RichArticleEditor({
             onClick={() => setPickerOpen(true)}
             className="w-full rounded-lg bg-emerald-50 px-3 py-2 text-xs font-semibold text-emerald-700 transition-colors hover:bg-emerald-100"
           >
-            Chọn ảnh có sẵn trong thư viện
+            Choose from media library
           </button>
 
           <div className="my-2 flex items-center gap-2">
             <div className="h-px flex-1 bg-slate-200" />
-            <span className="text-[11px] font-medium text-slate-400">Hoặc dùng link URL</span>
+            <span className="text-[11px] font-medium text-slate-400">Or use a URL</span>
             <div className="h-px flex-1 bg-slate-200" />
           </div>
 
           <div>
             <label className="mb-1.5 block text-xs font-semibold text-slate-700">
-              Đường dẫn URL ảnh (https://... hoặc /images/wind.jpg):
+              Image URL (https://… or /images/wind.jpg)
             </label>
             <Input
-              placeholder="https://images.unsplash.com/photo-1466611653911-95081537e5b7 hoặc /images/wind.jpg"
+              placeholder="https://… or /images/wind.jpg"
               value={imageUrl}
               onChange={(e) => setImageUrl(e.target.value)}
               onPressEnter={insertImage}
@@ -554,7 +559,7 @@ export function RichArticleEditor({
         </div>
       </Modal>
       <MediaPicker
-        title="Chèn ảnh từ thư viện"
+        title="Insert from media library"
         open={pickerOpen}
         onClose={() => setPickerOpen(false)}
         onSelect={(url) => {

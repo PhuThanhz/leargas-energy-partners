@@ -88,7 +88,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   const auth = getStoredAuth()
   const user = auth.user || {
-    fullName: "Quản trị viên",
+    fullName: "Administrator",
     email: "admin@leargasenergy.com",
     role: "ROLE_ADMIN",
   }
@@ -124,7 +124,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     {
       key: "settings",
       icon: <SettingOutlined className="text-slate-500" />,
-      label: <Link href="/admin/settings">Cài đặt Hệ thống</Link>,
+      label: <Link href="/admin/settings">Settings</Link>,
     },
     {
       type: "divider",
@@ -133,7 +133,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       key: "logout",
       danger: true,
       icon: <LogoutOutlined />,
-      label: "Đăng xuất tài khoản",
+      label: "Sign out",
       onClick: handleLogout,
     },
   ]
@@ -143,14 +143,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       type: "group" as const,
       label: collapsed ? null : (
         <span className="text-[10px] font-bold tracking-wider text-white/35 uppercase">
-          Tổng quan & Phân tích
+          Overview
         </span>
       ),
       children: [
         {
           key: "/admin/dashboard",
           icon: <DashboardOutlined className="text-sm" />,
-          label: "Bảng điều khiển",
+          label: "Dashboard",
         },
       ],
     },
@@ -158,19 +158,19 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       type: "group" as const,
       label: collapsed ? null : (
         <span className="text-[10px] font-bold tracking-wider text-white/35 uppercase">
-          Quản trị Nội dung
+          Content
         </span>
       ),
       children: [
         {
           key: "/admin/posts",
           icon: <FileTextOutlined className="text-sm" />,
-          label: "Quản lý Bài viết",
+          label: "Posts",
         },
         {
           key: "/admin/categories",
           icon: <FolderOutlined className="text-sm" />,
-          label: "Chuyên mục (Taxonomy)",
+          label: "Categories",
         },
       ],
     },
@@ -178,19 +178,19 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       type: "group" as const,
       label: collapsed ? null : (
         <span className="text-[10px] font-bold tracking-wider text-white/35 uppercase">
-          Khách hàng & Hệ thống
+          Clients & System
         </span>
       ),
       children: [
         {
           key: "/admin/enquiries",
           icon: <CustomerServiceOutlined className="text-sm" />,
-          label: "Yêu cầu Tư vấn (Leads)",
+          label: "Enquiries",
         },
         {
           key: "/admin/settings",
           icon: <SettingOutlined className="text-sm" />,
-          label: "Cài đặt Hệ thống",
+          label: "Settings",
         },
       ],
     },
@@ -211,23 +211,23 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     ) || "/admin/dashboard"
 
   const mobileMenuItems = [
-    { key: "/admin/dashboard", icon: <DashboardOutlined />, label: "Bảng điều khiển" },
-    { key: "/admin/posts", icon: <FileTextOutlined />, label: "Quản lý Bài viết" },
-    { key: "/admin/categories", icon: <FolderOutlined />, label: "Chuyên mục (Taxonomy)" },
-    { key: "/admin/enquiries", icon: <CustomerServiceOutlined />, label: "Yêu cầu Tư vấn (Leads)" },
-    { key: "/admin/settings", icon: <SettingOutlined />, label: "Cài đặt Hệ thống" },
+    { key: "/admin/dashboard", icon: <DashboardOutlined />, label: "Dashboard" },
+    { key: "/admin/posts", icon: <FileTextOutlined />, label: "Posts" },
+    { key: "/admin/categories", icon: <FolderOutlined />, label: "Categories" },
+    { key: "/admin/enquiries", icon: <CustomerServiceOutlined />, label: "Enquiries" },
+    { key: "/admin/settings", icon: <SettingOutlined />, label: "Settings" },
   ]
 
   // Breadcrumb label helper
   const getBreadcrumb = () => {
-    if (pathname.includes("/admin/posts/new")) return ["Quản lý Bài viết", "Thêm bài mới"]
+    if (pathname.includes("/admin/posts/new")) return ["Posts", "New post"]
     if (pathname.includes("/admin/posts") && pathname.includes("/edit"))
-      return ["Quản lý Bài viết", "Chỉnh sửa bài viết"]
-    if (pathname.includes("/admin/posts")) return ["Quản lý Bài viết", "Danh sách"]
-    if (pathname.includes("/admin/categories")) return ["Nội dung CMS", "Quản lý Chuyên mục"]
-    if (pathname.includes("/admin/enquiries")) return ["Khách hàng & Tư vấn", "Danh sách Leads"]
-    if (pathname.includes("/admin/settings")) return ["Hệ thống", "Cài đặt chung"]
-    return ["Trang chủ", "Bảng điều khiển"]
+      return ["Posts", "Edit post"]
+    if (pathname.includes("/admin/posts")) return ["Posts", "All posts"]
+    if (pathname.includes("/admin/categories")) return ["Content", "Categories"]
+    if (pathname.includes("/admin/enquiries")) return ["Clients", "Enquiries"]
+    if (pathname.includes("/admin/settings")) return ["System", "Settings"]
+    return ["Home", "Dashboard"]
   }
 
   const breadcrumbs = getBreadcrumb()
@@ -332,7 +332,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               {/* Nút Xem website khách */}
               <div className="px-3 pb-2 text-xs text-[#ffffff73]">
                 {collapsed ? (
-                  <Tooltip title="Xem website khách ↗" placement="right">
+                  <Tooltip title="View website ↗" placement="right">
                     <Link
                       href="/"
                       target="_blank"
@@ -349,7 +349,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                   >
                     <span className="flex items-center gap-2">
                       <GlobalOutlined />
-                      <span>Xem website khách</span>
+                      <span>View website</span>
                     </span>
                     <span className="text-white/40">↗</span>
                   </Link>
@@ -360,14 +360,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               <div
                 onClick={handleToggleCollapse}
                 className="flex h-11 cursor-pointer items-center justify-center border-t border-white/[0.08] text-white/60 transition-colors hover:bg-white/5 hover:text-white"
-                title={collapsed ? "Mở rộng thanh menu" : "Thu gọn thanh menu"}
+                title={collapsed ? "Expand menu" : "Collapse menu"}
               >
                 {collapsed ? (
                   <MenuUnfoldOutlined className="text-base text-white" />
                 ) : (
                   <div className="flex items-center gap-2 text-xs">
                     <MenuFoldOutlined className="text-base" />
-                    <span>Thu gọn thanh điều hướng</span>
+                    <span>Collapse sidebar</span>
                   </div>
                 )}
               </div>
@@ -386,7 +386,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
                 onClick={handleToggleCollapse}
                 className="hidden !h-9 !w-9 !items-center !justify-center !text-base !text-[#595959] hover:!bg-[#f5f5f5] lg:!flex"
-                title={collapsed ? "Mở rộng thanh menu" : "Thu gọn thanh menu"}
+                title={collapsed ? "Expand menu" : "Collapse menu"}
               />
 
               <div className="flex items-center gap-2 text-xs">
@@ -404,7 +404,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 className="hidden items-center gap-1.5 text-xs text-[#595959] transition-colors hover:text-[#059669] sm:flex"
               >
                 <GlobalOutlined />
-                Trang chủ
+                Website
               </Link>
 
               <div className="hidden h-4 w-px bg-[#f0f0f0] sm:block" />
@@ -451,7 +451,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                   className="flex w-full items-center gap-2.5 rounded-md px-3 py-2 text-xs text-[#ff4d4f] hover:bg-[#fff2f0]"
                 >
                   <LogoutOutlined />
-                  Đăng xuất
+                  Sign out
                 </button>
               </nav>
             </div>

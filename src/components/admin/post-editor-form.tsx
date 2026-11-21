@@ -73,9 +73,9 @@ interface PostEditorFormProps {
   onSave: (payload: PostPayload) => Promise<PostDetail>
 }
 
-const DEFAULT_AUTHOR = "Ban Biên tập LÉARGAS"
+const DEFAULT_AUTHOR = "LÉARGAS Editorial"
 const DEFAULT_COVER = "/images/wind.jpg"
-const STARTER_CONTENT = `<h2>Tổng quan</h2><p></p>`
+const STARTER_CONTENT = `<h2>Overview</h2><p></p>`
 const MAX_UPLOAD_MB = 10
 
 function readingMinutes(html: string) {
@@ -90,7 +90,7 @@ function readingMinutes(html: string) {
 
 function formatDate(iso?: string | null) {
   const date = iso ? new Date(iso) : new Date()
-  return date.toLocaleDateString("vi-VN", { day: "2-digit", month: "2-digit", year: "numeric" })
+  return date.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })
 }
 
 export function PostEditorForm({ initial, onSave }: PostEditorFormProps) {
@@ -167,7 +167,7 @@ export function PostEditorForm({ initial, onSave }: PostEditorFormProps) {
         }
       })
       .catch(() => {
-        if (!ignore) toast.error("Không tải được danh sách chuyên mục")
+        if (!ignore) toast.error("Could not load categories")
       })
     return () => {
       ignore = true
@@ -184,11 +184,11 @@ export function PostEditorForm({ initial, onSave }: PostEditorFormProps) {
     disabled: uploadingCover,
     beforeUpload(file) {
       if (!file.type.startsWith("image/")) {
-        toast.error("Chỉ chấp nhận file ảnh")
+        toast.error("Only image files are allowed")
         return Upload.LIST_IGNORE
       }
       if (file.size > MAX_UPLOAD_MB * 1024 * 1024) {
-        toast.error(`Ảnh vượt quá ${MAX_UPLOAD_MB}MB`)
+        toast.error(`Image is larger than ${MAX_UPLOAD_MB}MB`)
         return Upload.LIST_IGNORE
       }
       return true
@@ -199,10 +199,10 @@ export function PostEditorForm({ initial, onSave }: PostEditorFormProps) {
         const url = await adminUpload(file as File)
         set("coverImageUrl", url)
         onSuccess?.({ url })
-        toast.success("Đã tải lên ảnh bìa")
+        toast.success("Cover image uploaded")
       } catch (error) {
         onError?.(error as Error)
-        toast.error("Không thể tải lên ảnh bìa")
+        toast.error("Could not upload the cover image")
       } finally {
         setUploadingCover(false)
       }
@@ -221,9 +221,9 @@ export function PostEditorForm({ initial, onSave }: PostEditorFormProps) {
       set("category", created.name)
       setCategoryModalOpen(false)
       categoryForm.resetFields()
-      toast.success(`Đã tạo chuyên mục "${created.name}"`)
+      toast.success(`Category "${created.name}" created`)
     } catch (error) {
-      if (error instanceof Error) toast.error("Không thể tạo chuyên mục mới")
+      if (error instanceof Error) toast.error("Could not create the category")
     } finally {
       setCategorySubmitting(false)
     }
@@ -234,10 +234,10 @@ export function PostEditorForm({ initial, onSave }: PostEditorFormProps) {
     const slug = slugify(values.slug || title)
     const plainContent = values.content.replace(/<[^>]+>/g, "").trim()
 
-    if (!title) return toast.error("Vui lòng nhập tiêu đề bài viết")
-    if (!slug) return toast.error("Vui lòng nhập đường dẫn (slug)")
-    if (!plainContent) return toast.error("Nội dung bài viết đang trống")
-    if (!values.category) return toast.error("Vui lòng chọn chuyên mục")
+    if (!title) return toast.error("Please enter a title")
+    if (!slug) return toast.error("Please enter a URL slug")
+    if (!plainContent) return toast.error("The post has no content yet")
+    if (!values.category) return toast.error("Please choose a category")
 
     setSaving(status)
     try {
@@ -257,11 +257,11 @@ export function PostEditorForm({ initial, onSave }: PostEditorFormProps) {
       toast.success(
         status === "PUBLISHED"
           ? isEdit && initial?.status === "PUBLISHED"
-            ? "Đã cập nhật bài viết"
-            : "Đã xuất bản bài viết"
-          : "Đã lưu bản nháp",
+            ? "Post updated"
+            : "Post published"
+          : "Draft saved",
         saved.slug !== slug
-          ? { description: `Đường dẫn được đổi thành /blog/${saved.slug}` }
+          ? { description: `The URL was changed to /blog/${saved.slug}` }
           : undefined
       )
       // A pending server action would hold up client navigation, so fall back to a full load.
@@ -269,7 +269,7 @@ export function PostEditorForm({ initial, onSave }: PostEditorFormProps) {
       // eslint-disable-next-line @next/next/no-location-assign-relative-destination -- intentional hard load, see above
       else window.location.assign("/admin/posts")
     } catch (error) {
-      toast.error("Không thể lưu bài viết", {
+      toast.error("Could not save the post", {
         description: error instanceof Error ? error.message : undefined,
       })
     } finally {
@@ -281,10 +281,10 @@ export function PostEditorForm({ initial, onSave }: PostEditorFormProps) {
     if (!dirty) return
     e.preventDefault()
     modal.confirm({
-      title: "Bỏ các thay đổi chưa lưu?",
-      content: "Nội dung bạn vừa soạn sẽ bị mất nếu rời trang.",
-      okText: "Rời trang",
-      cancelText: "Ở lại",
+      title: "Discard unsaved changes?",
+      content: "Anything you wrote since the last save will be lost.",
+      okText: "Discard",
+      cancelText: "Keep editing",
       okButtonProps: { danger: true },
       onOk: () => router.push("/admin/posts"),
     })
@@ -321,7 +321,7 @@ export function PostEditorForm({ initial, onSave }: PostEditorFormProps) {
         disabled={saving !== null && saving !== "DRAFT"}
         className="!rounded-lg"
       >
-        {wasPublished ? "Chuyển về nháp" : "Lưu nháp"}
+        {wasPublished ? "Unpublish" : "Save draft"}
       </Button>
       <Button
         type="primary"
@@ -330,7 +330,7 @@ export function PostEditorForm({ initial, onSave }: PostEditorFormProps) {
         disabled={saving !== null && saving !== "PUBLISHED"}
         className="!rounded-lg !bg-[#059669] font-medium shadow-sm hover:!bg-[#047857]"
       >
-        {wasPublished ? "Cập nhật" : "Xuất bản"}
+        {wasPublished ? "Update" : "Publish"}
       </Button>
     </>
   )
@@ -346,8 +346,8 @@ export function PostEditorForm({ initial, onSave }: PostEditorFormProps) {
           className="flex items-center gap-2 text-xs font-medium text-[#595959] transition-colors hover:text-[#059669]"
         >
           <ArrowLeftOutlined />
-          Quay lại danh sách bài viết
-          {dirty && <span className="text-[#8c8c8c]">· Chưa lưu</span>}
+          Back to posts
+          {dirty && <span className="text-[#8c8c8c]">· Unsaved</span>}
         </Link>
 
         <div className="flex items-center gap-3">
@@ -360,13 +360,13 @@ export function PostEditorForm({ initial, onSave }: PostEditorFormProps) {
             <Radio.Button value="edit">
               <Space orientation="horizontal">
                 <EditOutlined />
-                <span>Soạn thảo</span>
+                <span>Write</span>
               </Space>
             </Radio.Button>
             <Radio.Button value="preview">
               <Space orientation="horizontal">
                 <EyeOutlined />
-                <span>Xem trước</span>
+                <span>Preview</span>
               </Space>
             </Radio.Button>
           </Radio.Group>
@@ -378,7 +378,7 @@ export function PostEditorForm({ initial, onSave }: PostEditorFormProps) {
         <div className="article-preview overflow-hidden rounded-xl border border-[#f0f0f0] shadow-[0_1px_2px_0_rgba(0,0,0,0.03)]">
           <ArticleView
             preview
-            title={values.title || "Tiêu đề bài viết"}
+            title={values.title || "Untitled post"}
             excerpt={values.excerpt}
             content={previewHtml}
             category={values.category}
@@ -404,11 +404,11 @@ export function PostEditorForm({ initial, onSave }: PostEditorFormProps) {
             <div className="space-y-5">
               <div>
                 <label className="mb-1.5 block text-xs font-semibold text-[#262626]">
-                  Tiêu đề <span className="text-[#ff4d4f]">*</span>
+                  Title <span className="text-[#ff4d4f]">*</span>
                 </label>
                 <Input
                   size="large"
-                  placeholder="VD: Định hướng Quy hoạch điện 8 (PDP8) cho nhà đầu tư quốc tế"
+                  placeholder="e.g. What PDP8 means for international wind investors"
                   value={values.title}
                   onChange={(e) => handleTitleChange(e.target.value)}
                   className="rounded-lg font-medium text-[#1f1f1f]"
@@ -417,7 +417,7 @@ export function PostEditorForm({ initial, onSave }: PostEditorFormProps) {
 
               <div>
                 <label className="mb-1.5 block text-xs font-semibold text-[#262626]">
-                  Đường dẫn <span className="text-[#ff4d4f]">*</span>
+                  URL <span className="text-[#ff4d4f]">*</span>
                 </label>
                 <Space.Compact className="w-full">
                   <span className="flex items-center rounded-l-lg border border-r-0 border-[#d9d9d9] bg-[#fafafa] px-3 font-mono text-xs text-[#8c8c8c]">
@@ -438,16 +438,16 @@ export function PostEditorForm({ initial, onSave }: PostEditorFormProps) {
 
               <div>
                 <label className="mb-1.5 block text-xs font-semibold text-[#262626]">
-                  Tóm tắt
+                  Excerpt
                   <span className="ml-1 font-normal text-[#8c8c8c]">
-                    — hiện ở danh sách bài và kết quả Google
+                    — shown in the blog list and Google results
                   </span>
                 </label>
                 <TextArea
                   rows={2}
                   maxLength={300}
                   showCount
-                  placeholder="1–2 câu nêu ý chính của bài"
+                  placeholder="One or two sentences on what the post is about"
                   value={values.excerpt}
                   onChange={(e) => set("excerpt", e.target.value)}
                   className="rounded-lg text-xs"
@@ -456,14 +456,14 @@ export function PostEditorForm({ initial, onSave }: PostEditorFormProps) {
 
               <div>
                 <label className="mb-2.5 block text-xs font-semibold text-slate-900">
-                  Nội dung <span className="text-[#ff4d4f]">*</span>
+                  Content <span className="text-[#ff4d4f]">*</span>
                 </label>
 
                 <RichArticleEditor
                   paperColor={values.backgroundColor || undefined}
                   value={values.content}
                   onChange={(html) => set("content", html)}
-                  placeholder="Viết nội dung, hoặc gõ / để chèn…"
+                  placeholder="Start writing, or type / to insert…"
                 />
               </div>
             </div>
@@ -473,18 +473,18 @@ export function PostEditorForm({ initial, onSave }: PostEditorFormProps) {
         {/* Cột phải: thuộc tính */}
         <div className="space-y-6 lg:col-span-4">
           <Card
-            title={<span className="text-xs font-bold text-[#1f1f1f]">Xuất bản</span>}
+            title={<span className="text-xs font-bold text-[#1f1f1f]">Publishing</span>}
             className="rounded-xl border border-[#f0f0f0] shadow-[0_1px_2px_0_rgba(0,0,0,0.03)]"
           >
             <div className="space-y-4 text-xs text-[#595959]">
               <p>
-                Trạng thái:{" "}
+                Status:{" "}
                 <span className="font-semibold text-[#1f1f1f]">
                   {initial?.status === "PUBLISHED"
-                    ? `Đã xuất bản ${formatDate(initial.publishedAt)}`
+                    ? `Published ${formatDate(initial.publishedAt)}`
                     : initial?.status === "ARCHIVED"
-                      ? "Đã lưu trữ"
-                      : "Bản nháp"}
+                      ? "Archived"
+                      : "Draft"}
                 </span>
               </p>
               <div className="flex gap-2 [&>*]:flex-1">{saveButtons}</div>
@@ -494,7 +494,7 @@ export function PostEditorForm({ initial, onSave }: PostEditorFormProps) {
           <Card
             title={
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-[#1f1f1f]">Chuyên mục</span>
+                <span className="text-xs font-bold text-[#1f1f1f]">Category</span>
                 <Button
                   type="link"
                   size="small"
@@ -505,7 +505,7 @@ export function PostEditorForm({ initial, onSave }: PostEditorFormProps) {
                   }}
                   className="p-0 text-xs text-[#059669]"
                 >
-                  Thêm mới
+                  New
                 </Button>
               </div>
             }
@@ -515,7 +515,7 @@ export function PostEditorForm({ initial, onSave }: PostEditorFormProps) {
               value={values.category || undefined}
               onChange={(v) => set("category", v)}
               className="w-full"
-              placeholder="Chọn chuyên mục"
+              placeholder="Choose a category"
               options={categoryOptions}
             />
           </Card>
@@ -523,7 +523,7 @@ export function PostEditorForm({ initial, onSave }: PostEditorFormProps) {
           <Card
             title={
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-[#1f1f1f]">Ảnh bìa</span>
+                <span className="text-xs font-bold text-[#1f1f1f]">Cover image</span>
                 {values.coverImageUrl && (
                   <Button
                     type="link"
@@ -533,7 +533,7 @@ export function PostEditorForm({ initial, onSave }: PostEditorFormProps) {
                     onClick={() => set("coverImageUrl", "")}
                     className="p-0 text-xs"
                   >
-                    Xóa ảnh
+                    Remove
                   </Button>
                 )}
               </div>
@@ -546,7 +546,7 @@ export function PostEditorForm({ initial, onSave }: PostEditorFormProps) {
                   <div className="relative aspect-video w-full overflow-hidden bg-black/5">
                     <Image
                       src={coverSrc}
-                      alt="Ảnh bìa"
+                      alt="Cover image"
                       className="h-full w-full object-cover"
                       fallback={DEFAULT_COVER}
                     />
@@ -559,7 +559,7 @@ export function PostEditorForm({ initial, onSave }: PostEditorFormProps) {
                         loading={uploadingCover}
                         className="text-xs"
                       >
-                        Đổi ảnh
+                        Replace
                       </Button>
                     </Upload>
                   </div>
@@ -573,9 +573,9 @@ export function PostEditorForm({ initial, onSave }: PostEditorFormProps) {
                     <PictureOutlined className="!text-2xl text-[#059669]" />
                   </p>
                   <p className="text-xs font-semibold text-[#262626]">
-                    {uploadingCover ? "Đang tải lên…" : "Kéo thả hoặc nhấp để chọn ảnh"}
+                    {uploadingCover ? "Uploading…" : "Drop an image or click to choose"}
                   </p>
-                  <p className="text-[11px] text-[#8c8c8c]">Tối đa {MAX_UPLOAD_MB}MB</p>
+                  <p className="text-[11px] text-[#8c8c8c]">Up to {MAX_UPLOAD_MB}MB</p>
                 </Upload.Dragger>
               )}
 
@@ -585,14 +585,14 @@ export function PostEditorForm({ initial, onSave }: PostEditorFormProps) {
                 onClick={() => setPickerOpen(true)}
                 className="!rounded-lg text-xs"
               >
-                Chọn từ thư viện ảnh
+                Choose from media library
               </Button>
 
               <div>
-                <label className="mb-1 block text-xs text-[#8c8c8c]">Hoặc nhập URL ảnh</label>
+                <label className="mb-1 block text-xs text-[#8c8c8c]">Or paste an image URL</label>
                 <Input
                   size="small"
-                  placeholder="https://… hoặc /images/wind.jpg"
+                  placeholder="https://… or /images/wind.jpg"
                   value={values.coverImageUrl}
                   onChange={(e) => set("coverImageUrl", e.target.value)}
                   className="rounded font-mono text-xs"
@@ -602,7 +602,7 @@ export function PostEditorForm({ initial, onSave }: PostEditorFormProps) {
           </Card>
 
           <Card
-            title={<span className="text-xs font-bold text-[#1f1f1f]">Màu nền bài</span>}
+            title={<span className="text-xs font-bold text-[#1f1f1f]">Background colour</span>}
             className="rounded-xl border border-[#f0f0f0] shadow-[0_1px_2px_0_rgba(0,0,0,0.03)]"
           >
             <div className="space-y-3">
@@ -631,10 +631,10 @@ export function PostEditorForm({ initial, onSave }: PostEditorFormProps) {
                   onChangeComplete={(c) => set("backgroundColor", c.toHexString().toLowerCase())}
                   presets={[]}
                 >
-                  <Tooltip title="Màu khác">
+                  <Tooltip title="Custom colour">
                     <button
                       type="button"
-                      aria-label="Chọn màu khác"
+                      aria-label="Choose a custom colour"
                       className={cn(
                         "h-8 w-8 rounded-full ring-1 ring-black/10 transition hover:scale-110",
                         customBg && "ring-2 ring-[#1f1f1f] ring-offset-2"
@@ -650,19 +650,19 @@ export function PostEditorForm({ initial, onSave }: PostEditorFormProps) {
               </div>
               <p className="text-xs text-[#8c8c8c]">
                 {values.backgroundColor
-                  ? `${ARTICLE_BACKGROUNDS.find((c) => c.value === values.backgroundColor)?.label ?? "Màu tuỳ chọn"} · ${values.backgroundColor}`
-                  : "Mặc định của website"}
+                  ? `${ARTICLE_BACKGROUNDS.find((c) => c.value === values.backgroundColor)?.label ?? "Custom"} · ${values.backgroundColor}`
+                  : "Website default"}
               </p>
               {values.backgroundColor && isTooDarkForText(values.backgroundColor) && (
                 <p className="text-xs text-[#d4380d]">
-                  Màu này khá tối, chữ trong bài sẽ khó đọc. Nên chọn màu sáng hơn.
+                  This colour is quite dark, so the text will be hard to read. Try a lighter one.
                 </p>
               )}
             </div>
           </Card>
 
           <Card
-            title={<span className="text-xs font-bold text-[#1f1f1f]">Tác giả</span>}
+            title={<span className="text-xs font-bold text-[#1f1f1f]">Author</span>}
             className="rounded-xl border border-[#f0f0f0] shadow-[0_1px_2px_0_rgba(0,0,0,0.03)]"
           >
             <Input
@@ -675,48 +675,48 @@ export function PostEditorForm({ initial, onSave }: PostEditorFormProps) {
       </div>
 
       <MediaPicker
-        title="Chọn ảnh bìa"
+        title="Choose a cover image"
         open={pickerOpen}
         onClose={() => setPickerOpen(false)}
         onSelect={(url) => set("coverImageUrl", url)}
       />
 
       <Modal
-        title="Chuyên mục mới"
+        title="New category"
         open={categoryModalOpen}
         onCancel={() => setCategoryModalOpen(false)}
         onOk={handleQuickCreateCategory}
         confirmLoading={categorySubmitting}
-        okText="Tạo chuyên mục"
-        cancelText="Hủy"
+        okText="Create category"
+        cancelText="Cancel"
         destroyOnHidden
       >
         <Form form={categoryForm} layout="vertical" className="mt-3">
           <Form.Item
             name="name"
-            label="Tên chuyên mục"
-            rules={[{ required: true, message: "Vui lòng nhập tên chuyên mục" }]}
+            label="Name"
+            rules={[{ required: true, message: "Please enter a name" }]}
           >
             <Input
-              placeholder="VD: Thị trường điện gió ngoài khơi"
+              placeholder="e.g. Offshore Wind"
               onChange={(e) => categoryForm.setFieldsValue({ slug: slugify(e.target.value) })}
             />
           </Form.Item>
           <Form.Item
             name="slug"
-            label="Đường dẫn"
-            rules={[{ required: true, message: "Vui lòng nhập đường dẫn" }]}
+            label="URL slug"
+            rules={[{ required: true, message: "Please enter a slug" }]}
           >
             <Input placeholder="thi-truong-dien-gio" className="font-mono text-xs" />
           </Form.Item>
-          <Form.Item name="color" label="Màu nhận diện" initialValue="#059669">
+          <Form.Item name="color" label="Colour" initialValue="#059669">
             <Select
               options={[
-                { value: "#059669", label: "Xanh ngọc" },
-                { value: "#10b981", label: "Xanh lá" },
-                { value: "#722ed1", label: "Tím" },
-                { value: "#fa8c16", label: "Cam" },
-                { value: "#13c2c2", label: "Xanh lơ" },
+                { value: "#059669", label: "Emerald" },
+                { value: "#10b981", label: "Green" },
+                { value: "#722ed1", label: "Purple" },
+                { value: "#fa8c16", label: "Orange" },
+                { value: "#13c2c2", label: "Teal" },
               ].map((o) => ({
                 value: o.value,
                 label: (
@@ -731,8 +731,8 @@ export function PostEditorForm({ initial, onSave }: PostEditorFormProps) {
               }))}
             />
           </Form.Item>
-          <Form.Item name="description" label="Mô tả">
-            <TextArea rows={2} placeholder="Mô tả ngắn về chuyên mục" />
+          <Form.Item name="description" label="Description">
+            <TextArea rows={2} placeholder="A short description of the category" />
           </Form.Item>
         </Form>
       </Modal>

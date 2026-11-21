@@ -20,7 +20,7 @@ export function addHeadingIds(html: string): string {
 
   return html.replace(/<h([23])((?:\s[^>]*)?)>([\s\S]*?)<\/h\1>/g, (match, level, attrs, inner) => {
     if (/\sid="/.test(attrs)) return match
-    const base = slugify(inner.replace(/<[^>]+>/g, "").replace(/&[a-z#0-9]+;/gi, " ")) || "muc"
+    const base = slugify(inner.replace(/<[^>]+>/g, "").replace(/&[a-z#0-9]+;/gi, " ")) || "section"
     let id = base
     for (let n = 2; used.has(id); n++) id = `${base}-${n}`
     used.add(id)

@@ -37,37 +37,37 @@ public class DataInitializer implements CommandLineRunner {
         if (categoryRepository.count() == 0) {
             java.util.List<com.leargas.energy.entity.Category> defaults = java.util.List.of(
                     com.leargas.energy.entity.Category.builder()
-                            .name("Góc nhìn Đầu tư")
+                            .name("Investment Insights")
                             .slug("investment-insights")
-                            .description("Phân tích vĩ mô, chiến lược thoái vốn và sinh lời dự án năng lượng tái tạo")
+                            .description("Market analysis, exit strategy and returns on renewable energy projects")
                             .color("#1677ff")
                             .displayOrder(1)
                             .build(),
                     com.leargas.energy.entity.Category.builder()
-                            .name("M&A & Hợp tác Chiến lược")
+                            .name("M&A & Partnerships")
                             .slug("ma-strategic-partnership")
-                            .description("Thẩm định kỹ thuật, cơ cấu giao dịch M&A và kết nối dòng vốn quốc tế")
+                            .description("Technical due diligence, deal structuring and access to international capital")
                             .color("#52c41a")
                             .displayOrder(2)
                             .build(),
                     com.leargas.energy.entity.Category.builder()
-                            .name("Pháp lý & Quy hoạch PDP8")
+                            .name("Policy & PDP8")
                             .slug("legal-pdp8")
-                            .description("Cập nhật quy chế đầu tư, phê duyệt lưới điện và chính sách giá mua điện FIT/DPPA")
+                            .description("Investment regulation, grid approvals and FIT/DPPA pricing policy")
                             .color("#722ed1")
                             .displayOrder(3)
                             .build(),
                     com.leargas.energy.entity.Category.builder()
-                            .name("Thi công & Triển khai")
+                            .name("Construction & Delivery")
                             .slug("construction-delivery")
-                            .description("Quản trị rủi ro tổng thầu EPC, tiến độ COD và vận hành thương mại")
+                            .description("EPC risk management, COD timelines and commercial operation")
                             .color("#fa8c16")
                             .displayOrder(4)
                             .build(),
                     com.leargas.energy.entity.Category.builder()
-                            .name("Tài chính Xanh & ESG")
+                            .name("Green Finance & ESG")
                             .slug("green-finance-esg")
-                            .description("Trái phiếu xanh, tín chỉ carbon và bộ tiêu chuẩn tài chính bền vững quốc tế")
+                            .description("Green bonds, carbon credits and international sustainable finance standards")
                             .color("#13c2c2")
                             .displayOrder(5)
                             .build()
@@ -121,7 +121,7 @@ public class DataInitializer implements CommandLineRunner {
                             "<p>The outcome of screening is a decision about whether to investigate further. Agree the missing information, the specialist advisers needed, confidentiality arrangements and the next decision milestone before allocating significant resources.</p>\n" +
                             "<p>A concise investment screening memo can capture the opportunity, investment fit, unresolved issues and recommended next steps.</p>\n" +
                             disclaimer)
-                    .category("Góc nhìn Đầu tư")
+                    .category("Investment Insights")
                     .author("LÉARGAS Editorial")
                     .readingTimeMinutes(5)
                     .coverImageUrl("/images/wind.jpg")
@@ -156,7 +156,7 @@ public class DataInitializer implements CommandLineRunner {
                             "<p>A non-confidential teaser can introduce an opportunity without exposing sensitive project details. Further information should be shared through an agreed process with suitable confidentiality protections.</p>\n" +
                             "<p>Maintain an investor log, a central questions-and-answers register and consistent milestones. Compare offers on structure, conditions and execution requirements as well as headline price.</p>\n" +
                             disclaimer)
-                    .category("M&A & Hợp tác Chiến lược")
+                    .category("M&A & Partnerships")
                     .author("LÉARGAS Editorial")
                     .readingTimeMinutes(5)
                     .coverImageUrl("/images/coastline.jpg")
@@ -192,7 +192,7 @@ public class DataInitializer implements CommandLineRunner {
                             "<li>Retain experienced local legal and technical transaction counsel early in the screening phase.</li>\n" +
                             "</ul>\n" +
                             disclaimer)
-                    .category("Pháp lý & Quy hoạch PDP8")
+                    .category("Policy & PDP8")
                     .author("LÉARGAS Research")
                     .readingTimeMinutes(6)
                     .coverImageUrl("/images/wind.jpg")

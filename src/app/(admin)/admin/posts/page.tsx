@@ -85,7 +85,7 @@ const DEFAULT_POSTS: PostItem[] = [
 <p>The outcome of screening is a decision about whether to investigate further. Agree the missing information, the specialist advisers needed, confidentiality arrangements and the next decision milestone before allocating significant resources.</p>
 <p>A concise investment screening memo can capture the opportunity, investment fit, unresolved issues and recommended next steps.</p>
 <div class="article-note">This introductory guide provides general information. It is not legal, tax, technical or investment advice for a specific project. Transaction requirements should be assessed with appropriately qualified advisers.</div>`,
-    category: "Góc nhìn Đầu tư",
+    category: "Investment Insights",
     author: "LÉARGAS Editorial",
     readingTimeMinutes: 5,
     coverImageUrl: "/images/wind.jpg",
@@ -121,7 +121,7 @@ const DEFAULT_POSTS: PostItem[] = [
 <p>A non-confidential teaser can introduce an opportunity without exposing sensitive project details. Further information should be shared through an agreed process with suitable confidentiality protections.</p>
 <p>Maintain an investor log, a central questions-and-answers register and consistent milestones. Compare offers on structure, conditions and execution requirements as well as headline price.</p>
 <div class="article-note">This introductory guide provides general information. It is not legal, tax, technical or investment advice for a specific project. Transaction requirements should be assessed with appropriately qualified advisers.</div>`,
-    category: "M&A & Hợp tác Chiến lược",
+    category: "M&A & Partnerships",
     author: "LÉARGAS Editorial",
     readingTimeMinutes: 4,
     coverImageUrl: "/images/coastline.jpg",
@@ -158,7 +158,7 @@ const DEFAULT_POSTS: PostItem[] = [
 <li>Retain experienced local legal and technical transaction counsel early in the screening phase.</li>
 </ul>
 <div class="article-note">This analysis is provided for general strategic information and does not constitute formal legal, regulatory or financial opinion. Project developers and investors should seek bespoke advisory tailored to their specific asset perimeter.</div>`,
-    category: "Pháp lý & Quy hoạch PDP8",
+    category: "Policy & PDP8",
     author: "LÉARGAS Research",
     readingTimeMinutes: 6,
     coverImageUrl: "/images/wind.jpg",
@@ -168,9 +168,9 @@ const DEFAULT_POSTS: PostItem[] = [
 ]
 
 const STATUS_STYLE: Record<string, { label: string; color: string }> = {
-  PUBLISHED: { label: "Đã xuất bản", color: "#059669" },
-  DRAFT: { label: "Bản nháp", color: "#d4a017" },
-  ARCHIVED: { label: "Lưu trữ", color: "#bfbfbf" },
+  PUBLISHED: { label: "Published", color: "#059669" },
+  DRAFT: { label: "Draft", color: "#d4a017" },
+  ARCHIVED: { label: "Archived", color: "#bfbfbf" },
 }
 
 export default function AdminPostsPage() {
@@ -244,12 +244,12 @@ export default function AdminPostsPage() {
       await adminFetch(`/api/admin/posts/${id}`, { method: "DELETE" })
       setPosts((prev) => prev.filter((p) => p.id !== id))
       void refreshBlogSafely([slug])
-      toast.success("Đã xóa bài viết thành công!", {
-        description: `Bài viết "${title}" đã được xóa khỏi hệ thống.`,
+      toast.success("Post deleted", {
+        description: `"${title}" has been removed.`,
       })
     } catch {
-      toast.error("Không thể xóa bài viết", {
-        description: "Vui lòng kiểm tra lại dịch vụ Backend.",
+      toast.error("Could not delete the post", {
+        description: "Check that the backend is running.",
       })
     }
   }
@@ -274,10 +274,10 @@ export default function AdminPostsPage() {
   const getCategoryColor = (catName: string) => {
     const found = categories.find((c) => c.name === catName)
     if (found?.color) return found.color
-    if (catName.includes("Đầu tư")) return "#059669"
+    if (catName.includes("Investment")) return "#059669"
     if (catName.includes("M&A")) return "#52c41a"
-    if (catName.includes("Pháp lý")) return "#722ed1"
-    if (catName.includes("Thi công")) return "#fa8c16"
+    if (catName.includes("Policy")) return "#722ed1"
+    if (catName.includes("Construction")) return "#fa8c16"
     return "#13c2c2"
   }
 
@@ -293,9 +293,8 @@ export default function AdminPostsPage() {
 
   const columns = [
     {
-      title: "Bài viết",
+      title: "Post",
       key: "postInfo",
-      width: 380,
       render: (_: unknown, record: PostItem) => {
         const cover = resolveMediaUrl(record.coverImageUrl || "/images/wind.jpg")
 
@@ -331,39 +330,39 @@ export default function AdminPostsPage() {
       },
     },
     {
-      title: "Chuyên mục",
+      title: "Category",
       dataIndex: "category",
       key: "category",
       width: 190,
       render: (cat: string) => (
-        <span className="inline-flex items-center gap-2 text-[13px] text-[#434343]">
+        <span className="inline-flex items-center gap-2 text-[13px] whitespace-nowrap text-[#434343]">
           <span
             className="h-1.5 w-1.5 shrink-0 rounded-full"
             style={{ backgroundColor: getCategoryColor(cat) }}
           />
-          <span className="leading-snug">{cat}</span>
+          <span>{cat}</span>
         </span>
       ),
     },
     {
-      title: "Tác giả",
+      title: "Author",
       dataIndex: "author",
       key: "author",
-      width: 150,
+      width: 140,
       render: (author: string, record: PostItem) => (
         <div className="text-xs">
           <div className="font-medium text-[#262626]">{author}</div>
           <div className="text-[11px] text-[#8c8c8c]">
-            {record.readingTimeMinutes || 5} phút đọc
+            {record.readingTimeMinutes || 5} min read
           </div>
         </div>
       ),
     },
     {
-      title: "Trạng thái",
+      title: "Status",
       dataIndex: "status",
       key: "status",
-      width: 140,
+      width: 130,
       render: (status: string) => {
         const { label, color } = STATUS_STYLE[status] ?? STATUS_STYLE.ARCHIVED!
         return (
@@ -378,21 +377,21 @@ export default function AdminPostsPage() {
       },
     },
     {
-      title: "Ngày đăng",
+      title: "Published",
       dataIndex: "publishedAt",
       key: "publishedAt",
       width: 120,
       align: "center" as const,
       render: (val: string, record: PostItem) => (
         <span className="text-xs text-[#8c8c8c]">
-          {val || record.createdAt?.split("T")[0] || "18/11/2026"}
+          {val || record.createdAt?.split("T")[0] || "—"}
         </span>
       ),
     },
     {
-      title: "Thao tác",
+      title: "Actions",
       key: "actions",
-      width: 180,
+      width: 120,
       align: "right" as const,
       render: (_: unknown, record: PostItem) => (
         <Space size="small">
@@ -403,10 +402,8 @@ export default function AdminPostsPage() {
             icon={<EyeOutlined />}
             onClick={() => handleOpenPreview(record)}
             className="text-[#059669] hover:bg-[#ecfdf5]"
-            title="Xem chi tiết & Xem trước bài viết"
-          >
-            Xem
-          </Button>
+            title="Preview post"
+          />
 
           {/* Nút Chỉnh sửa */}
           <Button
@@ -415,18 +412,16 @@ export default function AdminPostsPage() {
             icon={<EditOutlined />}
             onClick={() => router.push(`/admin/posts/${record.id}/edit`)}
             className="text-[#047857] hover:bg-[#ecfdf5]"
-            title="Chỉnh sửa bài viết"
-          >
-            Sửa
-          </Button>
+            title="Edit post"
+          />
 
           {/* Nút Xóa có Popconfirm */}
           <Popconfirm
-            title="Xác nhận xóa bài viết?"
-            description={`Bạn có chắc muốn xóa bài "${record.title}"?`}
+            title="Delete this post?"
+            description={`"${record.title}" will be permanently deleted.`}
             onConfirm={() => handleDelete(record.id, record.title, record.slug)}
-            okText="Xóa"
-            cancelText="Hủy"
+            okText="Delete"
+            cancelText="Cancel"
             okButtonProps={{ danger: true }}
           >
             <Button
@@ -435,10 +430,8 @@ export default function AdminPostsPage() {
               danger
               icon={<DeleteOutlined />}
               className="hover:bg-[#fff2f0]"
-              title="Xóa bài viết"
-            >
-              Xóa
-            </Button>
+              title="Delete post"
+            />
           </Popconfirm>
         </Space>
       ),
@@ -451,11 +444,9 @@ export default function AdminPostsPage() {
       <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
         <div>
           <Title level={4} className="!mb-1 !font-sans !font-bold !text-[#1f1f1f]">
-            Quản lý Bài viết (Blog & Insights)
+            Posts
           </Title>
-          <Text className="text-xs text-[#8c8c8c]">
-            Quản trị các bài phân tích chuyên sâu, thương vụ M&A và quy hoạch năng lượng LÉARGAS
-          </Text>
+          <Text className="text-xs text-[#8c8c8c]">Articles published on the LÉARGAS blog</Text>
         </div>
 
         <Space>
@@ -465,7 +456,7 @@ export default function AdminPostsPage() {
             loading={loading}
             className="!rounded-lg text-xs"
           >
-            Làm mới
+            Refresh
           </Button>
 
           <Button
@@ -474,7 +465,7 @@ export default function AdminPostsPage() {
             onClick={() => router.push("/admin/posts/new")}
             className="!rounded-lg !bg-[#059669] text-xs font-semibold shadow-sm hover:!bg-[#047857]"
           >
-            Thêm bài viết mới
+            New post
           </Button>
         </Space>
       </div>
@@ -485,7 +476,7 @@ export default function AdminPostsPage() {
           <div className="sm:col-span-6">
             <Input
               prefix={<SearchOutlined className="text-[#8c8c8c]" />}
-              placeholder="Tìm kiếm theo tiêu đề bài viết, tóm tắt hoặc tác giả..."
+              placeholder="Search by title, excerpt or author"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               allowClear
@@ -499,7 +490,7 @@ export default function AdminPostsPage() {
               onChange={setCategoryFilter}
               className="w-full text-xs"
               options={[
-                { value: "ALL", label: "Tất cả chuyên mục" },
+                { value: "ALL", label: "All categories" },
                 ...categories.map((c) => ({ value: c.name, label: c.name })),
               ]}
             />
@@ -511,10 +502,10 @@ export default function AdminPostsPage() {
               onChange={setStatusFilter}
               className="w-full text-xs"
               options={[
-                { value: "ALL", label: "Tất cả trạng thái" },
-                { value: "PUBLISHED", label: "Đã xuất bản" },
-                { value: "DRAFT", label: "Bản nháp" },
-                { value: "ARCHIVED", label: "Lưu trữ" },
+                { value: "ALL", label: "All statuses" },
+                { value: "PUBLISHED", label: "Published" },
+                { value: "DRAFT", label: "Draft" },
+                { value: "ARCHIVED", label: "Archived" },
               ]}
             />
           </div>
@@ -528,7 +519,10 @@ export default function AdminPostsPage() {
           dataSource={filteredPosts}
           rowKey="id"
           loading={loading}
-          pagination={{ pageSize: 8, showTotal: (total) => `Tổng cộng ${total} bài viết` }}
+          pagination={{
+            pageSize: 8,
+            showTotal: (total) => `${total} ${total === 1 ? "post" : "posts"}`,
+          }}
           className="font-sans"
         />
       </Card>
@@ -543,10 +537,10 @@ export default function AdminPostsPage() {
               </span>
               <div>
                 <div className="text-sm font-semibold text-[#1f1f1f] md:text-base">
-                  Bản xem trước Bài viết đầy đủ (Full Article Preview)
+                  Article preview
                 </div>
                 <div className="text-[11px] font-normal text-[#8c8c8c]">
-                  Chuẩn hóa theo định dạng ấn phẩm cao cấp của LÉARGAS Energy Partners
+                  As it will appear on the LÉARGAS blog
                 </div>
               </div>
             </div>
@@ -555,7 +549,7 @@ export default function AdminPostsPage() {
                 color={previewPost.status === "PUBLISHED" ? "success" : "warning"}
                 className="rounded-full px-2.5 py-0.5 text-xs font-medium"
               >
-                {previewPost.status === "PUBLISHED" ? "● ĐÃ XUẤT BẢN" : "● BẢN NHÁP"}
+                {previewPost.status === "PUBLISHED" ? "Published" : "Draft"}
               </Tag>
             )}
           </div>
@@ -573,7 +567,7 @@ export default function AdminPostsPage() {
         }}
         footer={[
           <Button key="close" onClick={() => setPreviewModalOpen(false)} className="rounded-lg">
-            Đóng
+            Close
           </Button>,
           previewPost && (
             <Link
@@ -586,7 +580,7 @@ export default function AdminPostsPage() {
                 icon={<GlobalOutlined />}
                 className="rounded-lg hover:!border-[#059669] hover:!text-[#059669]"
               >
-                Xem trên Website khách ↗
+                View on website ↗
               </Button>
             </Link>
           ),
@@ -601,7 +595,7 @@ export default function AdminPostsPage() {
               }}
               className="rounded-lg !bg-[#059669] font-medium shadow-xs hover:!bg-[#047857]"
             >
-              Chỉnh sửa bài viết này
+              Edit this post
             </Button>
           ),
         ]}
@@ -645,12 +639,12 @@ export default function AdminPostsPage() {
 
                 <div className="flex items-center gap-1.5">
                   <ClockCircleOutlined className="text-[#fa8c16]" />
-                  <span>{previewPost.readingTimeMinutes || 5} phút đọc</span>
+                  <span>{previewPost.readingTimeMinutes || 5} min read</span>
                 </div>
 
                 <div className="flex items-center gap-1.5">
                   <CalendarOutlined className="text-[#52c41a]" />
-                  <span>{previewPost.publishedAt || "18/11/2026"}</span>
+                  <span>{previewPost.publishedAt || "—"}</span>
                 </div>
 
                 <div className="flex items-center gap-1.5">
@@ -665,7 +659,7 @@ export default function AdminPostsPage() {
               <div className="rounded-xl border-l-4 border-[#00281c] bg-[#f7f9f7] p-4 text-sm text-[#2d3748] shadow-xs">
                 <div className="mb-1 flex items-center gap-1.5 text-[11px] font-bold tracking-wider text-[#00281c] uppercase">
                   <FileTextOutlined />
-                  <span>Tóm tắt định hướng thương vụ</span>
+                  <span>Summary</span>
                 </div>
                 <p className="leading-relaxed font-medium text-[#2d3748] italic">
                   {previewPost.excerpt}
@@ -677,7 +671,7 @@ export default function AdminPostsPage() {
             {articleHeadings.length > 0 && (
               <div className="rounded-xl border border-[#f0f0f0] bg-[#fafafa] p-3.5">
                 <div className="mb-2 text-[11px] font-semibold tracking-wider text-[#8c8c8c] uppercase">
-                  Mục lục các phần chính ({articleHeadings.length} đề mục):
+                  Contents ({articleHeadings.length} sections)
                 </div>
                 <div className="flex flex-wrap gap-2">
                   {articleHeadings.map((h, idx) => (
@@ -700,13 +694,13 @@ export default function AdminPostsPage() {
               {previewLoading ? (
                 <div className="py-12 text-center text-xs text-[#8c8c8c]">
                   <ReloadOutlined spin className="mx-auto mb-2 block text-lg text-[#059669]" />
-                  Đang tải toàn bộ nội dung bài viết từ hệ thống...
+                  Loading the full article…
                 </div>
               ) : (
                 <div
                   className="article-body prose prose-slate max-w-none text-[15px] leading-[1.8] text-[#2d3748]"
                   dangerouslySetInnerHTML={{
-                    __html: previewPost.content || "<p>Bài viết chưa có nội dung chi tiết.</p>",
+                    __html: previewPost.content || "<p>This post has no content yet.</p>",
                   }}
                 />
               )}

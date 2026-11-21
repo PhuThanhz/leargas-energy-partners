@@ -3,12 +3,12 @@ export const DEFAULT_ARTICLE_BG = "#f3efe5"
 
 /** Curated light backgrounds that keep the dark body text readable and fit the brand. */
 export const ARTICLE_BACKGROUNDS: { label: string; value: string }[] = [
-  { label: "Mặc định", value: "" },
-  { label: "Trắng", value: "#ffffff" },
-  { label: "Ngà", value: "#faf7f0" },
-  { label: "Cát", value: "#efe7d8" },
-  { label: "Xanh lá nhạt", value: "#edf1ea" },
-  { label: "Xanh sương", value: "#e9efef" },
+  { label: "Default", value: "" },
+  { label: "White", value: "#ffffff" },
+  { label: "Ivory", value: "#faf7f0" },
+  { label: "Sand", value: "#efe7d8" },
+  { label: "Sage", value: "#edf1ea" },
+  { label: "Mist", value: "#e9efef" },
 ]
 
 /** Relative luminance (WCAG) of a #rrggbb colour, 0 (black) … 1 (white). */

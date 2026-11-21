@@ -35,50 +35,50 @@ export interface SlashCommandOptions {
 function buildItems(onImage: () => void): SlashItem[] {
   return [
     {
-      title: "Văn bản",
-      hint: "Đoạn văn thường",
+      title: "Text",
+      hint: "Plain paragraph",
       keywords: "van ban doan paragraph text",
       icon: <Pilcrow />,
       run: (e, r) => e.chain().focus().deleteRange(r).setParagraph().run(),
     },
     {
-      title: "Tiêu đề mục",
-      hint: "Mục lớn, hiện trong mục lục",
+      title: "Heading",
+      hint: "Section title, listed in the contents",
       keywords: "tieu de muc h2 heading",
       icon: <Heading2 />,
       run: (e, r) => e.chain().focus().deleteRange(r).setHeading({ level: 2 }).run(),
     },
     {
-      title: "Tiêu đề phụ",
-      hint: "Mục nhỏ bên trong",
+      title: "Subheading",
+      hint: "Smaller title inside a section",
       keywords: "tieu de phu h3 subheading",
       icon: <Heading3 />,
       run: (e, r) => e.chain().focus().deleteRange(r).setHeading({ level: 3 }).run(),
     },
     {
-      title: "Danh sách",
-      hint: "Gạch đầu dòng",
+      title: "Bullet list",
+      hint: "Simple list",
       keywords: "danh sach bullet list",
       icon: <List />,
       run: (e, r) => e.chain().focus().deleteRange(r).toggleBulletList().run(),
     },
     {
-      title: "Danh sách đánh số",
+      title: "Numbered list",
       hint: "01, 02, 03…",
       keywords: "danh sach so number ordered",
       icon: <ListOrdered />,
       run: (e, r) => e.chain().focus().deleteRange(r).toggleOrderedList().run(),
     },
     {
-      title: "Trích dẫn",
-      hint: "Câu nói nổi bật",
+      title: "Quote",
+      hint: "Highlighted statement",
       keywords: "trich dan quote",
       icon: <Quote />,
       run: (e, r) => e.chain().focus().deleteRange(r).setBlockquote().run(),
     },
     {
-      title: "Bảng",
-      hint: "Bảng số liệu 3 × 3",
+      title: "Table",
+      hint: "3 × 3 data table",
       keywords: "bang table so lieu",
       icon: <TableIcon />,
       run: (e, r) =>
@@ -90,8 +90,8 @@ function buildItems(onImage: () => void): SlashItem[] {
           .run(),
     },
     {
-      title: "Ảnh",
-      hint: "Tải lên hoặc chọn từ thư viện",
+      title: "Image",
+      hint: "Upload or pick from the library",
       keywords: "anh hinh image photo",
       icon: <ImageIcon />,
       run: (e, r) => {
@@ -100,8 +100,8 @@ function buildItems(onImage: () => void): SlashItem[] {
       },
     },
     {
-      title: "Đường phân cách",
-      hint: "Ngăn cách hai phần",
+      title: "Divider",
+      hint: "Separate two sections",
       keywords: "duong phan cach divider hr",
       icon: <Minus />,
       run: (e, r) => e.chain().focus().deleteRange(r).setHorizontalRule().run(),
@@ -163,7 +163,7 @@ const SlashMenu = React.forwardRef<SlashMenuHandle, SuggestionProps<SlashItem, S
     if (!items.length) {
       return (
         <div className="w-64 rounded-xl bg-white p-3 text-xs text-[#8c8c8c] shadow-[0_8px_30px_rgba(0,0,0,0.12)] ring-1 ring-black/5">
-          Không có lệnh phù hợp
+          No matching blocks
         </div>
       )
     }

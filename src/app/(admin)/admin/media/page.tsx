@@ -68,13 +68,13 @@ export default function AdminMediaPage() {
       await adminFetch(`/api/admin/media/${id}`, {
         method: "DELETE",
       })
-      toast.success("Đã xóa tệp tin", {
-        description: "Tệp tin đã được gỡ khỏi thư viện và hệ thống lưu trữ.",
+      toast.success("File deleted", {
+        description: "The file was removed from the library and storage.",
       })
       fetchMedia()
     } catch {
-      toast.error("Không thể xóa tệp", {
-        description: "Có lỗi xảy ra khi gửi yêu cầu lên máy chủ.",
+      toast.error("Could not delete the file", {
+        description: "The server returned an error.",
       })
     }
   }
@@ -84,7 +84,7 @@ export default function AdminMediaPage() {
       ? url
       : `${window.location.origin}${url.startsWith("/") ? url : `/${url}`}`
     navigator.clipboard.writeText(fullUrl)
-    toast.success("Đã sao chép đường dẫn ảnh!", {
+    toast.success("Image URL copied", {
       description: fullUrl,
     })
   }
@@ -109,11 +109,11 @@ export default function AdminMediaPage() {
     onChange(info) {
       const { status } = info.file
       if (status === "done") {
-        toast.success(`Tải lên thành công: ${info.file.name}`)
+        toast.success(`Uploaded ${info.file.name}`)
         fetchMedia()
       } else if (status === "error") {
-        toast.error(`Không thể tải lên file: ${info.file.name}`, {
-          description: "Vui lòng kiểm tra lại dịch vụ Backend cổng 8080.",
+        toast.error(`Could not upload ${info.file.name}`, {
+          description: "Check that the backend is running (port 8080).",
         })
       }
     },
@@ -125,10 +125,10 @@ export default function AdminMediaPage() {
       <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
         <div>
           <Title level={4} className="!mb-1 !font-sans !font-bold !text-[#1f1f1f]">
-            Thư viện Hình ảnh & Tệp tin
+            Media library
           </Title>
           <Text className="text-xs text-[#8c8c8c]">
-            Tải lên, quản lý và lấy đường dẫn hình ảnh cho bài viết và tư liệu dự án
+            Upload images and copy their links for posts
           </Text>
         </div>
 
@@ -138,7 +138,7 @@ export default function AdminMediaPage() {
           loading={loading}
           className="!rounded-lg text-xs"
         >
-          Làm mới
+          Refresh
         </Button>
       </div>
 
@@ -152,11 +152,9 @@ export default function AdminMediaPage() {
             <InboxOutlined className="!text-3xl text-[#059669]" />
           </p>
           <p className="font-sans text-sm font-semibold text-[#262626]">
-            Nhấp hoặc Kéo thả ảnh vào khu vực này để tải lên
+            Click or drop images here to upload
           </p>
-          <p className="text-xs text-[#8c8c8c]">
-            Hỗ trợ định dạng PNG, JPG, JPEG, WEBP, SVG dung lượng tối đa 10MB
-          </p>
+          <p className="text-xs text-[#8c8c8c]">PNG, JPG, WEBP or SVG, up to 10MB</p>
         </Dragger>
       </Card>
 
@@ -164,16 +162,13 @@ export default function AdminMediaPage() {
       <div className="space-y-3">
         <div className="flex items-center justify-between">
           <Text strong className="text-sm text-[#262626]">
-            Ảnh đã tải lên ({mediaList.length})
+            Uploaded images ({mediaList.length})
           </Text>
         </div>
 
         {mediaList.length === 0 ? (
           <Card className="rounded-xl border border-[#f0f0f0] text-center">
-            <Empty
-              image={Empty.PRESENTED_IMAGE_SIMPLE}
-              description="Chưa có hình ảnh nào được tải lên"
-            />
+            <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="No images uploaded yet" />
           </Card>
         ) : (
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
@@ -219,17 +214,17 @@ export default function AdminMediaPage() {
                         icon={<CopyOutlined />}
                         onClick={() => handleCopy(item.url)}
                         className="h-6 px-1.5 text-xs text-[#059669] hover:bg-[#ecfdf5]"
-                        title="Sao chép Link ảnh"
+                        title="Copy image URL"
                       >
                         Copy
                       </Button>
 
                       <Popconfirm
-                        title="Xóa ảnh này?"
-                        description="Ảnh sẽ bị xóa khỏi máy chủ."
+                        title="Delete this image?"
+                        description="It will be removed from the server."
                         onConfirm={() => handleDelete(item.id)}
-                        okText="Xóa"
-                        cancelText="Hủy"
+                        okText="Delete"
+                        cancelText="Cancel"
                         okButtonProps={{ danger: true }}
                       >
                         <Button
@@ -238,7 +233,7 @@ export default function AdminMediaPage() {
                           danger
                           icon={<DeleteOutlined />}
                           className="h-6 px-1.5 text-xs hover:bg-[#fff2f0]"
-                          title="Xóa ảnh"
+                          title="Delete image"
                         />
                       </Popconfirm>
                     </div>

@@ -27,7 +27,12 @@ interface MediaPickerProps {
 const MAX_UPLOAD_MB = 10
 
 /** Modal grid over the media library: pick an existing image or upload a new one. */
-export function MediaPicker({ open, onClose, onSelect, title = "Thư viện ảnh" }: MediaPickerProps) {
+export function MediaPicker({
+  open,
+  onClose,
+  onSelect,
+  title = "Media library",
+}: MediaPickerProps) {
   const [items, setItems] = React.useState<MediaItem[] | null>(null)
   const [query, setQuery] = React.useState("")
   const [selected, setSelected] = React.useState<string | null>(null)
@@ -43,7 +48,7 @@ export function MediaPicker({ open, onClose, onSelect, title = "Thư viện ản
       .catch(() => {
         if (!ignore) {
           setItems([])
-          toast.error("Không tải được thư viện ảnh")
+          toast.error("Could not load the media library")
         }
       })
     return () => {
@@ -63,15 +68,15 @@ export function MediaPicker({ open, onClose, onSelect, title = "Thư viện ản
   }
 
   const handleUpload = async (file: File) => {
-    if (!file.type.startsWith("image/")) return toast.error("Chỉ chấp nhận file ảnh")
+    if (!file.type.startsWith("image/")) return toast.error("Only image files are allowed")
     if (file.size > MAX_UPLOAD_MB * 1024 * 1024)
-      return toast.error(`Ảnh vượt quá ${MAX_UPLOAD_MB}MB`)
+      return toast.error(`Image is larger than ${MAX_UPLOAD_MB}MB`)
     setUploading(true)
     try {
       choose(await adminUpload(file))
-      toast.success("Đã tải ảnh lên thư viện")
+      toast.success("Image uploaded")
     } catch {
-      toast.error("Không thể tải ảnh lên")
+      toast.error("Could not upload the image")
     } finally {
       setUploading(false)
     }
@@ -87,8 +92,8 @@ export function MediaPicker({ open, onClose, onSelect, title = "Thư viện ản
       open={open}
       onCancel={close}
       width={880}
-      okText="Dùng ảnh này"
-      cancelText="Đóng"
+      okText="Use this image"
+      cancelText="Close"
       okButtonProps={{ disabled: !selected, className: "!bg-[#059669]" }}
       onOk={() => selected && choose(selected)}
       destroyOnHidden
@@ -96,7 +101,7 @@ export function MediaPicker({ open, onClose, onSelect, title = "Thư viện ản
       <div className="mt-3 flex items-center gap-3">
         <Input.Search
           allowClear
-          placeholder="Tìm theo tên file"
+          placeholder="Search by file name"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           className="flex-1"
@@ -110,7 +115,7 @@ export function MediaPicker({ open, onClose, onSelect, title = "Thư viện ản
           }}
         >
           <Button icon={<UploadOutlined />} loading={uploading}>
-            Tải ảnh mới
+            Upload
           </Button>
         </Upload>
       </div>
@@ -123,7 +128,7 @@ export function MediaPicker({ open, onClose, onSelect, title = "Thư viện ản
         ) : visible.length === 0 ? (
           <Empty
             className="py-12"
-            description={items.length === 0 ? "Thư viện chưa có ảnh nào" : "Không có ảnh khớp"}
+            description={items.length === 0 ? "The library is empty" : "No matching images"}
           />
         ) : (
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">

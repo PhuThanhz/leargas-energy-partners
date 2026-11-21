@@ -31,11 +31,11 @@ export default function AdminLoginPage() {
       const data = await res.json().catch(() => null)
 
       if (!res.ok) {
-        let errorMsg = data?.detail || data?.title || "Tên đăng nhập hoặc mật khẩu không chính xác."
+        let errorMsg = data?.detail || data?.title || "Incorrect username or password."
         if (errorMsg === "Invalid username or password") {
-          errorMsg = "Tên đăng nhập hoặc mật khẩu không chính xác."
+          errorMsg = "Incorrect username or password."
         }
-        toast.error("Đăng nhập thất bại", {
+        toast.error("Sign-in failed", {
           description: errorMsg,
         })
         return
@@ -44,8 +44,8 @@ export default function AdminLoginPage() {
       // Lưu JWT Token và User Principal từ Spring Boot
       saveAuth(data.token, data.user)
 
-      toast.success("Đăng nhập thành công!", {
-        description: `Xin chào, ${data.user?.fullName || data.user?.username || "Quản trị viên"}.`,
+      toast.success("Signed in", {
+        description: `Welcome back, ${data.user?.fullName || data.user?.username || "Administrator"}.`,
       })
 
       // Chuyển hướng sang trang Dashboard
@@ -53,8 +53,8 @@ export default function AdminLoginPage() {
         router.push("/admin/dashboard")
       }, 400)
     } catch {
-      toast.error("Không thể kết nối đến máy chủ", {
-        description: "Vui lòng kiểm tra lại dịch vụ Backend Spring Boot (cổng 8080).",
+      toast.error("Cannot reach the server", {
+        description: "Check that the Spring Boot backend is running (port 8080).",
       })
     } finally {
       setLoading(false)
@@ -80,7 +80,7 @@ export default function AdminLoginPage() {
             </div>
 
             <p className="mt-3.5 text-xs font-medium tracking-wide text-[#6c7f74]">
-              Hệ thống Quản trị & Điều hành Doanh nghiệp
+              Content management
             </p>
           </div>
 
@@ -88,7 +88,7 @@ export default function AdminLoginPage() {
             {/* Tên đăng nhập */}
             <div>
               <label className="mb-1.5 block text-xs font-medium text-[#1c3327]">
-                Tên đăng nhập hoặc Email
+                Username or email
               </label>
               <div className="relative">
                 <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-[#8aa093]">
@@ -100,7 +100,7 @@ export default function AdminLoginPage() {
                   autoFocus
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
-                  placeholder="Nhập tên đăng nhập hoặc email"
+                  placeholder="Enter your username or email"
                   className="w-full rounded-xl border border-[#d3ded6] bg-[#fbfdfb] py-3 pr-3.5 pl-10 text-sm text-[#1c3327] placeholder-[#a2b4aa] transition-all hover:border-[#0f2b20] focus:border-[#0f2b20] focus:bg-white focus:ring-4 focus:ring-[#0f2b20]/10 focus:outline-none"
                 />
               </div>
@@ -108,7 +108,7 @@ export default function AdminLoginPage() {
 
             {/* Mật khẩu */}
             <div>
-              <label className="mb-1.5 block text-xs font-medium text-[#1c3327]">Mật khẩu</label>
+              <label className="mb-1.5 block text-xs font-medium text-[#1c3327]">Password</label>
               <div className="relative">
                 <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-[#8aa093]">
                   <Lock className="h-4 w-4" />
@@ -118,7 +118,7 @@ export default function AdminLoginPage() {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Nhập mật khẩu của bạn"
+                  placeholder="Enter your password"
                   className="w-full rounded-xl border border-[#d3ded6] bg-[#fbfdfb] py-3 pr-11 pl-10 text-sm text-[#1c3327] placeholder-[#a2b4aa] transition-all hover:border-[#0f2b20] focus:border-[#0f2b20] focus:bg-white focus:ring-4 focus:ring-[#0f2b20]/10 focus:outline-none"
                 />
                 <button
@@ -132,7 +132,7 @@ export default function AdminLoginPage() {
               </div>
             </div>
 
-            {/* Ghi nhớ đăng nhập */}
+            {/* Remember me */}
             <div className="flex items-center justify-between pt-0.5 text-xs">
               <label className="flex cursor-pointer items-center gap-2 text-[#566e61]">
                 <input
@@ -141,7 +141,7 @@ export default function AdminLoginPage() {
                   onChange={(e) => setRemember(e.target.checked)}
                   className="h-4 w-4 rounded-md border-[#c7d5cb] text-[#0f2b20] focus:ring-[#0f2b20]"
                 />
-                Ghi nhớ đăng nhập
+                Remember me
               </label>
             </div>
 
@@ -155,7 +155,7 @@ export default function AdminLoginPage() {
                 <div className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent" />
               ) : (
                 <>
-                  Đăng nhập
+                  Sign in
                   <ArrowRight className="h-4 w-4" />
                 </>
               )}

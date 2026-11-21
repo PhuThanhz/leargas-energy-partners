@@ -30,7 +30,7 @@ export default function EditPostPage() {
         if (!ignore) {
           setState({
             kind: "error",
-            message: error instanceof Error ? error.message : "Không tải được bài viết",
+            message: error instanceof Error ? error.message : "Could not load the post",
           })
         }
       })
@@ -57,7 +57,7 @@ export default function EditPostPage() {
     return (
       <Result
         status="warning"
-        title="Không tải được bài viết"
+        title="Could not load the post"
         subTitle={state.message}
         extra={[
           <Button
@@ -69,10 +69,10 @@ export default function EditPostPage() {
               setAttempt((n) => n + 1)
             }}
           >
-            Thử lại
+            Try again
           </Button>,
           <Link key="back" href="/admin/posts">
-            <Button>Về danh sách</Button>
+            <Button>Back to posts</Button>
           </Link>,
         ]}
       />

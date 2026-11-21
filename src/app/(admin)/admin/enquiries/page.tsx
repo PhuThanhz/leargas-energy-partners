@@ -25,45 +25,45 @@ const DEFAULT_ENQUIRIES: Enquiry[] = [
     id: 1,
     name: "Alexander Wright",
     email: "a.wright@nordicrenewables.com",
-    company: "Quỹ Năng Lượng Sạch Bắc Âu",
-    role: "Giám đốc Hạ tầng Châu Á - Thái Bình Dương",
-    topic: "M&A / Đầu tư Vốn Cổ phần",
-    projectStage: "Đang vận hành / Giai đoạn cuối",
+    company: "Nordic Clean Energy Fund",
+    role: "Director, APAC Infrastructure",
+    topic: "M&A / Equity Investment",
+    projectStage: "Operating / Late stage",
     indicativeCapacity: "150 - 300 MW",
     message:
-      "Chúng tôi đang đánh giá danh mục dự án chuyển nhượng thứ cấp tại Nam Trung Bộ và muốn LÉARGAS tư vấn cấu trúc thương vụ và pháp lý theo Quy hoạch điện 8.",
+      "We are reviewing a secondary portfolio in South Central Vietnam and would like LÉARGAS to advise on deal structure and PDP8 regulatory matters.",
     status: "NEW",
-    notes: "Quỹ đầu tư thể chế trọng điểm. Cần gửi email phản hồi và sắp xếp lịch họp.",
+    notes: "Key institutional investor. Reply by email and schedule a call.",
     createdAt: "2026-11-18 14:30",
   },
   {
     id: 2,
-    name: "Nguyễn Hoàng Minh",
+    name: "Nguyen Hoang Minh",
     email: "minh.nh@vietnamenergycorp.vn",
-    company: "Tập đoàn VEC Power Holdings",
-    role: "Giám đốc Khối Đầu tư",
-    topic: "Thi công & Quản lý Dự án",
-    projectStage: "Chuẩn bị thi công / Cơ chế DPPA",
-    indicativeCapacity: "80 MW Điện gió trên bờ",
+    company: "VEC Power Holdings",
+    role: "Head of Investment",
+    topic: "Construction & Project Management",
+    projectStage: "Pre-construction / DPPA",
+    indicativeCapacity: "80 MW onshore wind",
     message:
-      "Tìm kiếm đối tác vốn chiến lược và nhà thầu EPC quốc tế cho cụm dự án điện gió Gia Lai trong chương trình thí điểm DPPA.",
+      "Looking for a strategic equity partner and an international EPC contractor for a Gia Lai wind cluster under the DPPA pilot.",
     status: "CONTACTED",
-    notes: "Đã gặp tại Hội nghị Năng lượng Sạch. Đã gửi thỏa thuận bảo mật NDA.",
+    notes: "Met at the Clean Energy Summit. NDA sent.",
     createdAt: "2026-11-17 09:15",
   },
   {
     id: 3,
     name: "Sarah Jenkins",
     email: "sarah.j@globalrenewables.uk",
-    company: "Quỹ Hạ tầng Năng lượng Quốc tế",
-    role: "Đối tác Đầu tư Cấp cao",
-    topic: "Tư vấn Điện gió Ngoài khơi",
-    projectStage: "Nghiên cứu khả thi & Quy hoạch",
+    company: "International Energy Infrastructure Fund",
+    role: "Senior Investment Partner",
+    topic: "Offshore Wind Advisory",
+    projectStage: "Feasibility & planning",
     indicativeCapacity: "500 MW",
     message:
-      "Quan tâm đến việc đánh giá tính khả thi thương mại và hạ tầng giải tỏa công suất cho dự án điện gió ngoài khơi tỉnh Bình Thuận.",
+      "Interested in assessing commercial feasibility and grid evacuation for an offshore wind project in Binh Thuan.",
     status: "NEW",
-    notes: "Đang chờ số liệu đo gió sơ bộ từ đối tác.",
+    notes: "Waiting for preliminary wind data from the partner.",
     createdAt: "2026-11-18 22:19",
   },
 ]
@@ -119,11 +119,11 @@ export default function AdminEnquiriesPage() {
       prev.map((e) => (e.id === selectedEnquiry.id ? { ...e, notes: editingNotes } : e))
     )
     setSelectedEnquiry((prev) => (prev ? { ...prev, notes: editingNotes } : null))
-    alert("Đã lưu ghi chú nội bộ thành công!")
+    alert("Notes saved")
   }
 
   const handleDelete = async (id: number) => {
-    if (!confirm("Bạn có chắc chắn muốn xóa yêu cầu tư vấn này?")) return
+    if (!confirm("Delete this enquiry?")) return
     try {
       await adminFetch(`/api/admin/enquiries/${id}`, { method: "DELETE" })
     } catch {
@@ -146,16 +146,16 @@ export default function AdminEnquiriesPage() {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "NEW":
-        return { label: "Mới tiếp nhận", className: "bg-[#fffbe6] text-[#faad14] border-[#ffe58f]" }
+        return { label: "New", className: "bg-[#fffbe6] text-[#faad14] border-[#ffe58f]" }
       case "CONTACTED":
-        return { label: "Đã liên hệ", className: "bg-[#ecfdf5] text-[#059669] border-[#a7f3d0]" }
+        return { label: "Contacted", className: "bg-[#ecfdf5] text-[#059669] border-[#a7f3d0]" }
       case "QUALIFIED":
         return {
-          label: "Đạt tiêu chuẩn",
+          label: "Qualified",
           className: "bg-[#f6ffed] text-[#52c41a] border-[#b7eb8f]",
         }
       default:
-        return { label: "Đã đóng", className: "bg-[#fafafa] text-[#8c8c8c] border-[#d9d9d9]" }
+        return { label: "Closed", className: "bg-[#fafafa] text-[#8c8c8c] border-[#d9d9d9]" }
     }
   }
 
@@ -163,12 +163,8 @@ export default function AdminEnquiriesPage() {
     <div className="space-y-5">
       {/* Tiêu đề trang */}
       <div>
-        <h1 className="text-xl font-semibold text-[#000000e0]">
-          Quản lý Yêu cầu Tư vấn & Khách hàng Tiềm năng (CRM)
-        </h1>
-        <p className="mt-0.5 text-xs text-[#8c8c8c]">
-          Theo dõi tiến độ kết nối vốn quốc tế, tư vấn quy hoạch và sàng lọc dự án năng lượng
-        </p>
+        <h1 className="text-xl font-semibold text-[#000000e0]">Enquiries</h1>
+        <p className="mt-0.5 text-xs text-[#8c8c8c]">Messages from the website contact form</p>
       </div>
 
       {/* Tabs và Bộ lọc phong cách Ant Design */}
@@ -176,11 +172,11 @@ export default function AdminEnquiriesPage() {
         {/* Ant Design Style Tabs */}
         <div className="flex flex-wrap items-center gap-2">
           {[
-            { id: "ALL", label: "Tất cả" },
-            { id: "NEW", label: "Mới tiếp nhận" },
-            { id: "CONTACTED", label: "Đã liên hệ" },
-            { id: "QUALIFIED", label: "Đạt tiêu chuẩn" },
-            { id: "CLOSED", label: "Đã đóng" },
+            { id: "ALL", label: "All" },
+            { id: "NEW", label: "New" },
+            { id: "CONTACTED", label: "Contacted" },
+            { id: "QUALIFIED", label: "Qualified" },
+            { id: "CLOSED", label: "Closed" },
           ].map((tab) => {
             const count =
               tab.id === "ALL"
@@ -217,7 +213,7 @@ export default function AdminEnquiriesPage() {
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Tìm theo tên, đối tác, email..."
+            placeholder="Search by name, company or email"
             className="w-full rounded-md border border-[#d9d9d9] bg-white py-1.5 pr-3 pl-8 text-xs text-[#000000e0] placeholder-[#bfbfbf] hover:border-[#059669] focus:border-[#059669] focus:outline-none"
           />
         </div>
@@ -228,18 +224,18 @@ export default function AdminEnquiriesPage() {
         <table className="w-full text-left text-xs">
           <thead className="border-b border-[#f0f0f0] bg-[#fafafa] font-medium text-[#262626]">
             <tr>
-              <th className="px-5 py-3.5">Họ tên & Doanh nghiệp</th>
-              <th className="px-5 py-3.5">Chủ đề tư vấn</th>
-              <th className="px-5 py-3.5">Giai đoạn & Quy mô</th>
-              <th className="px-5 py-3.5">Trạng thái xử lý</th>
-              <th className="px-5 py-3.5 text-right">Thao tác</th>
+              <th className="px-5 py-3.5">Contact</th>
+              <th className="px-5 py-3.5">Topic</th>
+              <th className="px-5 py-3.5">Stage & size</th>
+              <th className="px-5 py-3.5">Status</th>
+              <th className="px-5 py-3.5 text-right">Actions</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-[#f0f0f0]">
             {filteredEnquiries.length === 0 ? (
               <tr>
                 <td colSpan={5} className="px-5 py-10 text-center text-[#8c8c8c]">
-                  Không có yêu cầu tư vấn nào thuộc danh mục này.
+                  No enquiries here.
                 </td>
               </tr>
             ) : (
@@ -249,7 +245,7 @@ export default function AdminEnquiriesPage() {
                     <div className="font-medium text-[#262626]">{enquiry.name}</div>
                     <div className="mt-0.5 flex items-center gap-1.5 text-[11px] text-[#8c8c8c]">
                       <Building className="h-3 w-3 text-[#bfbfbf]" />
-                      {enquiry.company || "Cá nhân"} {enquiry.role ? `· ${enquiry.role}` : ""}
+                      {enquiry.company || "Individual"} {enquiry.role ? `· ${enquiry.role}` : ""}
                     </div>
                     <div className="mt-0.5 text-[11px] text-[#059669]">{enquiry.email}</div>
                   </td>
@@ -271,10 +267,10 @@ export default function AdminEnquiriesPage() {
                       onChange={(e) => handleStatusChange(enquiry.id, e.target.value)}
                       className="cursor-pointer rounded-full border border-[#d9d9d9] bg-white px-2.5 py-1 text-[11px] font-medium text-[#262626] hover:border-[#059669] focus:outline-none"
                     >
-                      <option value="NEW">Mới tiếp nhận</option>
-                      <option value="CONTACTED">Đã liên hệ</option>
-                      <option value="QUALIFIED">Đạt tiêu chuẩn</option>
-                      <option value="CLOSED">Đã đóng</option>
+                      <option value="NEW">New</option>
+                      <option value="CONTACTED">Contacted</option>
+                      <option value="QUALIFIED">Qualified</option>
+                      <option value="CLOSED">Closed</option>
                     </select>
                   </td>
                   <td className="px-5 py-3.5 text-right font-medium">
@@ -286,12 +282,12 @@ export default function AdminEnquiriesPage() {
                         }}
                         className="text-[#059669] hover:text-[#047857]"
                       >
-                        Chi tiết
+                        Details
                       </button>
                       <button
                         onClick={() => handleDelete(enquiry.id)}
                         className="text-[#ff4d4f] hover:text-[#cf1322]"
-                        title="Xóa yêu cầu"
+                        title="Delete enquiry"
                       >
                         <Trash2 className="h-3.5 w-3.5" />
                       </button>
@@ -339,7 +335,7 @@ export default function AdminEnquiriesPage() {
             <div className="mt-4 space-y-4 text-xs">
               <div className="grid grid-cols-2 gap-3 rounded-md border border-[#f0f0f0] bg-[#fafafa] p-3">
                 <div>
-                  <span className="block text-[10px] text-[#8c8c8c] uppercase">Email liên hệ</span>
+                  <span className="block text-[10px] text-[#8c8c8c] uppercase">Email</span>
                   <a
                     href={`mailto:${selectedEnquiry.email}`}
                     className="font-mono text-[11px] text-[#059669] hover:underline"
@@ -348,34 +344,26 @@ export default function AdminEnquiriesPage() {
                   </a>
                 </div>
                 <div>
-                  <span className="block text-[10px] text-[#8c8c8c] uppercase">
-                    Lĩnh vực tư vấn
-                  </span>
+                  <span className="block text-[10px] text-[#8c8c8c] uppercase">Topic</span>
                   <span className="font-medium text-[#262626]">{selectedEnquiry.topic}</span>
                 </div>
                 <div>
-                  <span className="block text-[10px] text-[#8c8c8c] uppercase">
-                    Giai đoạn dự án
-                  </span>
+                  <span className="block text-[10px] text-[#8c8c8c] uppercase">Project stage</span>
                   <span className="text-[#262626]">
-                    {selectedEnquiry.projectStage || "Chưa xác định"}
+                    {selectedEnquiry.projectStage || "Not specified"}
                   </span>
                 </div>
                 <div>
-                  <span className="block text-[10px] text-[#8c8c8c] uppercase">
-                    Quy mô công suất
-                  </span>
+                  <span className="block text-[10px] text-[#8c8c8c] uppercase">Capacity</span>
                   <span className="font-medium text-[#262626]">
-                    {selectedEnquiry.indicativeCapacity || "Chưa xác định"}
+                    {selectedEnquiry.indicativeCapacity || "Not specified"}
                   </span>
                 </div>
               </div>
 
               {/* Tin nhắn của khách */}
               <div>
-                <span className="mb-1 block font-medium text-[#262626]">
-                  Nội dung yêu cầu từ đối tác:
-                </span>
+                <span className="mb-1 block font-medium text-[#262626]">Message</span>
                 <div className="rounded-md border border-[#f0f0f0] bg-[#fafafa] p-3 leading-relaxed text-[#262626]">
                   {selectedEnquiry.message}
                 </div>
@@ -384,21 +372,19 @@ export default function AdminEnquiriesPage() {
               {/* Ghi chú nội bộ */}
               <div>
                 <div className="mb-1 flex items-center justify-between">
-                  <span className="font-medium text-[#262626]">
-                    Ghi chú nội bộ chuyên viên LÉARGAS:
-                  </span>
+                  <span className="font-medium text-[#262626]">Internal notes</span>
                   <button
                     onClick={handleSaveNotes}
                     className="text-[11px] font-medium text-[#059669] hover:underline"
                   >
-                    Lưu ghi chú
+                    Save notes
                   </button>
                 </div>
                 <textarea
                   rows={3}
                   value={editingNotes}
                   onChange={(e) => setEditingNotes(e.target.value)}
-                  placeholder="Thêm ghi chú đánh giá thương vụ, ngày họp tiếp theo, đầu mối phụ trách..."
+                  placeholder="Assessment, next meeting, who is following up…"
                   className="w-full rounded-md border border-[#d9d9d9] bg-white p-2.5 text-xs text-[#000000e0] hover:border-[#059669] focus:border-[#059669] focus:outline-none"
                 />
               </div>
@@ -407,18 +393,18 @@ export default function AdminEnquiriesPage() {
             {/* Footer Modal */}
             <div className="mt-5 flex items-center justify-between border-t border-[#f0f0f0] pt-4">
               <a
-                href={`mailto:${selectedEnquiry.email}?subject=LÉARGAS Energy Partners — Phản hồi yêu cầu tư vấn`}
+                href={`mailto:${selectedEnquiry.email}?subject=LÉARGAS Energy Partners — Re: your enquiry`}
                 className="flex items-center gap-1.5 rounded-md bg-[#059669] px-3.5 py-1.5 text-xs font-medium text-white shadow-sm hover:bg-[#047857]"
               >
                 <Send className="h-3.5 w-3.5" />
-                Gửi email phản hồi
+                Reply by email
               </a>
 
               <button
                 onClick={() => setSelectedEnquiry(null)}
                 className="rounded-md border border-[#d9d9d9] bg-white px-3.5 py-1.5 text-xs text-[#595959] hover:bg-[#fafafa]"
               >
-                Đóng
+                Close
               </button>
             </div>
           </div>

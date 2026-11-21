@@ -70,7 +70,7 @@ public class PostService {
                 .slug(slug)
                 .excerpt(request.getExcerpt())
                 .content(request.getContent())
-                .category(request.getCategory() != null ? request.getCategory() : "Investment insights")
+                .category(request.getCategory() != null ? request.getCategory() : "Investment Insights")
                 .author(request.getAuthor() != null ? request.getAuthor() : "LÉARGAS Editorial")
                 .readingTimeMinutes(request.getReadingTimeMinutes() != null ? request.getReadingTimeMinutes() : calculateReadingTime(request.getContent()))
                 .coverImageUrl(request.getCoverImageUrl() != null ? request.getCoverImageUrl() : "/images/wind.jpg")

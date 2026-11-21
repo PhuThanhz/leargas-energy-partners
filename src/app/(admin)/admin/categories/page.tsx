@@ -79,10 +79,10 @@ export default function AdminCategoriesPage() {
           setCategories([
             {
               id: 1,
-              name: "Góc nhìn Đầu tư",
+              name: "Investment Insights",
               slug: "investment-insights",
               description:
-                "Phân tích vĩ mô, chiến lược thoái vốn và sinh lời dự án năng lượng tái tạo",
+                "Market analysis, exit strategy and returns on renewable energy projects",
               color: "#059669",
               displayOrder: 1,
               postCount: 1,
@@ -90,9 +90,10 @@ export default function AdminCategoriesPage() {
             },
             {
               id: 2,
-              name: "M&A & Hợp tác Chiến lược",
+              name: "M&A & Partnerships",
               slug: "ma-strategic-partnership",
-              description: "Thẩm định kỹ thuật, cơ cấu giao dịch M&A và kết nối dòng vốn quốc tế",
+              description:
+                "Technical due diligence, deal structuring and access to international capital",
               color: "#10b981",
               displayOrder: 2,
               postCount: 1,
@@ -100,10 +101,9 @@ export default function AdminCategoriesPage() {
             },
             {
               id: 3,
-              name: "Pháp lý & Quy hoạch PDP8",
+              name: "Policy & PDP8",
               slug: "legal-pdp8",
-              description:
-                "Cập nhật quy chế đầu tư, phê duyệt lưới điện và chính sách giá mua điện FIT/DPPA",
+              description: "Investment regulation, grid approvals and FIT/DPPA pricing policy",
               color: "#722ed1",
               displayOrder: 3,
               postCount: 1,
@@ -170,24 +170,24 @@ export default function AdminCategoriesPage() {
           method: "PUT",
           body: JSON.stringify(values),
         })
-        toast.success("Cập nhật chuyên mục thành công", {
-          description: `Chuyên mục "${values.name}" đã được cập nhật.`,
+        toast.success("Category updated", {
+          description: `"${values.name}" has been saved.`,
         })
       } else {
         await adminFetch("/api/admin/categories", {
           method: "POST",
           body: JSON.stringify(values),
         })
-        toast.success("Tạo chuyên mục mới thành công", {
-          description: `Đã thêm chuyên mục "${values.name}" vào hệ thống.`,
+        toast.success("Category created", {
+          description: `"${values.name}" has been added.`,
         })
       }
 
       setModalVisible(false)
       fetchCategories()
     } catch {
-      toast.error("Không thể lưu chuyên mục", {
-        description: "Vui lòng kiểm tra lại kết nối và thử lại.",
+      toast.error("Could not save the category", {
+        description: "Check your connection and try again.",
       })
     } finally {
       setSubmitting(false)
@@ -199,20 +199,20 @@ export default function AdminCategoriesPage() {
       await adminFetch(`/api/admin/categories/${id}`, {
         method: "DELETE",
       })
-      toast.success("Đã xóa chuyên mục", {
-        description: `Đã xóa chuyên mục "${name}" khỏi cơ sở dữ liệu.`,
+      toast.success("Category deleted", {
+        description: `"${name}" has been removed.`,
       })
       fetchCategories()
     } catch {
-      toast.error("Không thể xóa chuyên mục", {
-        description: "Có lỗi xảy ra khi gửi yêu cầu lên máy chủ.",
+      toast.error("Could not delete the category", {
+        description: "The server returned an error.",
       })
     }
   }
 
   const columns = [
     {
-      title: "Chuyên mục",
+      title: "Category",
       dataIndex: "name",
       key: "name",
       render: (text: string, record: CategoryItem) => (
@@ -244,19 +244,19 @@ export default function AdminCategoriesPage() {
       ),
     },
     {
-      title: "Số bài viết",
+      title: "Posts",
       dataIndex: "postCount",
       key: "postCount",
       width: 120,
       align: "center" as const,
       render: (count: number) => (
         <span className="inline-block rounded-full bg-[#f0f2f5] px-2.5 py-0.5 text-xs font-semibold text-[#262626]">
-          {count || 0} bài
+          {count || 0}
         </span>
       ),
     },
     {
-      title: "Thứ tự",
+      title: "Order",
       dataIndex: "displayOrder",
       key: "displayOrder",
       width: 90,
@@ -264,7 +264,7 @@ export default function AdminCategoriesPage() {
       render: (order: number) => <span className="text-xs text-[#8c8c8c]">#{order}</span>,
     },
     {
-      title: "Thao tác",
+      title: "Actions",
       key: "action",
       width: 150,
       align: "right" as const,
@@ -277,15 +277,15 @@ export default function AdminCategoriesPage() {
             onClick={() => handleOpenEditModal(record)}
             className="text-[#059669] hover:bg-[#ecfdf5]"
           >
-            Sửa
+            Edit
           </Button>
 
           <Popconfirm
-            title="Xác nhận xóa chuyên mục?"
-            description={`Bạn có chắc muốn xóa chuyên mục "${record.name}"?`}
+            title="Delete this category?"
+            description={`"${record.name}" will be permanently deleted.`}
             onConfirm={() => handleDelete(record.id, record.name)}
-            okText="Xóa"
-            cancelText="Hủy"
+            okText="Delete"
+            cancelText="Cancel"
             okButtonProps={{ danger: true }}
           >
             <Button
@@ -295,7 +295,7 @@ export default function AdminCategoriesPage() {
               danger
               className="hover:bg-[#fff2f0]"
             >
-              Xóa
+              Delete
             </Button>
           </Popconfirm>
         </Space>
@@ -309,11 +309,9 @@ export default function AdminCategoriesPage() {
       <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
         <div>
           <Title level={4} className="!mb-1 !font-sans !font-bold !text-[#1f1f1f]">
-            Quản lý Chuyên mục (Taxonomy)
+            Categories
           </Title>
-          <Text className="text-xs text-[#8c8c8c]">
-            Khai báo, phân loại và tổ chức danh mục bài phân tích đầu tư & năng lượng tái tạo
-          </Text>
+          <Text className="text-xs text-[#8c8c8c]">Topics used to group posts on the blog</Text>
         </div>
 
         <Space>
@@ -323,7 +321,7 @@ export default function AdminCategoriesPage() {
             loading={loading}
             className="!rounded-lg text-xs"
           >
-            Làm mới
+            Refresh
           </Button>
 
           <Button
@@ -332,7 +330,7 @@ export default function AdminCategoriesPage() {
             onClick={handleOpenCreateModal}
             className="!rounded-lg !bg-[#059669] text-xs font-medium shadow-sm hover:!bg-[#047857]"
           >
-            Thêm chuyên mục mới
+            New category
           </Button>
         </Space>
       </div>
@@ -354,26 +352,26 @@ export default function AdminCategoriesPage() {
         title={
           <div className="flex items-center gap-2">
             <FolderOutlined className="text-[#059669]" />
-            <span>{editingCategory ? "Chỉnh sửa Chuyên mục" : "Khai báo Chuyên mục Mới"}</span>
+            <span>{editingCategory ? "Edit category" : "New category"}</span>
           </div>
         }
         open={modalVisible}
         onCancel={() => setModalVisible(false)}
         onOk={handleSubmit}
         confirmLoading={submitting}
-        okText={editingCategory ? "Lưu thay đổi" : "Tạo chuyên mục"}
-        cancelText="Hủy bỏ"
+        okText={editingCategory ? "Save changes" : "Create category"}
+        cancelText="Cancel"
         okButtonProps={{ className: "!bg-[#059669]" }}
         destroyOnHidden
       >
         <Form form={form} layout="vertical" className="mt-4 font-sans">
           <Form.Item
             name="name"
-            label="Tên chuyên mục"
-            rules={[{ required: true, message: "Vui lòng nhập tên chuyên mục!" }]}
+            label="Name"
+            rules={[{ required: true, message: "Please enter a name" }]}
           >
             <Input
-              placeholder="VD: Góc nhìn Đầu tư, M&A & Hợp tác Chiến lược..."
+              placeholder="e.g. Investment Insights"
               onChange={handleNameChange}
               className="rounded-md"
             />
@@ -381,14 +379,14 @@ export default function AdminCategoriesPage() {
 
           <Form.Item
             name="slug"
-            label="Đường dẫn tĩnh (Slug URL)"
-            rules={[{ required: true, message: "Vui lòng nhập slug URL!" }]}
-            help="Được dùng trong URL bộ lọc, ví dụ: /blog?category=investment-insights"
+            label="URL slug"
+            rules={[{ required: true, message: "Please enter a slug" }]}
+            help="Used in filter links, e.g. /blog?category=investment-insights"
           >
             <Input placeholder="investment-insights" className="rounded-md font-mono text-xs" />
           </Form.Item>
 
-          <Form.Item name="color" label="Màu sắc nhận diện (Tag Color)">
+          <Form.Item name="color" label="Colour">
             <div>
               <Input
                 placeholder="#059669"
@@ -414,14 +412,14 @@ export default function AdminCategoriesPage() {
             </div>
           </Form.Item>
 
-          <Form.Item name="displayOrder" label="Thứ tự hiển thị">
+          <Form.Item name="displayOrder" label="Display order">
             <InputNumber min={0} max={999} className="w-32 rounded-md" />
           </Form.Item>
 
-          <Form.Item name="description" label="Mô tả chuyên mục">
+          <Form.Item name="description" label="Description">
             <Input.TextArea
               rows={3}
-              placeholder="Tóm tắt định hướng và phạm vi các bài viết thuộc chuyên mục này..."
+              placeholder="What kind of posts belong in this category"
               className="rounded-md text-xs"
             />
           </Form.Item>
