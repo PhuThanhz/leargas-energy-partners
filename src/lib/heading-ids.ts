@@ -27,3 +27,13 @@ export function addHeadingIds(html: string): string {
     return `<h${level}${attrs} id="${id}">${inner}</h${level}>`
   })
 }
+
+/** Build a table of contents from `<h2 id="…">` headings in the post HTML. */
+export function getTableOfContents(html: string) {
+  return [...html.matchAll(/<h2[^>]*\sid="([^"]+)"[^>]*>([\s\S]*?)<\/h2>/g)].map(
+    ([, id, title]) => ({
+      id: id!,
+      title: title!.replace(/<[^>]+>/g, ""),
+    })
+  )
+}

@@ -256,6 +256,71 @@
     line-height: 1.45;
     color: var(--green);
   }
+  .article-body h3,
+  .article-body h4 {
+    font-family: var(--font-heading), sans-serif;
+    font-size: clamp(19px, 1.7vw, 22px);
+    font-weight: 600;
+    line-height: 1.35;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+    margin: 40px 0 12px;
+    scroll-margin-top: 110px;
+  }
+  .article-body h4 {
+    font-size: 1em;
+  }
+  .article-body ol {
+    counter-reset: article-ol;
+    list-style: none;
+    padding-left: 0;
+    margin-bottom: 22px;
+  }
+  .article-body ol > li {
+    counter-increment: article-ol;
+    padding-left: 30px;
+  }
+  .article-body ol > li::before {
+    content: counter(article-ol, decimal-leading-zero);
+    top: 0.15em;
+    width: auto;
+    height: auto;
+    background: none;
+    font-family: var(--font-heading), sans-serif;
+    font-size: 0.8em;
+    color: var(--gold-deep);
+  }
+  .article-body li > p {
+    margin-bottom: 0;
+  }
+  .article-body strong {
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .article-body img {
+    display: block;
+    width: 100%;
+    height: auto;
+    margin: 40px 0;
+    border: 0;
+    border-radius: 4px;
+    box-shadow: none;
+  }
+  .article-body hr {
+    margin: 48px 0;
+    border: 0;
+    border-top: 1px solid var(--line);
+  }
+  .article-body code {
+    font-size: 0.9em;
+    color: var(--green);
+  }
+  .article-body pre {
+    margin: 28px 0;
+    overflow-x: auto;
+    font-size: 14px;
+    line-height: 1.7;
+  }
   /* Disclaimer at the end of an article: quiet, separated by a hairline. */
   .article-note {
     margin-top: 48px;
@@ -508,4 +573,16 @@
   border: none !important;
   border-top: 1px solid #e2e8f0 !important;
   margin: 2rem 0 !important;
+}
+
+/* Admin editor: show which image is selected. */
+.ProseMirror img.ProseMirror-selectednode {
+  outline: 2px solid var(--gold-deep);
+  outline-offset: 4px;
+}
+
+/* Admin article preview: antd's unlayered `a { color }` would beat Tailwind's layered
+   colours, so hand link colour back to the site's own cascade layers. */
+.article-preview a {
+  color: revert-layer;
 }

@@ -26,6 +26,7 @@ import {
 } from "lucide-react"
 import { Tooltip, Modal, Input, message } from "antd"
 import { adminUpload } from "@/lib/api/admin-client"
+import { MediaPicker } from "@/components/admin/media-picker"
 
 interface RichArticleEditorProps {
   value: string
@@ -46,6 +47,7 @@ export function RichArticleEditor({
   const [imageModalOpen, setImageModalOpen] = React.useState(false)
   const [imageUrl, setImageUrl] = React.useState("")
   const [uploadingImage, setUploadingImage] = React.useState(false)
+  const [pickerOpen, setPickerOpen] = React.useState(false)
 
   const isInternalChangeRef = React.useRef(false)
 
@@ -67,9 +69,6 @@ export function RichArticleEditor({
       ImageExtension.configure({
         inline: false,
         allowBase64: true,
-        HTMLAttributes: {
-          class: "rounded-xl border border-slate-200 shadow-sm max-w-full my-4 mx-auto",
-        },
       }),
       Placeholder.configure({
         placeholder,
@@ -79,8 +78,7 @@ export function RichArticleEditor({
     immediatelyRender: false,
     editorProps: {
       attributes: {
-        class:
-          "prose prose-emerald prose-slate max-w-none focus:outline-none min-h-[380px] px-6 py-5 text-[15px] leading-relaxed text-slate-800",
+        class: "article-body focus:outline-none min-h-[380px] px-8 py-6",
       },
     },
     onUpdate: ({ editor: ed }) => {
@@ -506,9 +504,17 @@ export function RichArticleEditor({
             )}
           </div>
 
+          <button
+            type="button"
+            onClick={() => setPickerOpen(true)}
+            className="w-full rounded-lg bg-emerald-50 px-3 py-2 text-xs font-semibold text-emerald-700 transition-colors hover:bg-emerald-100"
+          >
+            Chọn ảnh có sẵn trong thư viện
+          </button>
+
           <div className="my-2 flex items-center gap-2">
             <div className="h-px flex-1 bg-slate-200" />
-            <span className="text-[11px] font-medium text-slate-400">HOẶC DÙNG LINK URL</span>
+            <span className="text-[11px] font-medium text-slate-400">Hoặc dùng link URL</span>
             <div className="h-px flex-1 bg-slate-200" />
           </div>
 
@@ -525,6 +531,15 @@ export function RichArticleEditor({
           </div>
         </div>
       </Modal>
+      <MediaPicker
+        title="Chèn ảnh từ thư viện"
+        open={pickerOpen}
+        onClose={() => setPickerOpen(false)}
+        onSelect={(url) => {
+          editor?.chain().focus().setImage({ src: url }).run()
+          setImageModalOpen(false)
+        }}
+      />
     </div>
   )
 }

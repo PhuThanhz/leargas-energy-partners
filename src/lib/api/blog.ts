@@ -66,12 +66,4 @@ export async function getPostBySlug(slug: string): Promise<Post | null> {
   }
 }
 
-/** Build a table of contents from `<h2 id="…">` headings in the post HTML. */
-export function getTableOfContents(html: string) {
-  return [...html.matchAll(/<h2[^>]*\sid="([^"]+)"[^>]*>([\s\S]*?)<\/h2>/g)].map(
-    ([, id, title]) => ({
-      id: id!,
-      title: title!.replace(/<[^>]+>/g, ""),
-    })
-  )
-}
+export { getTableOfContents } from "@/lib/heading-ids"

@@ -17,9 +17,12 @@ import {
 import { toast } from "sonner"
 
 import { adminFetch, adminUpload, resolveMediaUrl } from "@/lib/api/admin-client"
-import { addHeadingIds, slugify } from "@/lib/heading-ids"
+import { addHeadingIds, getTableOfContents, slugify } from "@/lib/heading-ids"
+import { cn } from "@/lib/utils"
 import { refreshBlog } from "@/app/(admin)/admin/posts/actions"
+import { MediaPicker } from "@/components/admin/media-picker"
 import { RichArticleEditor } from "@/components/admin/rich-article-editor"
+import { ArticleView } from "@/components/blog/article-view"
 
 const { TextArea } = Input
 
@@ -100,6 +103,7 @@ export function PostEditorForm({ initial, onSave }: PostEditorFormProps) {
   const [activeTab, setActiveTab] = React.useState<"edit" | "preview">("edit")
   const [saving, setSaving] = React.useState<PostStatus | null>(null)
   const [uploadingCover, setUploadingCover] = React.useState(false)
+  const [pickerOpen, setPickerOpen] = React.useState(false)
 
   const [categoryModalOpen, setCategoryModalOpen] = React.useState(false)
   const [categorySubmitting, setCategorySubmitting] = React.useState(false)
@@ -267,6 +271,7 @@ export function PostEditorForm({ initial, onSave }: PostEditorFormProps) {
 
   const wasPublished = initial?.status === "PUBLISHED"
   const coverSrc = resolveMediaUrl(values.coverImageUrl)
+  const previewHtml = React.useMemo(() => addHeadingIds(values.content), [values.content])
   const categoryOptions = [
     ...categories,
     ...(values.category && !categories.some((c) => c.name === values.category)
@@ -346,7 +351,29 @@ export function PostEditorForm({ initial, onSave }: PostEditorFormProps) {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
+      {activeTab === "preview" && (
+        <div className="article-preview overflow-hidden rounded-xl border border-[#f0f0f0] shadow-[0_1px_2px_0_rgba(0,0,0,0.03)]">
+          <ArticleView
+            preview
+            title={values.title || "Tiêu đề bài viết"}
+            excerpt={values.excerpt}
+            content={previewHtml}
+            category={values.category}
+            author={values.author || DEFAULT_AUTHOR}
+            coverImageUrl={coverSrc}
+            publishedAt={initial?.publishedAt || new Date().toISOString()}
+            readingTimeMinutes={readingMinutes(values.content)}
+            toc={getTableOfContents(previewHtml)}
+          />
+        </div>
+      )}
+
+      <div
+        className={cn(
+          "grid grid-cols-1 gap-6 lg:grid-cols-12",
+          activeTab === "preview" && "hidden"
+        )}
+      >
         {/* Cột trái: nội dung */}
         <div className="space-y-6 lg:col-span-8">
           <Card className="rounded-xl border border-[#f0f0f0] shadow-[0_1px_2px_0_rgba(0,0,0,0.03)]">
@@ -408,47 +435,11 @@ export function PostEditorForm({ initial, onSave }: PostEditorFormProps) {
                   Nội dung <span className="text-[#ff4d4f]">*</span>
                 </label>
 
-                {activeTab === "edit" ? (
-                  <RichArticleEditor
-                    value={values.content}
-                    onChange={(html) => set("content", html)}
-                    placeholder="Bắt đầu viết nội dung bài viết… Bôi đen văn bản để định dạng hoặc dùng thanh công cụ."
-                  />
-                ) : (
-                  <div className="min-h-[420px] rounded-xl border border-[#e8e8e8] bg-white p-6">
-                    {coverSrc && (
-                      <div className="relative mb-5 aspect-video w-full overflow-hidden rounded-xl bg-black/5">
-                        <Image
-                          src={coverSrc}
-                          alt={values.title || "Ảnh bài viết"}
-                          className="h-full w-full object-cover"
-                          fallback={DEFAULT_COVER}
-                          preview={false}
-                        />
-                      </div>
-                    )}
-                    <div className="mb-3 text-xs text-[#8c8c8c]">
-                      {[
-                        values.category,
-                        values.author,
-                        `${readingMinutes(values.content)} phút đọc`,
-                        formatDate(initial?.publishedAt),
-                      ]
-                        .filter(Boolean)
-                        .join(" · ")}
-                    </div>
-                    <h1 className="mb-3 font-serif text-2xl font-bold tracking-tight text-[#1f1f1f]">
-                      {values.title || "Tiêu đề bài viết"}
-                    </h1>
-                    {values.excerpt && (
-                      <p className="mb-5 text-sm text-[#595959] italic">{values.excerpt}</p>
-                    )}
-                    <div
-                      className="prose prose-emerald max-w-none text-sm"
-                      dangerouslySetInnerHTML={{ __html: values.content }}
-                    />
-                  </div>
-                )}
+                <RichArticleEditor
+                  value={values.content}
+                  onChange={(html) => set("content", html)}
+                  placeholder="Bắt đầu viết nội dung bài viết… Bôi đen văn bản để định dạng hoặc dùng thanh công cụ."
+                />
               </div>
             </div>
           </Card>
@@ -563,6 +554,15 @@ export function PostEditorForm({ initial, onSave }: PostEditorFormProps) {
                 </Upload.Dragger>
               )}
 
+              <Button
+                block
+                icon={<PictureOutlined />}
+                onClick={() => setPickerOpen(true)}
+                className="!rounded-lg text-xs"
+              >
+                Chọn từ thư viện ảnh
+              </Button>
+
               <div>
                 <label className="mb-1 block text-xs text-[#8c8c8c]">Hoặc nhập URL ảnh</label>
                 <Input
@@ -588,6 +588,13 @@ export function PostEditorForm({ initial, onSave }: PostEditorFormProps) {
           </Card>
         </div>
       </div>
+
+      <MediaPicker
+        title="Chọn ảnh bìa"
+        open={pickerOpen}
+        onClose={() => setPickerOpen(false)}
+        onSelect={(url) => set("coverImageUrl", url)}
+      />
 
       <Modal
         title="Chuyên mục mới"
