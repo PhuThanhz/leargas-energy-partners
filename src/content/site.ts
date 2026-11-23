@@ -97,7 +97,8 @@ export const DEFAULT_SITE_CONTENT: SiteContent = {
     line1: "Where global capital",
     line2: "meets Vietnam's",
     accent: "energy future.",
-    intro: "Boutique advisory connecting international capital with energy in Vietnam.",
+    intro:
+      "Specialist M&A advisory connecting international capital with renewable energy opportunities in Vietnam.",
     primaryCta: "Our capabilities",
     secondaryCta: "Start a conversation",
     slides: heroSlides.map(({ src, alt }) => ({ src, alt })),
