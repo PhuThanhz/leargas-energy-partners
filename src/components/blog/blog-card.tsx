@@ -14,6 +14,7 @@ export function BlogCard({ post }: { post: PostSummary }) {
             src={post.coverImageUrl}
             alt=""
             fill
+            unoptimized={post.coverImageUrl.includes("/uploads/")}
             sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
             className="object-cover transition-transform duration-[1.4s] ease-[cubic-bezier(.22,1,.36,1)] group-hover:scale-[1.06]"
           />

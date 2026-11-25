@@ -280,6 +280,7 @@ export default function AdminDashboardPage() {
                               src={getCoverSrc(post.coverImageUrl)}
                               alt={post.title}
                               fill
+                              unoptimized
                               className="object-cover"
                             />
                           </div>

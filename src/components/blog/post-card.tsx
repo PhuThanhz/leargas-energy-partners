@@ -19,6 +19,7 @@ export function PostCard({ post, compact = false }: { post: PostSummary; compact
             src={post.coverImageUrl}
             alt=""
             fill
+            unoptimized={post.coverImageUrl.includes("/uploads/")}
             sizes="(min-width: 768px) 33vw, 100vw"
             className="object-cover opacity-85 transition-transform duration-[1.2s] ease-[cubic-bezier(.22,1,.36,1)] group-hover:scale-[1.06]"
           />

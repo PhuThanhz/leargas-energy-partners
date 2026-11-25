@@ -87,7 +87,7 @@ export function ArticleView({
           alt=""
           fill
           priority={!preview}
-          unoptimized={preview}
+          unoptimized={preview || Boolean(coverImageUrl?.includes("/uploads/"))}
           sizes="100vw"
           className={cn(
             "-z-20 object-cover",

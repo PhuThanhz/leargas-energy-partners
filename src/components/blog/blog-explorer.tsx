@@ -119,6 +119,7 @@ function FeaturedPost({ post }: { post: PostSummary }) {
             alt=""
             fill
             priority
+            unoptimized={post.coverImageUrl.includes("/uploads/")}
             sizes="(min-width: 1024px) 60vw, 100vw"
             className="object-cover transition-transform duration-[1.6s] ease-[cubic-bezier(.22,1,.36,1)] group-hover:scale-[1.04]"
           />

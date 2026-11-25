@@ -11,6 +11,8 @@ const securityHeaders = [
 const apiUrl = new URL(
   process.env.NEXT_PUBLIC_API_URL || process.env.API_BASE_URL || "http://localhost:8080"
 )
+/** Public site origin; nginx routes its /uploads/ to Spring Boot (used by src/lib/api/blog.ts). */
+const siteUrl = new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://leargasenergy.com")
 const apiIsLocal = ["localhost", "127.0.0.1", "[::1]"].includes(apiUrl.hostname)
 
 const nextConfig: NextConfig = {
@@ -25,6 +27,12 @@ const nextConfig: NextConfig = {
         protocol: apiUrl.protocol.replace(":", "") as "http" | "https",
         hostname: apiUrl.hostname,
         port: apiUrl.port,
+        pathname: "/uploads/**",
+      },
+      {
+        protocol: siteUrl.protocol.replace(":", "") as "http" | "https",
+        hostname: siteUrl.hostname,
+        port: siteUrl.port,
         pathname: "/uploads/**",
       },
     ],
